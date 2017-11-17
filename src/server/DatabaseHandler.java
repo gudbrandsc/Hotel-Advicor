@@ -79,7 +79,6 @@ public class DatabaseHandler {
      */
     private static final String REMOVE_HOTEL_REVIEW_SQL =
             "DELETE FROM hotel_reviews WHERE reviewId=?;";
-    ;
 
 
     /** Used to configure connection to database. */
@@ -437,15 +436,14 @@ public class DatabaseHandler {
     public Status removeReview(String username, String hotelId) {
         Status status = Status.ERROR;
 
-        log.debug("Removing review " + username + hotelId+".");
-
+        String primkey=username+hotelId;
         try (
                 Connection connection = db.getConnection();
                 PreparedStatement statement = connection.prepareStatement(REMOVE_HOTEL_REVIEW_SQL);
         ) {
-            statement.setString(1,hotelId+hotelId);
-            statement.executeQuery();
-            log.debug("Review removed");
+            statement.setString(1,primkey);
+            log.debug("Removing review " +primkey+".");
+            statement.executeUpdate();
             status=status.OK;
         }
         catch (Exception ex) {
@@ -556,30 +554,52 @@ public class DatabaseHandler {
         log.debug(hotelName);
         return hotelName;
     }
+    /**
+     * Method that returns hotel reviews using hotelid
+     * @return ResultSet*/
+    public String hotelIdReviewDisplayer(String hotelId) {
+        StringBuilder sb = new StringBuilder();
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(GET_HOTEL_REVIEWS_HOTELID_SQL)
+
+        ) {
+            statement.setString(1,hotelId);
+            ResultSet hotelReviews = statement.executeQuery();
+            while (hotelReviews.next()) {
+                sb.append(reviewBuilder(
+                        hotelReviews.getString(4),
+                        hotelReviews.getString(7),
+                        hotelReviews.getString(6),
+                        hotelReviews.getInt(3),
+                        hotelReviews.getString(5),
+                        false,
+                        hotelReviews.getString(1)
+                        ));
+            }
+        } catch (SQLException e) {
+            log.debug(e.getMessage(), e);
+        }
+        return sb.toString();
+    }
+
+
+
+
 
     /**
      * Method that returns hotel reviews using hotelid
      * @return ResultSet*/
-    public String hotelReviewDisplayer(String key,String command,String hotelId) {
+    public String usernameReviewDisplayer(String username) {
         StringBuilder sb = new StringBuilder();
-        String sqlString="";
-        boolean userReview = false;
-        if(command.equals("hotelid")){
-            sqlString=GET_HOTEL_REVIEWS_HOTELID_SQL;
-        }else if (command.equals("username")){
-            sqlString = GET_HOTEL_REVIEWS_USERNAME_SQL;
-            userReview =true;
-        }else{
-            return sb.toString();
-        }
 
-            try (
-                    Connection connection = db.getConnection();
-                    PreparedStatement statement = connection.prepareStatement(sqlString)
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(GET_HOTEL_REVIEWS_USERNAME_SQL)
 
             ) {
-                statement.setString(1, key);
-                ResultSet hotelReviews = statement.executeQuery();
+            statement.setString(1,username);
+            ResultSet hotelReviews = statement.executeQuery();
                 while (hotelReviews.next()) {
                     sb.append(reviewBuilder(
                             hotelReviews.getString(4),
@@ -587,8 +607,8 @@ public class DatabaseHandler {
                             hotelReviews.getString(6),
                             hotelReviews.getInt(3),
                             hotelReviews.getString(5),
-                            userReview,
-                            hotelId
+                            true,
+                    hotelReviews.getString(1)
                     ));
                 }
             } catch (SQLException e) {
@@ -601,6 +621,7 @@ public class DatabaseHandler {
      * @return html string*/
     public String reviewBuilder(String title, String username, String date, int rating, String review,boolean userReview,String hotelId) {
         StringBuilder sb = new StringBuilder();
+        log.debug("this is your hotelID: "+ hotelId+ " val:" + userReview);
         sb.append("<div style=\"background-color: #f1f1f1; padding: 0.01em 16px; margin: 20px 0; box-shadow: 0 2px 4px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)\">");
         sb.append("<h4 style=\"margin-bottom: 0px;\">" + title + "</h4>");
         sb.append("<p style=\"margin-top: 0px;\"><small>Submited by " + username);
@@ -610,6 +631,7 @@ public class DatabaseHandler {
         sb.append("<p>" + review + "</p>");
         sb.append("</div>");
         if(userReview){
+            log.debug(title+ ": " +hotelId);
             //TODO make inline
             sb.append(" <form action = \"/myreviews?username="+username+"\" method = \"post\">");
             sb.append("<input type=\"hidden\" value=\""+hotelId+"\" name=\"hotelid\" />\n");

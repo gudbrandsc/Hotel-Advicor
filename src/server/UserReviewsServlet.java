@@ -34,17 +34,23 @@ public class UserReviewsServlet extends LoginBaseServlet {
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-        prepareResponse("Add hotel review", response);
-        log.debug(request.getParameter("edit"));
-        log.debug(request.getParameter("hotelid"));
-        String hotelid= request.getParameter("hotelid");
-        if (request.getParameter("edit").equals("edit")) {
-            log.debug("edit review");
-        }
-        else if(request.getParameter("delete").equals("delete")){
-            databaseHandler.removeReview(getUsername(request),hotelid);
-        }
+        String username=request.getParameter("username");
+        if(request.getParameter("delete")!=null){
+            prepareResponse("Delete hotel review", response);
+            Status status = databaseHandler.removeReview(username,request.getParameter("hotelid"));
 
+            if(status == Status.OK) {
+                log.debug("Review successfully removed");
+                String url = "/myreviews?username="+username+"&success=true";
+                response.sendRedirect(response.encodeRedirectURL(url));
+            }
+            else {
+                log.debug("Not able to remove review:" + status);
+                String url = "/myreviews?username="+username+"&error=true";
+                url = response.encodeRedirectURL(url);
+                response.sendRedirect(url);
+            }
+        }
 
     }
 
@@ -56,7 +62,7 @@ public class UserReviewsServlet extends LoginBaseServlet {
      */
     private void printForm(HttpServletRequest request, HttpServletResponse response) throws IOException {
         PrintWriter out = response.getWriter();
-        if(request.getQueryString().matches("^username=[a-zA-Z0-9_-]{5,20}$")){
+        if(request.getParameter("username")!=null){
             log.debug(getUsername(request));
             String username = request.getParameter("username");
             //Check that request username is the same as the currant user.
@@ -65,8 +71,7 @@ public class UserReviewsServlet extends LoginBaseServlet {
                 //Check if currant user has any reviews
                 if(databaseHandler.checkUsernameReviewSet(getUsername(request))){
                     //TODO get hotelId somehow
-                    out.println(databaseHandler.hotelReviewDisplayer(username,"username","123434"));
-                    out.println("<p><input type=\"submit\" value=\"Register user\"></p>");
+                    out.println(databaseHandler.usernameReviewDisplayer(username));
                 }else {
                     out.println("<p>You don't have any reviews yet</p>");
                 }

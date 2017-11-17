@@ -42,17 +42,26 @@ public class AllReviewsServlet extends LoginBaseServlet{
      * Method that prints hotel reviews to a specific hotel. Also handeles if get request miss param
      * @param request
      * @param response
+     *
      */
     private void printForm(HttpServletRequest request, HttpServletResponse response) throws IOException {
         PrintWriter out = response.getWriter();
         //Check if request matches pattern
-        if(request.getQueryString().matches("^hotelid=[0-9]*$")){
+        if(request.getParameter("hotelid")!=null){
             String hotelid = request.getParameter("hotelid");
             //Check if there is a hotel with matching hotel id in the db
             if(!databaseHandler.getHotelIdName(request.getParameter("hotelid")).isEmpty()){
                 //Check if hotel has any reviews
                 if (databaseHandler.checkHotelIdReviewSet(hotelid)){
-                    out.println(databaseHandler.hotelReviewDisplayer(hotelid,"hotelid",hotelid));
+                    if (request.getParameter("success") != null) {
+                        out.println("<p>Thank you, your review for hotel ");
+                        out.println(databaseHandler.getHotelIdName(request.getParameter("hotelid"))+ " is now submitted.</p>");
+                    }else if (request.getParameter("error") != null){
+                        out.println("<p>We where unfortunately not able to add your review at this time.");
+                        out.println(databaseHandler.getHotelIdName("Please try again later</p>"));
+
+                    }
+                    out.println(databaseHandler.hotelIdReviewDisplayer(hotelid));
                 } else {
                     out.println("<p>There is unfortunately no reviews for " + databaseHandler.getHotelIdName(hotelid)+"</p>");
                     out.println("<p>Be the first one to give it a review:<a href=\"/addreview?hotelid="+ hotelid+"\">Add review</a></p>" );
