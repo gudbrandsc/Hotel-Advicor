@@ -2,14 +2,12 @@ package server;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Random;
 
 import org.apache.logging.log4j.LogManager;
@@ -19,7 +17,7 @@ import org.apache.logging.log4j.Logger;
  * Handles all database-related actions. Uses singleton design pattern.
  * Example of Prof. Engle
  *
- * @see LoginServer
+ *
  */
 public class DatabaseHandler {
 
@@ -58,11 +56,16 @@ public class DatabaseHandler {
     private static final String DELETE_SQL =
             "DELETE FROM login_users WHERE username = ?";
 
-    /** Used to get all reviews for a hotel*/
-    private static final String GET_HOTEL_REVIEWS =
+    /** Used to get all reviews for a hotel by hotelId*/
+    private static final String GET_HOTEL_REVIEWS_HOTELID_SQL =
             "SELECT * FROM hotel_reviews WHERE hotelId=?;";
 
-    private static final String GET_HOTEL_NAME =
+    /** Used to get all reviews created by user*/
+    private static final String GET_HOTEL_REVIEWS_USERNAME_SQL =
+            "SELECT * FROM hotel_reviews WHERE username=?;";
+
+
+    private static final String GET_HOTEL_NAME_SQL =
             "SELECT hotelnames FROM hotel_info WHERE hotelId=? ORDER BY hotelId DESC LIMIT 1";
 
     /**
@@ -71,6 +74,12 @@ public class DatabaseHandler {
     private static final String INSERT_REVIEW_SQL =
             "INSERT INTO hotel_reviews (hotelId, reviewId, intRating, title, review, submissiondate, username) " +
                     "VALUES (?,?,?,?,?,?,?);";
+    /**
+     * Used to insert a new user into the database.
+     */
+    private static final String REMOVE_HOTEL_REVIEW_SQL =
+            "DELETE FROM hotel_reviews WHERE reviewId=?;";
+    ;
 
 
     /** Used to configure connection to database. */
@@ -418,6 +427,34 @@ public class DatabaseHandler {
         return status;
     }
     /**
+     * Removes a user from the database if the username and password are
+     * provided correctly.
+     *
+     * @param username - username to remove
+     * @param hotelId - password of user
+     * @return {@link Status.OK} if removal successful
+     */
+    public Status removeReview(String username, String hotelId) {
+        Status status = Status.ERROR;
+
+        log.debug("Removing review " + username + hotelId+".");
+
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(REMOVE_HOTEL_REVIEW_SQL);
+        ) {
+            statement.setString(1,hotelId+hotelId);
+            statement.executeQuery();
+            log.debug("Review removed");
+            status=status.OK;
+        }
+        catch (Exception ex) {
+            status = Status.CONNECTION_FAILED;
+            log.debug(status, ex);
+        }
+        return status;
+    }
+    /**
      * Method that returns info about hotel names
      * @return ResultSet*/
     public String hotelInfoDisplayer(){
@@ -438,7 +475,7 @@ public class DatabaseHandler {
                     "</tr>");
             while (hotelNames.next()){
                 sb.append("<tr>");
-                sb.append("<td><a href=\"/reviews?hotelId="+hotelNames.getString(4)+"\">");
+                sb.append("<td><a href=\"/allreviews?hotelid="+hotelNames.getString(4)+"\">");
                 sb.append(hotelNames.getString(1)+"</a></td>");
                 sb.append("<td>"+hotelNames.getString(2)+"</td>");
                 sb.append("<td>"+hotelNames.getInt(3)+"</td>");
@@ -460,11 +497,11 @@ public class DatabaseHandler {
      * @return true if set is not empty
      * @throws SQLException
      */
-    public boolean checkHotelReviewSet(String hotelId) {
+    public boolean checkHotelIdReviewSet(String hotelId) {
         Boolean exist=null;
         try (
                 Connection connection = db.getConnection();
-                PreparedStatement statement = connection.prepareStatement(GET_HOTEL_REVIEWS);
+                PreparedStatement statement = connection.prepareStatement(GET_HOTEL_REVIEWS_HOTELID_SQL);
         ) {
             statement.setString(1,hotelId);
              exist= statement.executeQuery().next();
@@ -476,16 +513,36 @@ public class DatabaseHandler {
         return exist;
     }
     /**
+     * Tests if a user have any reviews
+     *
+     * @return true if set is not empty
+     * @throws SQLException
+     */
+    public boolean checkUsernameReviewSet(String username) {
+        Boolean exist=null;
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(GET_HOTEL_REVIEWS_USERNAME_SQL);
+        ) {
+            statement.setString(1,username);
+            exist= statement.executeQuery().next();
+        }
+        catch (SQLException e) {
+            log.debug(e.getMessage(), e);
+        }
+        return exist;
+    }
+    /**
      * Tests if a hotel has any reviews
      *
      * @return true if set is not empty
      * @throws SQLException
      */
-    public String getHotelName(String hotelId) {
+    public String getHotelIdName(String hotelId) {
         String hotelName="";
         try (
                 Connection connection = db.getConnection();
-                PreparedStatement statement = connection.prepareStatement(GET_HOTEL_NAME)
+                PreparedStatement statement = connection.prepareStatement(GET_HOTEL_NAME_SQL)
         ) {
             statement.setString(1,hotelId);
             ResultSet rs = statement.executeQuery();
@@ -499,39 +556,74 @@ public class DatabaseHandler {
         log.debug(hotelName);
         return hotelName;
     }
+
     /**
-     * Method that returns info about hotel names
+     * Method that returns hotel reviews using hotelid
      * @return ResultSet*/
-    public String hotelReviewDisplayer(String hotelId){
+    public String hotelReviewDisplayer(String key,String command,String hotelId) {
         StringBuilder sb = new StringBuilder();
+        String sqlString="";
+        boolean userReview = false;
+        if(command.equals("hotelid")){
+            sqlString=GET_HOTEL_REVIEWS_HOTELID_SQL;
+        }else if (command.equals("username")){
+            sqlString = GET_HOTEL_REVIEWS_USERNAME_SQL;
+            userReview =true;
+        }else{
+            return sb.toString();
+        }
 
-        try (
-                Connection connection = db.getConnection();
-                PreparedStatement statement = connection.prepareStatement(GET_HOTEL_REVIEWS)
+            try (
+                    Connection connection = db.getConnection();
+                    PreparedStatement statement = connection.prepareStatement(sqlString)
 
-        ) {
-            statement.setString(1,hotelId);
-            ResultSet hotelNames =statement.executeQuery();
-            while (hotelNames.next()){
-                sb.append("<div style=\"background-color: #f1f1f1; padding: 0.01em 16px; margin: 20px 0; box-shadow: 0 2px 4px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)\">");
-                sb.append("<h4 style=\"margin-bottom: 0px;\">"+hotelNames.getString(4)+"</h4>");
-                sb.append("<p style=\"margin-top: 0px;\"><small>Submited by "+hotelNames.getString(7));
-                sb.append(",on "+hotelNames.getString(6)+"</p></small>");
-                sb.append("<p> Rating: " + hotelNames.getInt(3));
-                sb.append("<div style=\"background-color: #fff;\">");
-                sb.append("<p>"+hotelNames.getString(5)+"</p>");
-                sb.append("</div>");
-                sb.append("</div>");
+            ) {
+                statement.setString(1, key);
+                ResultSet hotelReviews = statement.executeQuery();
+                while (hotelReviews.next()) {
+                    sb.append(reviewBuilder(
+                            hotelReviews.getString(4),
+                            hotelReviews.getString(7),
+                            hotelReviews.getString(6),
+                            hotelReviews.getInt(3),
+                            hotelReviews.getString(5),
+                            userReview,
+                            hotelId
+                    ));
+                }
+            } catch (SQLException e) {
+                log.debug(e.getMessage(), e);
             }
+        return sb.toString();
+    }
+    /**
+     * Builds a html string of a review
+     * @return html string*/
+    public String reviewBuilder(String title, String username, String date, int rating, String review,boolean userReview,String hotelId) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<div style=\"background-color: #f1f1f1; padding: 0.01em 16px; margin: 20px 0; box-shadow: 0 2px 4px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)\">");
+        sb.append("<h4 style=\"margin-bottom: 0px;\">" + title + "</h4>");
+        sb.append("<p style=\"margin-top: 0px;\"><small>Submited by " + username);
+        sb.append(", on " + date + "</p></small>");
+        sb.append("<p> Rating: " + rating);
+        sb.append("<div style=\"background-color: #fff;\">");
+        sb.append("<p>" + review + "</p>");
+        sb.append("</div>");
+        if(userReview){
+            //TODO make inline
+            sb.append(" <form action = \"/myreviews?username="+username+"\" method = \"post\">");
+            sb.append("<input type=\"hidden\" value=\""+hotelId+"\" name=\"hotelid\" />\n");
+            sb.append("<input type=\"submit\" name=\"edit\" value=\"Edit\" />");
+            sb.append("<input type=\"submit\" name=\"delete\" value=\"Delete\" />");
+            sb.append("</form>");
         }
-        catch (SQLException e) {
-            log.debug(e.getMessage(), e);
-        }
+        sb.append("</div>");
         return sb.toString();
     }
 
+
     public Status addReview(String hotelId,int rating, String title, String review, String date, String username){
-        //TODO check if user allready have review for hotel
+        //TODO check if user all ready have review for that hotel
         Status status = Status.ERROR;
 
         try (

@@ -53,20 +53,20 @@ public class LoginRegisterServlet extends LoginBaseServlet {
 		out.println("<h3>Register</h3>");
 		out.println("<form action=\"/register\" method=\"post\">");
 		out.println("<table border=\"0\">");
-		out.println("\t<tr>");
-		out.println("\t\t<td>Usename:</td>");
-		out.println("\t\t<td><input placeholder=\"Enter username\" type=\"text\" name=\"user\" size=\"30\"></td>");
-		out.println("\t</tr>");
-		out.println("\t<tr>");
-		out.println("\t\t<td>Password:</td>");
-		out.println("\t\t<td><input placeholder=\"Enter password\" type=\"password\" name=\"pass\" size=\"30\"");
+		out.println("<tr>");
+		out.println("<td>Usename:</td>");
+		out.println("<td><input placeholder=\"Enter username\" type=\"text\" name=\"user\" size=\"20\" ");
+		out.println("pattern=\"[a-zA-Z0-9_-]{5,20}\"></td>");
+		out.println("</tr>");
+		out.println("<tr>");
+		out.println("<td>Password:</td>");
+		out.println("<td><input placeholder=\"Enter password\" type=\"password\" name=\"pass\" size=\"30\"");
 		out.println("pattern=\"(?=.*[a-z])(?=.*[A-Z])(?=.*[\\d])(?=.*[#?!@$%^&*-]).{8,}\"");
 		out.println("autofocus required title=\"- At least 8 characters");
 		out.println("- One upper- and one lowercase letter");
 		out.println("- One number from 0-9");
 		out.println("- One special character  #?!@$%^&*-\"");
 		out.println("></td>");
-
 		out.println("</tr>");
 		out.println("</table>");
 		out.println("<p><input type=\"submit\" value=\"Register user\"></p>");

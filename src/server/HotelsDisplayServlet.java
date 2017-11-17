@@ -32,10 +32,5 @@ public class HotelsDisplayServlet extends LoginBaseServlet {
             response.sendRedirect("/login");
         }
     }
-    //TODO can be removed
-    @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
-        doGet(request, response);
-    }
+
 }
