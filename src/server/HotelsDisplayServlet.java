@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Handles display of user information.
  * Example of Prof. Engle
- * @see LoginServer
+ *
  */
 @SuppressWarnings("serial")
 public class HotelsDisplayServlet extends LoginBaseServlet {
@@ -19,13 +19,13 @@ public class HotelsDisplayServlet extends LoginBaseServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-        String user = getUsername(request);
 
-        if (user != null) {
+        if (getUsername(request) != null) {
             prepareResponse("View hotels", response);
             StringBuilder sb = new StringBuilder();
             PrintWriter out = response.getWriter();
-            out.println(databaseHandler.getHotelNames());
+            out.println("<button><a href=\"/login?logout\">Logout</a></button>");
+            out.println(databaseHandler.hotelInfoDisplayer());
             finishResponse(response);
         }
         else {

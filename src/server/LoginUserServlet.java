@@ -26,8 +26,7 @@ public class LoginUserServlet extends LoginBaseServlet {
         if (error != null) {
             try {
                 code = Integer.parseInt(error);
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 code = -1;
             }
 
@@ -43,6 +42,9 @@ public class LoginUserServlet extends LoginBaseServlet {
         if (request.getParameter("logout") != null) {
             clearCookies(request, response);
             out.println("<p>Successfully logged out.</p>");
+        }
+        if (getUsername(request) != null){
+            response.sendRedirect("/viewhotels");
         }
 
         printForm(out);
@@ -81,11 +83,11 @@ public class LoginUserServlet extends LoginBaseServlet {
         out.println("<table border=\"0\">");
         out.println("\t<tr>");
         out.println("\t\t<td>Usename:</td>");
-        out.println("\t\t<td><input type=\"text\" name=\"user\" size=\"30\"></td>");
+        out.println("\t\t<td><input placeholder=\"Enter username\" type=\"text\" name=\"user\" size=\"30\"></td>");
         out.println("\t</tr>");
         out.println("\t<tr>");
         out.println("\t\t<td>Password:</td>");
-        out.println("\t\t<td><input type=\"password\" name=\"pass\" size=\"30\"></td>");
+        out.println("\t\t<td><input placeholder=\"Enter password\" type=\"password\" name=\"pass\" size=\"30\"></td>");
         out.println("</tr>");
         out.println("</table>");
         out.println("<p><input type=\"submit\" value=\"Login\"></p>");

@@ -39,6 +39,14 @@ public class LoginBaseServlet extends HttpServlet {
 			writer.printf("\t<meta charset=\"utf-8\">%n");
 			writer.printf("</head>%n%n");
 			writer.printf("<body>%n%n");
+			/*writer.printf("<ul>");
+			writer.printf(" <li><a href=\"/viewHotels\">View Hotels</a></li>");
+			writer.printf(" <li><a href=\"/reviews\">Reviews</a></li>");
+			writer.printf(" <li><a href=\"default.asp\">Home</a></li>");
+			writer.printf(" </ul>");*/
+
+
+
 		}
 		catch (IOException ex) {
 			log.warn("Unable to prepare HTTP response.");

@@ -31,7 +31,7 @@ public class DatabaseHandler {
 
     /** Get a list of all hotel names in alphabetical order */
     private static final String GET_HOTEL_GENERAL_INFO_SQL =
-            "SELECT DISTINCT hotelnames,address,intRating " +
+            "SELECT DISTINCT hotelnames,address,intRating, hotel_info.hotelId " +
                     "FROM hotel_info " +
                     "LEFT JOIN hotel_reviews ON hotel_info.hotelId = hotel_reviews.hotelId " +
                     "ORDER BY hotelnames;";
@@ -57,6 +57,15 @@ public class DatabaseHandler {
     /** Used to remove a user from the database. */
     private static final String DELETE_SQL =
             "DELETE FROM login_users WHERE username = ?";
+
+    /** Used to get all reviews for a hotel*/
+    private static final String GET_HOTEL_REVIEWS =
+            "SELECT * FROM hotel_reviews WHERE hotelId=?;";
+
+    private static final String GET_HOTEL_NAME =
+            "SELECT hotelnames FROM hotel_info WHERE hotelId=? ORDER BY hotelId DESC LIMIT 1";
+
+
 
     /** Used to configure connection to database. */
     private DatabaseConnector db;
@@ -404,7 +413,7 @@ public class DatabaseHandler {
     /**
      * Method that returns info about hotel names
      * @return ResultSet*/
-    public String getHotelNames(){
+    public String hotelInfoDisplayer(){
         Status status = Status.ERROR;
 
         try (
@@ -422,7 +431,8 @@ public class DatabaseHandler {
                     "</tr>");
             while (hotelNames.next()){
                 sb.append("<tr>");
-                sb.append("<td>"+hotelNames.getString(1)+"</td>");
+                sb.append("<td><a href=\"/reviews?hotelId="+hotelNames.getString(4)+"\">");
+                sb.append(hotelNames.getString(1)+"</a></td>");
                 sb.append("<td>"+hotelNames.getString(2)+"</td>");
                 sb.append("<td>"+hotelNames.getInt(3)+"</td>");
                 sb.append("</tr>");
@@ -437,4 +447,80 @@ public class DatabaseHandler {
         }
 
     }
+    /**
+     * Tests if a hotel has any reviews
+     *
+     * @return true if set is not empty
+     * @throws SQLException
+     */
+    public boolean checkHotelReviewSet(String hotelId) {
+        Boolean exist=null;
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(GET_HOTEL_REVIEWS);
+        ) {
+            statement.setString(1,hotelId);
+             exist= statement.executeQuery().next();
+        }
+        catch (SQLException e) {
+            log.debug(e.getMessage(), e);
+        }
+        log.debug(exist);
+        return exist;
+    }
+    /**
+     * Tests if a hotel has any reviews
+     *
+     * @return true if set is not empty
+     * @throws SQLException
+     */
+    public String getHotelName(String hotelId) {
+        String hotelName=null;
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(GET_HOTEL_NAME)
+        ) {
+            statement.setString(1,hotelId);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                hotelName = rs.getString("hotelnames");
+            }
+        }
+        catch (SQLException e) {
+            log.debug(e.getMessage(), e);
+        }
+        log.debug(hotelName);
+        return hotelName;
+    }
+    /**
+     * Method that returns info about hotel names
+     * @return ResultSet*/
+    public String hotelReviewDisplayer(String hotelId){
+        StringBuilder sb = new StringBuilder();
+
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(GET_HOTEL_REVIEWS)
+
+        ) {
+            statement.setString(1,hotelId);
+            ResultSet hotelNames =statement.executeQuery();
+            while (hotelNames.next()){
+                sb.append("<div style=\"background-color: #f1f1f1; padding: 0.01em 16px; margin: 20px 0; box-shadow: 0 2px 4px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)\">");
+                sb.append("<h4 style=\"margin-bottom: 0px;\">"+hotelNames.getString(4)+"</h4>");
+                sb.append("<p style=\"margin-top: 0px;\"><small>Submited by "+hotelNames.getString(7));
+                sb.append(",on "+hotelNames.getString(6)+"</p></small>");
+                sb.append("<p> Rating: " + hotelNames.getInt(3));
+                sb.append("<div style=\"background-color: #fff;\">");
+                sb.append("<p>"+hotelNames.getString(5)+"</p>");
+                sb.append("</div>");
+                sb.append("</div>");
+            }
+        }
+        catch (SQLException e) {
+            log.debug(e.getMessage(), e);
+        }
+        return sb.toString();
+    }
+
 }
