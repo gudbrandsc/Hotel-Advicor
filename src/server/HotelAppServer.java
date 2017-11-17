@@ -22,6 +22,8 @@ public class HotelAppServer {
         handler.addServletWithMapping(LoginRegisterServlet.class, "/register");
         handler.addServletWithMapping(HotelsDisplayServlet.class,  "/viewhotels");
         handler.addServletWithMapping(HotelreviewsServlet.class,  "/reviews");
+        handler.addServletWithMapping(AddReviewServlet.class,  "/addreview");
+
 
         handler.addServletWithMapping(LoginRedirectServlet.class, "/*");
 

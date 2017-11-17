@@ -1,13 +1,9 @@
 package server;
 
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 
 /**
  * Servlet class to handle server get requests for hotelReviews
@@ -44,13 +40,21 @@ public class HotelreviewsServlet extends LoginBaseServlet{
     private void printForm(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String hotelid = request.getParameter("hotelId");
         PrintWriter out = response.getWriter();
+        if (hotelid != null && !databaseHandler.getHotelName(hotelid).isEmpty()) {
+            out.println("<button><a href=\"/addReview\">Add review</a></button>");
 
-        if (hotelid != null) {
             if (databaseHandler.checkHotelReviewSet(hotelid)){
                 out.println(databaseHandler.hotelReviewDisplayer(hotelid));
+                out.println("<button><a href=\"/\">Home</a></button>");
+
             } else {
-                out.println("<p>There is unfortunately no reviews for " + databaseHandler.getHotelName(hotelid));
+                out.println("<p>There is unfortunately no reviews for " + databaseHandler.getHotelName(hotelid)+"</p>");
+                out.println("<p>Be the first one to give it a review:<a href=\"/addreview?hotelId="+ hotelid+"\">Add review</a></p>" );
+                out.println("<button><a href=\"/\">Home</a></button>");
             }
+        }else{
+            out.println("<p>There is unfortunately no hotel with this id</p>");
+            out.println("<button><a href=\"/\">Home</a></button>");
         }
     }
 }

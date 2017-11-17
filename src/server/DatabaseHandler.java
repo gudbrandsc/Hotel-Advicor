@@ -65,6 +65,12 @@ public class DatabaseHandler {
     private static final String GET_HOTEL_NAME =
             "SELECT hotelnames FROM hotel_info WHERE hotelId=? ORDER BY hotelId DESC LIMIT 1";
 
+    /**
+     * Used to insert a new user into the database.
+     */
+    private static final String INSERT_REVIEW_SQL =
+            "INSERT INTO hotel_reviews (hotelId, reviewId, intRating, title, review, submissiondate, username) " +
+                    "VALUES (?,?,?,?,?,?,?);";
 
 
     /** Used to configure connection to database. */
@@ -80,6 +86,7 @@ public class DatabaseHandler {
     private DatabaseHandler() {
         Status status = Status.OK;
         random = new Random(System.currentTimeMillis());
+        //Change so that u can use all SQL statments from databse dir
 
         try {
             db = new DatabaseConnector("database.properties");
@@ -475,7 +482,7 @@ public class DatabaseHandler {
      * @throws SQLException
      */
     public String getHotelName(String hotelId) {
-        String hotelName=null;
+        String hotelName="";
         try (
                 Connection connection = db.getConnection();
                 PreparedStatement statement = connection.prepareStatement(GET_HOTEL_NAME)
@@ -523,4 +530,30 @@ public class DatabaseHandler {
         return sb.toString();
     }
 
+    public Status addReview(String hotelId,int rating, String title, String review, String date, String username){
+        //TODO check if user allready have review for hotel
+        Status status = Status.ERROR;
+
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(INSERT_REVIEW_SQL)
+            ) {
+            statement.setString(1,hotelId);
+            statement.setString(2,username+hotelId);
+            statement.setInt(3,rating);
+            statement.setString(4,title);
+            statement.setString(5,review);
+            statement.setString(6,date);
+            statement.setString(7,username);
+            statement.executeUpdate();
+            status = Status.OK;
+        }
+        catch (SQLException e) {
+            status = Status.SQL_EXCEPTION;
+            log.debug(e.getMessage(), e);
+        }
+        return status;
+    }
+
 }
+

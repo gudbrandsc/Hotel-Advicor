@@ -60,7 +60,7 @@ public class LoginBaseServlet extends HttpServlet {
 
 			writer.printf("%n");
 			writer.printf("<p style=\"font-size: 10pt; font-style: italic;\">");
-			writer.printf("Last updated at %s.", getDate());
+			//writer.printf("Last updated at %s.", getDate());
 			writer.printf("</p>%n%n");
 
 			writer.printf("</body>%n");
