@@ -30,8 +30,11 @@ public class DatabaseHandler {
     private static DatabaseHandler singleton = new DatabaseHandler();
 
     /** Get a list of all hotel names in alphabetical order */
-    private static final String GET_HOTEL_NAMES_SQL =
-            "SELECT hotelnames FROM hotel_info ORDER BY hotelnames;";
+    private static final String GET_HOTEL_GENERAL_INFO_SQL =
+            "SELECT DISTINCT hotelnames,address,intRating " +
+                    "FROM hotel_info " +
+                    "LEFT JOIN hotel_reviews ON hotel_info.hotelId = hotel_reviews.hotelId " +
+                    "ORDER BY hotelnames;";
 
     /** Used to insert a new user into the database. */
     private static final String REGISTER_SQL =
@@ -406,16 +409,22 @@ public class DatabaseHandler {
 
         try (
                 Connection connection = db.getConnection();
-                PreparedStatement statement = connection.prepareStatement(GET_HOTEL_NAMES_SQL)
+                PreparedStatement statement = connection.prepareStatement(GET_HOTEL_GENERAL_INFO_SQL)
 
         ) {
             StringBuilder sb = new StringBuilder();
             ResultSet hotelNames =statement.executeQuery();
-            sb.append("<table><tr><th><b>Hotel name</b></th></tr>");
+            sb.append("<table>" +
+                    "<tr>" +
+                    "<th><b>Hotel name</b></th>" +
+                    "<th><b>Address</b></th>" +
+                    "<th><b>Rating</b></th>" +
+                    "</tr>");
             while (hotelNames.next()){
-                System.out.println("loop");
                 sb.append("<tr>");
                 sb.append("<td>"+hotelNames.getString(1)+"</td>");
+                sb.append("<td>"+hotelNames.getString(2)+"</td>");
+                sb.append("<td>"+hotelNames.getInt(3)+"</td>");
                 sb.append("</tr>");
             }
             sb.append("</table>");

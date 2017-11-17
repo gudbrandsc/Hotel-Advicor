@@ -59,7 +59,14 @@ public class LoginRegisterServlet extends LoginBaseServlet {
 		out.println("\t</tr>");
 		out.println("\t<tr>");
 		out.println("\t\t<td>Password:</td>");
-		out.println("\t\t<td><input type=\"password\" name=\"pass\" size=\"30\"></td>");
+		out.println("\t\t<td><input type=\"password\" name=\"pass\" size=\"30\"");
+		out.println("pattern=\"(?=.*[a-z])(?=.*[A-Z])(?=.*[\\d])(?=.*[#?!@$%^&*-]).{8,}\"");
+		out.println("autofocus required title=\"- At least 8 characters");
+		out.println("- One upper- and one lowercase letter");
+		out.println("- One number from 0-9");
+		out.println("- One special character  #?!@$%^&*-");
+		out.println("\"></td>\"");
+
 		out.println("</tr>");
 		out.println("</table>");
 		out.println("<p><input type=\"submit\" value=\"Register\"></p>");

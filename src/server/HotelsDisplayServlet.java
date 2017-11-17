@@ -22,7 +22,7 @@ public class HotelsDisplayServlet extends LoginBaseServlet {
         String user = getUsername(request);
 
         if (user != null) {
-            prepareResponse("Welcome", response);
+            prepareResponse("View hotels", response);
             StringBuilder sb = new StringBuilder();
             PrintWriter out = response.getWriter();
             out.println(databaseHandler.getHotelNames());

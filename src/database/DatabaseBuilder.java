@@ -3,8 +3,9 @@ package database;
 public class DatabaseBuilder {
     protected static final UserHandler userHandler = UserHandler.getInstance();
     protected static final HotelInfoBuilder hotelInfoBuilder = HotelInfoBuilder.getInstance();
+    protected static final HotelReviewBuilder hotelReviewBuilder  = HotelReviewBuilder.getInstance();
 
     public static void main(String[] args){
-        System.out.println("Building tables...");
+        System.out.println("All tables are built");
     }
 }

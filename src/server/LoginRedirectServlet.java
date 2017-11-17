@@ -10,7 +10,7 @@ public class LoginRedirectServlet extends LoginBaseServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
         if (getUsername(request) != null) {
-            response.sendRedirect("/hotelInfo");
+            response.sendRedirect("/viewhotels");
         }
         else {
             response.sendRedirect("/login");

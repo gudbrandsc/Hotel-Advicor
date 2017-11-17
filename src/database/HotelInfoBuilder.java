@@ -176,7 +176,7 @@ public class HotelInfoBuilder {
                 String name = (String) res.get("f");
                 String city = (String) res.get("ci");
                 String state = (String) res.get("pr");
-                String address= (String) res.get("id");
+                String address= (String) res.get("ad");
                 float lat = Float.parseFloat((String) coords.get("lat"));
                 float lng = Float.parseFloat((String) coords.get("lng"));
                 //TODO Check if id is duplicate

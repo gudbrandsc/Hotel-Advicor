@@ -61,7 +61,7 @@ public class LoginUserServlet extends LoginBaseServlet {
                 // should eventually change this to something more secure
                 response.addCookie(new Cookie("login", "true"));
                 response.addCookie(new Cookie("name", user));
-                response.sendRedirect(response.encodeRedirectURL("/welcome"));
+                response.sendRedirect(response.encodeRedirectURL("/viewhotels"));
             }
             else {
                 response.addCookie(new Cookie("login", "false"));

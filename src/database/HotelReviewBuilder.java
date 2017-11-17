@@ -43,30 +43,29 @@ public class HotelReviewBuilder {
      * Used to determine if hotel_review  table exist.
      */
     private static final String CHECK_HOTEL_REVIEW_TABLE_SQL =
-            "SHOW TABLES LIKE 'hotel_review';";
+            "SHOW TABLES LIKE 'hotel_reviews';";
 
     /** Used to drop hotel_review table */
     private static final String DROP_HOTEL_REVIEW_TABLE_SQL =
-            "DROP TABLE hotel_review;";
+            "DROP TABLE hotel_reviews;";
 
     /**
      * Create table for hotel reviews
      */
     private static final String CREATE_HOTEL_REVIEW_TABLE_SQL =
-            "CREATE TABLE hotel_review (" +
-                    "hotelId VARCHAR(50) PRIMARY KEY," +
-                    "reviewId VARCHAR(100) NOT NULL, " +
-                    "intRating INTEGER (50) NOT NULL, " +
-                    "title VARCHAR(50) NOT NULL, " +
-                    "review VARCHAR(255) NOT NULL," +
-                    "submissiondate FLOAT(50) NOT NULL," +
-                    "username FLOAT(50) NOT NULL);";
+            "CREATE TABLE hotel_reviews (hotelId VARCHAR(50) NOT NULL," +
+                    "                    reviewId VARCHAR(100) PRIMARY KEY," +
+                    "                    intRating INTEGER (50) NOT NULL, " +
+                    "                    title VARCHAR(50) NOT NULL," +
+                    "                    review VARCHAR(3000) NOT NULL," +
+                    "                    submissiondate VARCHAR (255) NOT NULL," +
+                    "                    username VARCHAR(50) NOT NULL);";
 
     /**
      * Used to insert a new user into the database.
      */
     private static final String INSERT_HOTEL_SQL =
-            "INSERT INTO hotel_info (hotelId, hotelnames, city, state, address, latitude, longitude) " +
+            "INSERT INTO hotel_reviews (hotelId, reviewId, intRating, title, review, submissiondate, username) " +
                     "VALUES (?,?,?,?,?,?,?);";
 
 
@@ -81,15 +80,15 @@ public class HotelReviewBuilder {
      * Initializes a database handler for the Login example. Private constructor
      * forces all other classes to use singleton.
      */
-    private HotelInfoBuilder() {
+    private HotelReviewBuilder() {
         Status status = Status.OK;
         //List that contains all hotels files that u want in your db
-        ArrayList<String> list = new ArrayList<String>();
-        list.add("hotels.json");
+        ArrayList<Path> list = new ArrayList<Path>();
+        list.add(Paths.get("input/reviews"));
 
         try {
             db = new DatabaseConnector("database.properties");
-            status = db.testConnection() ? setupTables(list) : Status.CONNECTION_FAILED;
+            status = db.testConnection() ? setupTable(list) : Status.CONNECTION_FAILED;
         } catch (FileNotFoundException e) {
             status = Status.MISSING_CONFIG;
         } catch (IOException e) {
@@ -106,7 +105,7 @@ public class HotelReviewBuilder {
      *
      * @return instance of the database handler
      */
-    public static HotelInfoBuilder getInstance() {
+    public static HotelReviewBuilder getInstance() {
         return singleton;
     }
 
@@ -116,38 +115,34 @@ public class HotelReviewBuilder {
      *
      * @return {@link Status.OK} if table exists or create is successful
      */
-    private Status setupTables(ArrayList<String> hotelFiles) {
+    private Status setupTable(ArrayList<Path> hotelFiles) {
         Status status = Status.ERROR;
 
         try (
                 Connection connection = db.getConnection();
                 Statement statement = connection.createStatement();
         ) {
-            if (!statement.executeQuery(CHECK_HOTEL_INFO_TABLE_SQL).next()) {
-                log.debug("Creating hotel info table...");
+            if (!statement.executeQuery(CHECK_HOTEL_REVIEW_TABLE_SQL).next()) {
+                log.debug("Creating hotel review table...");
                 statement.executeUpdate(CREATE_HOTEL_REVIEW_TABLE_SQL);
-
             } else {
-                log.debug("Hotel info table found.");
-                statement.executeUpdate(DROP_HOTEL_INFO_TABLE_SQL);
-                log.debug("Deleting existing hotel info table.");
-                log.debug("Creating new hotel info table...");
+                log.debug("Hotel review table found.");
+                statement.executeUpdate(DROP_HOTEL_REVIEW_TABLE_SQL);
+                log.debug("Deleting existing hotel review table.");
+                log.debug("Creating new hotel review table...");
                 statement.executeUpdate(CREATE_HOTEL_REVIEW_TABLE_SQL);
             }
             // Check if create was successful
-            if (!statement.executeQuery(CHECK_HOTEL_INFO_TABLE_SQL).next()) {
-                log.debug("Hotel info table failed to be created");
+            if (!statement.executeQuery(CHECK_HOTEL_REVIEW_TABLE_SQL).next()) {
+                log.debug("Hotel review table failed to be created");
                 status = Status.CREATE_FAILED;
             }
             else {
-                log.debug("Hotel info table created");
+                log.debug("Hotel review table created");
                 status = Status.OK;
-                for (String f: hotelFiles) {
-                    Path curr = Paths.get("input/"+f);
-                    loadHotelInfo(curr.toAbsolutePath().toString());
+                for (Path p: hotelFiles) {
+                    loadReviews(p);
                 }
-
-
             }
         }
         catch (Exception ex) {
@@ -159,61 +154,6 @@ public class HotelReviewBuilder {
     }
 
 
-    /**
-     * Read the given json file with information about the hotels (check hotels.json to see the expected format)
-     * and load it into the appropriate data structure(s).
-     */
-    public void loadHotelInfo(String jsonFilename) {
-        Status status = Status.ERROR;
-        JSONParser parser = new JSONParser();
-        try {
-            Connection connection = db.getConnection();
-            JSONObject obj = (JSONObject) parser.parse(new FileReader(jsonFilename));
-            log.debug("Started loading data from " + jsonFilename);
-            JSONArray arr = (JSONArray) obj.get("sr");
-            Iterator<JSONObject> iterator = arr.iterator();
-            while (iterator.hasNext()) {
-                JSONObject res = iterator.next();
-                JSONObject coords = (JSONObject) res.get("ll");
-                String hotelId= (String) res.get("id");
-                String name = (String) res.get("f");
-                String city = (String) res.get("ci");
-                String state = (String) res.get("pr");
-                String address= (String) res.get("id");
-                float lat = Float.parseFloat((String) coords.get("lat"));
-                float lng = Float.parseFloat((String) coords.get("lng"));
-                //TODO Check if id is duplicate
-                try (
-                        PreparedStatement statement = connection.prepareStatement(INSERT_HOTEL_SQL);
-                ) {
-                    statement.setString(1, hotelId);
-                    statement.setString(2, name);
-                    statement.setString(3, city);
-                    statement.setString(4, state);
-                    statement.setString(5, address);
-                    statement.setFloat(6, lat);
-                    statement.setFloat(7, lng);
-                    statement.executeUpdate();
-                    status = Status.OK;
-                    log.debug("Hotel added");
-                }
-                catch (SQLException ex) {
-                    status = Status.SQL_EXCEPTION;
-                    log.debug(ex.getMessage(), ex);
-                }
-
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-    }
     /**
      * Find all review files in the given path (including in subfolders and subsubfolders etc),
      * read them, parse them using JSONSimple library, and
@@ -243,9 +183,10 @@ public class HotelReviewBuilder {
     }
     public boolean readJson(String jsonFilename) throws ParseException, IOException {
         JSONParser parser = new JSONParser();
+        Status status = Status.ERROR;
 
         try {
-
+            Connection connection = db.getConnection();
             JSONObject obj = (JSONObject)parser.parse(new FileReader(jsonFilename));
             JSONObject rewD = (JSONObject)obj.get("reviewDetails");
             JSONObject rewC = (JSONObject)rewD.get("reviewCollection");
@@ -267,21 +208,21 @@ public class HotelReviewBuilder {
                 int intRating = Integer.parseInt(rating);
                 String title = (String) res.get("title");
                 String review = (String) res.get("reviewText");
-                String data =(String) res.get("reviewSubmissionTime");
+                String date =(String) res.get("reviewSubmissionTime");
                 String username = (String) res.get("userNickname");
                 try (
                         PreparedStatement statement = connection.prepareStatement(INSERT_HOTEL_SQL);
                 ) {
                     statement.setString(1, hotelId);
-                    statement.setString(2, name);
-                    statement.setString(3, city);
-                    statement.setString(4, state);
-                    statement.setString(5, address);
-                    statement.setFloat(6, lat);
-                    statement.setFloat(7, lng);
+                    statement.setString(2, reviewId);
+                    statement.setInt(3, intRating);
+                    statement.setString(4, title);
+                    statement.setString(5, review);
+                    statement.setString(6, date);
+                    statement.setString(7, username);
                     statement.executeUpdate();
                     status = Status.OK;
-                    log.debug("Hotel added");
+                    log.debug("Review added");
                 }
                 catch (SQLException ex) {
                     status = Status.SQL_EXCEPTION;
@@ -290,11 +231,13 @@ public class HotelReviewBuilder {
             }
 
         } catch  (FileNotFoundException ex) {
-            System.out.println("Could not find file: " + jsonFilename );
+            log.debug("Could not find file: " + jsonFilename, ex.getMessage());
         } catch (ParseException e) {
-            System.out.println("Can not parse a given json file. " + jsonFilename);
+            log.debug("Can not parse a given json file. " + jsonFilename, e.getMessage());
         } catch (IOException e) {
-            System.out.println("General IO Exception in readJSON");
+            log.debug("General IO Exception in readJSON ", e.getMessage());
+        } catch (SQLException e) {
+            log.debug(e.getMessage());
         }
         return true;
     }
