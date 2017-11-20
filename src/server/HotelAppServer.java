@@ -5,7 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletHandler;
-
+//TODO javadoc
 public class HotelAppServer {
     protected static Logger log = LogManager.getLogger();
     private static int PORT = 8080;
@@ -23,6 +23,8 @@ public class HotelAppServer {
         handler.addServletWithMapping(AllReviewsServlet.class,  "/allreviews");
         handler.addServletWithMapping(UserReviewsServlet.class,  "/myreviews");
         handler.addServletWithMapping(AddReviewServlet.class,  "/addreview");
+        handler.addServletWithMapping(EditReviewServlet.class,  "/editreview");
+
         handler.addServletWithMapping(LoginRedirectServlet.class, "/*");
 
 

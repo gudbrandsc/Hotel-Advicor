@@ -14,11 +14,9 @@ import java.util.Properties;
 import java.util.Set;
 
 /**
- * This class is designed to test your database configuration. You need to have
- * a database.properties file with username, password, database, and hostname.
- * You must also have the tunnel to stargate.cs.usfca.edu running if you are
- * off-campus.
- * Example of Prof. Engle
+ * Class that is used to handle all requests to database. Requires
+ * database.properties file with username, password and configuration.
+
  */
 public class DatabaseConnector {
 
@@ -77,7 +75,7 @@ public class DatabaseConnector {
 	 */
 	private Properties loadConfig(String configPath)
 			throws FileNotFoundException, IOException {
-
+		//TODO make only one instance
 		// Specify which keys must be in properties file
 		Set<String> required = new HashSet<>();
 		required.add("username");
@@ -118,7 +116,7 @@ public class DatabaseConnector {
 	public Set<String> getTables(Connection db) throws SQLException {
 		Set<String> tables = new HashSet<>();
 
-		// Create statement and close when done.
+		// Create statement and close when done. TODO remove duplicate
 		// Database connection will be closed elsewhere.
 		try (Statement sql = db.createStatement();) {
 			if (sql.execute("SHOW TABLES;")) {
@@ -129,7 +127,6 @@ public class DatabaseConnector {
 				}
 			}
 		}
-
 		return tables;
 	}
 

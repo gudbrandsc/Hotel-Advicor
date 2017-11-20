@@ -16,10 +16,4 @@ public class LoginRedirectServlet extends LoginBaseServlet {
             response.sendRedirect("/login");
         }
     }
-    //TODO: Check if we need this
-    @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
-        doGet(request, response);
-    }
 }

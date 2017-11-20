@@ -31,6 +31,10 @@ public class UserReviewsServlet extends LoginBaseServlet {
             response.sendRedirect("/login");
         }
     }
+    /** The method that will process the form once it's submitted. Handles what button user clicks on.
+     * @param request
+     * @param response
+     * */
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
@@ -50,6 +54,9 @@ public class UserReviewsServlet extends LoginBaseServlet {
                 url = response.encodeRedirectURL(url);
                 response.sendRedirect(url);
             }
+        } else if(request.getParameter("edit")!=null){
+            String url = "/editreview?username="+username+"&hotelid="+request.getParameter("hotelid");
+            response.sendRedirect(response.encodeRedirectURL(url));
         }
 
     }

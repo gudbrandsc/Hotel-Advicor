@@ -13,7 +13,7 @@ public class AllReviewsServlet extends LoginBaseServlet{
 
 
     /**
-     * A method that gets executed when the get request is sent to the HotelAttractionsServlet
+     * A method that gets executed when the get request is sent to the AllReviewsServlet
      * @param request
      * @param response
      */
@@ -39,7 +39,7 @@ public class AllReviewsServlet extends LoginBaseServlet{
     }
 
     /**
-     * Method that prints hotel reviews to a specific hotel. Also handeles if get request miss param
+     * Method that prints all hotel reviews to a specific hotel.
      * @param request
      * @param response
      *
@@ -47,7 +47,7 @@ public class AllReviewsServlet extends LoginBaseServlet{
     private void printForm(HttpServletRequest request, HttpServletResponse response) throws IOException {
         PrintWriter out = response.getWriter();
         //Check if request matches pattern
-        if(request.getParameter("hotelid")!=null){
+        if(request.getParameter("hotelid")!=null){ //TODO remove
             String hotelid = request.getParameter("hotelid");
             //Check if there is a hotel with matching hotel id in the db
             if(!databaseHandler.getHotelIdName(request.getParameter("hotelid")).isEmpty()){
@@ -57,9 +57,14 @@ public class AllReviewsServlet extends LoginBaseServlet{
                         out.println("<p>Thank you, your review for hotel ");
                         out.println(databaseHandler.getHotelIdName(request.getParameter("hotelid"))+ " is now submitted.</p>");
                     }else if (request.getParameter("error") != null){
-                        out.println("<p>We where unfortunately not able to add your review at this time.");
-                        out.println(databaseHandler.getHotelIdName("Please try again later</p>"));
+                        out.println("<p>We where unfortunately not able to handle your request at this time ");
+                        out.println("Pleas try again later</p>");
+                    }
+                    if(databaseHandler.checkForExistingUserReview(hotelid,getUsername(request))){
+                        out.println("<p><a href=\"/editreview?username="+getUsername(request)+"&hotelid="+ hotelid+"\">Edit your review</a></p>" );
 
+                    }else{
+                        out.println("<p><a href=\"/addreview?hotelid="+ hotelid+"\">Add review</a></p>" );
                     }
                     out.println(databaseHandler.hotelIdReviewDisplayer(hotelid));
                 } else {
@@ -74,3 +79,6 @@ public class AllReviewsServlet extends LoginBaseServlet{
         }
     }
 }
+
+
+//TODO add search field

@@ -209,8 +209,6 @@ public class HotelInfoBuilder {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
-
 }
 

@@ -50,7 +50,10 @@ public class LoginUserServlet extends LoginBaseServlet {
         printForm(out);
         finishResponse(response);
     }
-
+    /** The method that will process the form once it's submitted
+     * @param request
+     * @param response
+     * */
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) {
         String user = request.getParameter("user");

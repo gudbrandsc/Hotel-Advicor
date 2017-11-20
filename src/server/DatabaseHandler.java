@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import org.apache.logging.log4j.LogManager;
@@ -34,7 +36,7 @@ public class DatabaseHandler {
                     "LEFT JOIN hotel_reviews ON hotel_info.hotelId = hotel_reviews.hotelId " +
                     "ORDER BY hotelnames;";
 
-    /** Used to insert a new user into the database. */
+    /** Used to register a new user in the database. */
     private static final String REGISTER_SQL =
             "INSERT INTO login_users (username, password, usersalt) " +
                     "VALUES (?, ?, ?);";
@@ -60,28 +62,39 @@ public class DatabaseHandler {
     private static final String GET_HOTEL_REVIEWS_HOTELID_SQL =
             "SELECT * FROM hotel_reviews WHERE hotelId=?;";
 
-    /** Used to get all reviews created by user*/
+    /** Used to get all reviews created by a specific user*/
     private static final String GET_HOTEL_REVIEWS_USERNAME_SQL =
             "SELECT * FROM hotel_reviews WHERE username=?;";
 
-
+    /*** Used to get a hotel name using hotelid.*/
     private static final String GET_HOTEL_NAME_SQL =
             "SELECT hotelnames FROM hotel_info WHERE hotelId=? ORDER BY hotelId DESC LIMIT 1";
 
-    /**
-     * Used to insert a new user into the database.
-     */
+    /*** Used to insert a new review for a hotel.*/
     private static final String INSERT_REVIEW_SQL =
             "INSERT INTO hotel_reviews (hotelId, reviewId, intRating, title, review, submissiondate, username) " +
                     "VALUES (?,?,?,?,?,?,?);";
-    /**
-     * Used to insert a new user into the database.
-     */
+
+    /** Used to delete a hotel review.*/
     private static final String REMOVE_HOTEL_REVIEW_SQL =
             "DELETE FROM hotel_reviews WHERE reviewId=?;";
 
+    /** Used to update a review .*/
+    private static final String UPDATE_HOTEL_REVIEW_SQL =
+            "UPDATE hotel_reviews SET title = ?, review = ?, intRating =?, submissiondate=? WHERE reviewId=?;";
+
+    /** Used to get all info of a hotel review.*/
+    private static final String GET_HOTEL_REVIEW_INFO_BY_KEY_SQL =
+            "SELECT * FROM hotel_reviews where reviewID=?;";
+
+
+
+
+
 
     /** Used to configure connection to database. */
+    //TODO     private database.DatabaseConnector db;
+
     private DatabaseConnector db;
 
     /** Used to generate password hash salt for user. */
@@ -406,7 +419,7 @@ public class DatabaseHandler {
      */
     public Status removeUser(String username, String password) {
         Status status = Status.ERROR;
-
+        //TODO check if this can be one method
         log.debug("Removing user " + username + ".");
 
         try (
@@ -426,11 +439,10 @@ public class DatabaseHandler {
         return status;
     }
     /**
-     * Removes a user from the database if the username and password are
-     * provided correctly.
+     * Removes a hotel review for a user.
      *
-     * @param username - username to remove
-     * @param hotelId - password of user
+     * @param username - username connected to review
+     * @param hotelId - hotel id that is  connected to review
      * @return {@link Status.OK} if removal successful
      */
     public Status removeReview(String username, String hotelId) {
@@ -453,8 +465,43 @@ public class DatabaseHandler {
         return status;
     }
     /**
-     * Method that returns info about hotel names
-     * @return ResultSet*/
+     * Used to edit an existing hotel review
+     *
+     * @param username - username for the that submitted review
+     * @param hotelId - Hotel id connected to the hotel review
+     * @return {@link Status.OK} if removal successful
+     */
+    public Map<String, String> editReview(String username, String hotelId) {
+        Status status = Status.ERROR;
+        Map<String,String> reviewsmap = new HashMap<String, String>();
+        String primkey=username+hotelId;
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(GET_HOTEL_REVIEW_INFO_BY_KEY_SQL);
+        ) {
+            statement.setString(1,primkey);
+            log.debug("Editing review " +primkey+".");
+            ResultSet rs = statement.executeQuery();
+            while(rs.next()) {
+                reviewsmap.put("hotelId",rs.getString(1));
+                reviewsmap.put("reviewId",rs.getString(2));
+                reviewsmap.put("rating",rs.getString(3));
+                reviewsmap.put("title",rs.getString(4));
+                reviewsmap.put("review",rs.getString(5));
+                reviewsmap.put("subDate",rs.getString(6));
+                reviewsmap.put("username",rs.getString(7));
+                log.debug(reviewsmap.isEmpty());
+            }
+        }
+        catch (Exception ex) {
+            log.debug(status, ex);
+        }
+        return reviewsmap;
+    }
+    /**
+     * Method used to display information about all hotels
+     * @return A html table string with hotel name, address and rating
+     * */
     public String hotelInfoDisplayer(){
         Status status = Status.ERROR;
 
@@ -493,7 +540,6 @@ public class DatabaseHandler {
      * Tests if a hotel has any reviews
      *
      * @return true if set is not empty
-     * @throws SQLException
      */
     public boolean checkHotelIdReviewSet(String hotelId) {
         Boolean exist=null;
@@ -514,7 +560,6 @@ public class DatabaseHandler {
      * Tests if a user have any reviews
      *
      * @return true if set is not empty
-     * @throws SQLException
      */
     public boolean checkUsernameReviewSet(String username) {
         Boolean exist=null;
@@ -531,10 +576,9 @@ public class DatabaseHandler {
         return exist;
     }
     /**
-     * Tests if a hotel has any reviews
+     * Used to get the name of a hotel connected to hotel id
      *
-     * @return true if set is not empty
-     * @throws SQLException
+     * @return hotel name
      */
     public String getHotelIdName(String hotelId) {
         String hotelName="";
@@ -555,8 +599,12 @@ public class DatabaseHandler {
         return hotelName;
     }
     /**
-     * Method that returns hotel reviews using hotelid
-     * @return ResultSet*/
+     * Method used to build a html string containing all reviews for a hotel
+     * using a hotel id
+     * @param hotelId
+     * @return A html table string with hotel name, address and rating
+     *
+     * */
     public String hotelIdReviewDisplayer(String hotelId) {
         StringBuilder sb = new StringBuilder();
         try (
@@ -583,13 +631,11 @@ public class DatabaseHandler {
         return sb.toString();
     }
 
-
-
-
-
     /**
-     * Method that returns hotel reviews using hotelid
-     * @return ResultSet*/
+     * Method used to build a html string containing all reviews posted by a user
+     * @param username
+     * @return ResultSet
+     * */
     public String usernameReviewDisplayer(String username) {
         StringBuilder sb = new StringBuilder();
 
@@ -616,6 +662,7 @@ public class DatabaseHandler {
             }
         return sb.toString();
     }
+
     /**
      * Builds a html string of a review
      * @return html string*/
@@ -632,7 +679,7 @@ public class DatabaseHandler {
         sb.append("</div>");
         if(userReview){
             log.debug(title+ ": " +hotelId);
-            //TODO make inline
+            //TODO make inline and move to user review servlet
             sb.append(" <form action = \"/myreviews?username="+username+"\" method = \"post\">");
             sb.append("<input type=\"hidden\" value=\""+hotelId+"\" name=\"hotelid\" />\n");
             sb.append("<input type=\"submit\" name=\"edit\" value=\"Edit\" />");
@@ -642,7 +689,17 @@ public class DatabaseHandler {
         sb.append("</div>");
         return sb.toString();
     }
-
+    // TODO make most methods return status
+    /**
+     * Used to insert a hotel review to the database
+     * @param hotelId
+     * @param rating
+     * @param title
+     * @param review
+     * @param date
+     * @param username
+     * @return
+     */
 
     public Status addReview(String hotelId,int rating, String title, String review, String date, String username){
         //TODO check if user all ready have review for that hotel
@@ -668,6 +725,56 @@ public class DatabaseHandler {
         }
         return status;
     }
+    /**
+     * Used to update a hotel review to the database
+     * @param hotelId
+     * @param rating
+     * @param title
+     * @param review
+     * @param date
+     * @param username
+     * @return
+     */
 
+    public Status editReview(String hotelId,int rating, String title, String review, String date, String username){
+        Status status = Status.ERROR;
+
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(UPDATE_HOTEL_REVIEW_SQL)
+        ) {
+            statement.setString(1,title);
+            statement.setString(2,review);
+            statement.setInt(3,rating);
+            statement.setString(4,date);
+            statement.setString(5,username+hotelId);
+            log.debug(statement.toString());
+            statement.executeUpdate();
+            status = Status.OK;
+        }
+        catch (SQLException e) {
+            status = Status.SQL_EXCEPTION;
+            log.debug(e.getMessage(), e);
+        }
+        return status;
+    }
+
+    /**
+     *Check if user has a existing review for hotel
+     */
+
+    public boolean checkForExistingUserReview(String hotelId, String username){
+        Boolean exist=null;
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(GET_HOTEL_REVIEW_INFO_BY_KEY_SQL)
+        ) {
+            statement.setString(1,username+hotelId);
+            exist= statement.executeQuery().next();
+        }
+        catch (SQLException e) {
+            log.debug(e.getMessage(), e);
+        }
+        return exist;
+    }
 }
-
