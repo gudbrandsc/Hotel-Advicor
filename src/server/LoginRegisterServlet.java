@@ -52,7 +52,6 @@ public class LoginRegisterServlet extends LoginBaseServlet {
 
 	private void printForm(PrintWriter out) {
 		assert out != null;
-		//TODO add exstra input and check that the two input matches before post
 		out.println("<h3>Register</h3>");
 		out.println("<form action=\"/register\" method=\"post\">");
 		out.println("<table border=\"0\">");

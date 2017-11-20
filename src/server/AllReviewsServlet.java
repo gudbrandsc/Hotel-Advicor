@@ -22,11 +22,6 @@ public class AllReviewsServlet extends LoginBaseServlet{
             throws IOException {
 
         if (getUsername(request) != null) {
-            if(request.getParameter("hotelid")==null){
-                log.debug("Missing hotelid in get request");
-                response.sendRedirect("/viewhotels");
-            }
-
             prepareResponse("Reviews", response);
             PrintWriter out = response.getWriter();
             out.println("<button><a href=\"/login?logout\">Logout</a></button>");
@@ -47,38 +42,31 @@ public class AllReviewsServlet extends LoginBaseServlet{
     private void printForm(HttpServletRequest request, HttpServletResponse response) throws IOException {
         PrintWriter out = response.getWriter();
         //Check if request matches pattern
-        if(request.getParameter("hotelid")!=null){ //TODO remove
-            String hotelid = request.getParameter("hotelid");
-            //Check if there is a hotel with matching hotel id in the db
-            if(!databaseHandler.getHotelIdName(request.getParameter("hotelid")).isEmpty()){
-                //Check if hotel has any reviews
-                if (databaseHandler.checkHotelIdReviewSet(hotelid)){
-                    if (request.getParameter("success") != null) {
-                        out.println("<p>Thank you, your review for hotel ");
-                        out.println(databaseHandler.getHotelIdName(request.getParameter("hotelid"))+ " is now submitted.</p>");
-                    }else if (request.getParameter("error") != null){
-                        out.println("<p>We where unfortunately not able to handle your request at this time ");
-                        out.println("Pleas try again later</p>");
-                    }
-                    if(databaseHandler.checkForExistingUserReview(hotelid,getUsername(request))){
-                        out.println("<p><a href=\"/editreview?username="+getUsername(request)+"&hotelid="+ hotelid+"\">Edit your review</a></p>" );
-
-                    }else{
-                        out.println("<p><a href=\"/addreview?hotelid="+ hotelid+"\">Add review</a></p>" );
-                    }
-                    out.println(databaseHandler.hotelIdReviewDisplayer(hotelid));
-                } else {
-                    out.println("<p>There is unfortunately no reviews for " + databaseHandler.getHotelIdName(hotelid)+"</p>");
-                    out.println("<p>Be the first one to give it a review:<a href=\"/addreview?hotelid="+ hotelid+"\">Add review</a></p>" );
+        String hotelid = request.getParameter("hotelid");
+        //Check if there is a hotel with matching hotel id in the db
+        if(!databaseHandler.getHotelIdName(request.getParameter("hotelid")).isEmpty()){
+            //Check if hotel has any reviews
+            if (databaseHandler.checkHotelIdReviewSet(hotelid)){
+                if (request.getParameter("success") != null) {
+                    out.println("<p>Thank you, your review for hotel ");
+                    out.println(databaseHandler.getHotelIdName(request.getParameter("hotelid"))+ " is now submitted.</p>");
+                }else if (request.getParameter("error") != null){
+                    out.println("<p>We where unfortunately not able to handle your request at this time ");
+                    out.println("Pleas try again later</p>");
                 }
-            }else{
-                out.println("<p>There is unfortunately no hotel with this id</p>");
+                if(databaseHandler.checkForExistingUserReview(hotelid,getUsername(request))){
+                    out.println("<p><a href=\"/editreview?username="+getUsername(request)+"&hotelid="+ hotelid+"\">Edit your review</a></p>" );
+                }else{
+                    out.println("<p><a href=\"/addreview?hotelid="+ hotelid+"\">Add review</a></p>" );
+                }
+                out.println(databaseHandler.hotelIdReviewDisplayer(hotelid));
+            } else {
+                out.println("<p>There is unfortunately no reviews for " + databaseHandler.getHotelIdName(hotelid)+"</p>");
+                out.println("<p>Be the first one to give it a review:<a href=\"/addreview?hotelid="+ hotelid+"\">Add review</a></p>" );
             }
         }else{
-            out.println("Invalid request");
+            out.println("<p>There is unfortunately no hotel with this id</p>");
         }
     }
 }
 
-
-//TODO add search field

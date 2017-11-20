@@ -1,4 +1,5 @@
 package server;
+import database.DatabaseConnector;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -88,12 +89,24 @@ public class DatabaseHandler {
             "SELECT * FROM hotel_reviews where reviewID=?;";
 
 
+    /** Used to get all info of a hotel review.*/
+    private static final String GET_HOTEL_LATITUDE_SQL =
+            "SELECT latitude FROM hotel_info where hotelId=?;";
 
+    /** Used to get longitude for a hotel.*/
+    private static final String GET_HOTEL_LONGITUDE_SQL =
+            "SELECT longitude FROM hotel_info where hotelId=?;";
 
+    /** Used to get longitude for a hotel.*/
+    private static final String GET_HOTEL_CITY_SQL =
+            "SELECT longitude FROM hotel_info where hotelId=?;";
 
+    /** Used to get longitude for a hotel.*/
+    private static final String CHECK_HOTEL_EXIST_SQL =
+            "SELECT * FROM hotel_info where hotelId=?;";
 
     /** Used to configure connection to database. */
-    //TODO     private database.DatabaseConnector db;
+    //TODO     private DatabaseConnector db;
 
     private DatabaseConnector db;
 
@@ -660,6 +673,7 @@ public class DatabaseHandler {
             } catch (SQLException e) {
                 log.debug(e.getMessage(), e);
             }
+            log.debug("Building string with all reviews");
         return sb.toString();
     }
 
@@ -679,7 +693,6 @@ public class DatabaseHandler {
         sb.append("</div>");
         if(userReview){
             log.debug(title+ ": " +hotelId);
-            //TODO make inline and move to user review servlet
             sb.append(" <form action = \"/myreviews?username="+username+"\" method = \"post\">");
             sb.append("<input type=\"hidden\" value=\""+hotelId+"\" name=\"hotelid\" />\n");
             sb.append("<input type=\"submit\" name=\"edit\" value=\"Edit\" />");
@@ -702,7 +715,6 @@ public class DatabaseHandler {
      */
 
     public Status addReview(String hotelId,int rating, String title, String review, String date, String username){
-        //TODO check if user all ready have review for that hotel
         Status status = Status.ERROR;
 
         try (
@@ -723,6 +735,7 @@ public class DatabaseHandler {
             status = Status.SQL_EXCEPTION;
             log.debug(e.getMessage(), e);
         }
+        log.debug("Review was added status: " + status);
         return status;
     }
     /**
@@ -748,7 +761,6 @@ public class DatabaseHandler {
             statement.setInt(3,rating);
             statement.setString(4,date);
             statement.setString(5,username+hotelId);
-            log.debug(statement.toString());
             statement.executeUpdate();
             status = Status.OK;
         }
@@ -756,11 +768,14 @@ public class DatabaseHandler {
             status = Status.SQL_EXCEPTION;
             log.debug(e.getMessage(), e);
         }
+        log.debug("Review was updated status: " + status);
         return status;
     }
 
     /**
      *Check if user has a existing review for hotel
+     * @param hotelId
+     * @param username
      */
 
     public boolean checkForExistingUserReview(String hotelId, String username){
@@ -770,6 +785,92 @@ public class DatabaseHandler {
                 PreparedStatement statement = connection.prepareStatement(GET_HOTEL_REVIEW_INFO_BY_KEY_SQL)
         ) {
             statement.setString(1,username+hotelId);
+            exist= statement.executeQuery().next();
+        }
+        catch (SQLException e) {
+            log.debug(e.getMessage(), e);
+        }
+        log.debug("Review with primary key "+username+hotelId+" exist: "+ exist);
+        return exist;
+    }
+
+
+    /**
+     * Get lat for a hotel
+     * */
+    public String getHotelLat(String hotelId){
+        String latitude="";
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(GET_HOTEL_LATITUDE_SQL)
+        ) {
+            statement.setString(1,hotelId);
+           ResultSet set = statement.executeQuery();
+            while(set.next()){
+                latitude=set.getString(1);
+            }
+        }
+        catch (SQLException e) {
+            log.debug(e.getMessage(), e);
+        }
+        return latitude;
+    }
+
+    /**
+     * Get lot for a hotel
+     * */
+    public String getHotelLon(String hotelId){
+        String longitude="";
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(GET_HOTEL_LONGITUDE_SQL)
+        ) {
+            statement.setString(1,hotelId);
+            ResultSet set = statement.executeQuery();
+            while(set.next()){
+                longitude=set.getString(1);
+            }
+        }
+        catch (SQLException e) {
+            log.debug(e.getMessage(), e);
+        }
+        return longitude;
+    }
+    /**
+     * Get city for a hotel
+     * */
+    public String getHotelCity(String hotelId){
+        String city="";
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(GET_HOTEL_CITY_SQL)
+        ) {
+            statement.setString(1,hotelId);
+            ResultSet set = statement.executeQuery();
+            while(set.next()){
+                city=set.getString(1);
+            }
+        }
+        catch (SQLException e) {
+            log.debug(e.getMessage(), e);
+        }
+        return city;
+    }
+
+
+    /**
+     *Check if user has a existing review for hotel
+     * @param hotelId
+     *
+     */
+
+    public boolean checkIfHotelExist(String hotelId){
+        Boolean exist=null;
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(CHECK_HOTEL_EXIST_SQL)
+        ) {
+            statement.setString(1,hotelId);
             exist= statement.executeQuery().next();
         }
         catch (SQLException e) {

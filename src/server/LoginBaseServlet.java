@@ -39,13 +39,6 @@ public class LoginBaseServlet extends HttpServlet {
 			writer.printf("\t<meta charset=\"utf-8\">%n");
 			writer.printf("</head>%n%n");
 			writer.printf("<body>%n%n");
-			/*writer.printf("<ul>");
-			writer.printf(" <li><a href=\"/viewHotels\">View Hotels</a></li>");
-			writer.printf(" <li><a href=\"/reviews\">Reviews</a></li>");
-			writer.printf(" <li><a href=\"default.asp\">Home</a></li>");
-			writer.printf(" </ul>");*/
-
-
 
 		}
 		catch (IOException ex) {
@@ -112,31 +105,6 @@ public class LoginBaseServlet extends HttpServlet {
 		}
 	}
 
-	protected void clearCookie(String cookieName, HttpServletResponse response) {
-		Cookie cookie = new Cookie(cookieName, null);
-		cookie.setMaxAge(0);
-		response.addCookie(cookie);
-	}
-
-	protected void debugCookies(HttpServletRequest request) {
-		Cookie[] cookies = request.getCookies();
-
-		if(cookies == null) {
-			log.info("Saved Cookies: []");
-		}
-		else {
-			String[] names = new String[cookies.length];
-
-			for(int i = 0; i < names.length; i++) {
-				names[i] = String.format("(%s, %s, %d)",
-						cookies[i].getName(),
-						cookies[i].getValue(),
-						cookies[i].getMaxAge());
-			}
-
-			log.info("Saved Cookies: " + Arrays.toString(names));
-		}
-	}
 
 	protected String getStatusMessage(String errorName) {
 		Status status = null;

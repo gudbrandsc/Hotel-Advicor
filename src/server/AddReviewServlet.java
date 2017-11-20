@@ -16,11 +16,17 @@ public class AddReviewServlet extends LoginBaseServlet {
             throws IOException {
 
         if (getUsername(request) != null) {
-            prepareResponse("Add review", response);
-            PrintWriter out = response.getWriter();
-            out.println("<button><a href=\"/login?logout\">Logout</a></button>");
-            printForm(request,out);
-            finishResponse(response);
+            String hotelId = request.getParameter("hotelid");
+            //Check if user have a existing review and redirect, else print add review form
+            if(databaseHandler.checkForExistingUserReview(hotelId,getUsername(request))){
+                response.sendRedirect("/editreview?username="+getUsername(request)+"&hotelid="+hotelId);
+            }else{
+                prepareResponse("Add review", response);
+                PrintWriter out = response.getWriter();
+                out.println("<button><a href=\"/login?logout\">Logout</a></button>");
+                printForm(request,out);
+                finishResponse(response);
+            }
         }
         else {
             response.sendRedirect("/login");
@@ -74,11 +80,11 @@ public class AddReviewServlet extends LoginBaseServlet {
         out.println("border-width: thin;\">"+databaseHandler.getHotelIdName(hotelid)+"</h6>");
         out.println("<form action=\"/addreview?hotelid="+hotelid+"\" method=\"post\">");
         out.println("<p style=\"text-align: center;\">Title:</p>");
-        out.println("<input placeholder=\"Title\" type=\"text\" name=\"title\" size=\"50\">");
+        out.println("<input required placeholder=\"Title\" type=\"text\" name=\"title\" size=\"50\">");
         out.println("<p style=\"text-align: center;\">Rating:</p>");
-        out.println("<input placeholder=\"Enter your rating from 1-6...\" type=\"text\" name=\"rating\" size=\"50\"pattern=\"[0-6]{1}\" autofocus required title=\"- Must be a number between 1-6\">");
+        out.println("<input required placeholder=\"Enter your rating from 1-6...\" type=\"text\" name=\"rating\" size=\"50\"pattern=\"[0-6]{1}\" autofocus required title=\"- Must be a number between 1-6\">");
         out.println("<p style=\"text-align: center;\">Review:</p>");
-        out.println("<textarea placeholder=\"Write your review...\" rows=\"5\" type=\"text\" name=\"review\" maxlength=\"3000\" ");
+        out.println("<textarea required placeholder=\"Write your review...\" rows=\"5\" type=\"text\" name=\"review\" maxlength=\"3000\" ");
         out.println("style=\"width:-webkit-fill-available; padding: 6px 12px;border: 1px solid #ccc; border-radius: 4px;\"></textArea>");
         out.println("<input type=\"hidden\" value=\""+hotelid+"\" name=\"hotelid\" />\n");
         out.println("<input type=\"hidden\" value=\""+getDate()+"\" name=\"date\" />\n");

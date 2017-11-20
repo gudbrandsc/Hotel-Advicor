@@ -17,15 +17,17 @@ public class UserReviewsServlet extends LoginBaseServlet {
             throws IOException {
 
         if (getUsername(request) != null) {
+            PrintWriter out = response.getWriter();
             if(request.getParameter("username")==null){
                 log.debug("Missing username in get request");
                 response.sendRedirect("myreviews?username="+getUsername(request));
+            }else{
+                prepareResponse("My reviews", response);
+                out.println("<button><a href=\"/login?logout\">Logout</a></button>");
+                printForm(request,response);
+                finishResponse(response);
             }
-            prepareResponse("My reviews", response);
-            PrintWriter out = response.getWriter();
-            out.println("<button><a href=\"/login?logout\">Logout</a></button>");
-            printForm(request,response);
-            finishResponse(response);
+
         }
         else {
             response.sendRedirect("/login");
@@ -45,12 +47,12 @@ public class UserReviewsServlet extends LoginBaseServlet {
 
             if(status == Status.OK) {
                 log.debug("Review successfully removed");
-                String url = "/myreviews?username="+username+"&success=true";
+                String url = "/myreviews?username="+username+"&delete=true";
                 response.sendRedirect(response.encodeRedirectURL(url));
             }
             else {
                 log.debug("Not able to remove review:" + status);
-                String url = "/myreviews?username="+username+"&error=true";
+                String url = "/myreviews?username="+username+"&delete=true";
                 url = response.encodeRedirectURL(url);
                 response.sendRedirect(url);
             }
@@ -77,7 +79,6 @@ public class UserReviewsServlet extends LoginBaseServlet {
                 log.debug(getUsername(request));
                 //Check if currant user has any reviews
                 if(databaseHandler.checkUsernameReviewSet(getUsername(request))){
-                    //TODO get hotelId somehow
                     out.println(databaseHandler.usernameReviewDisplayer(username));
                 }else {
                     out.println("<p>You don't have any reviews yet</p>");

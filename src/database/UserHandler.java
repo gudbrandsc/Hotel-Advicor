@@ -1,6 +1,5 @@
 package database;
 
-import server.DatabaseConnector;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
@@ -41,7 +40,7 @@ public class UserHandler {
 
 
     /** Used to configure connection to database. */
-    private DatabaseConnector db;
+    private database.DatabaseConnector db;
 
     /** Used to generate password hash salt for user. */
     private Random random;
@@ -56,7 +55,7 @@ public class UserHandler {
 
         try {
             // TODO Change to "database.properties" or whatever your file is called
-            db = new DatabaseConnector("database.properties");
+            db = new database.DatabaseConnector("database.properties");
             status = db.testConnection() ? setupTables() : Status.CONNECTION_FAILED;
         }
         catch (FileNotFoundException e) {

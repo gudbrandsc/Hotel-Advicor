@@ -20,7 +20,10 @@ public class EditReviewServlet extends LoginBaseServlet{
             prepareResponse("Edit review", response);
             PrintWriter out = response.getWriter();
             out.println("<button><a href=\"/login?logout\">Logout</a></button>");
-            printForm(request,out);
+            if(getUsername(request).equals(request.getParameter("username"))){
+                printForm(request,out);
+            }else
+                out.println("<p>Invalid username in request<p/>");
             finishResponse(response);
         }
         else {

@@ -8,7 +8,6 @@ import java.nio.file.Paths;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Random;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -70,7 +69,7 @@ public class HotelInfoBuilder {
     /**
      * Used to configure connection to database.
      */
-    private DatabaseConnector db;
+    private database.DatabaseConnector db;
 
 
 
@@ -85,7 +84,7 @@ public class HotelInfoBuilder {
         list.add("hotels.json");
 
         try {
-            db = new DatabaseConnector("database.properties");
+            db = new database.DatabaseConnector("database.properties");
             status = db.testConnection() ? setupTables(list) : Status.CONNECTION_FAILED;
         } catch (FileNotFoundException e) {
             status = Status.MISSING_CONFIG;
