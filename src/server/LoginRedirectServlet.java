@@ -5,7 +5,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class LoginRedirectServlet extends LoginBaseServlet {
-
+    /**
+     * A method that gets executed when a get request is sent to the LoginRedirectServlet.
+     * @param request
+     * @param response
+     * @throws IOException
+     */
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException {

@@ -95,7 +95,7 @@ public class SetHotelRating {
                 log.debug("Setting rating for hotelid: "+ set.getString(1));
                 calculateAvgRating(set.getString(1),connection);
             }
-            status = status.OK;
+            status = Status.OK;
         }
         catch (SQLException e) {
             status = Status.SQL_EXCEPTION;

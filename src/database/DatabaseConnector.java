@@ -34,7 +34,7 @@ public class DatabaseConnector {
 	 * @throws IOException if unable to properly parse properties file
 	 * @throws FileNotFoundException if properties file not found
 	 */
-	public DatabaseConnector() throws FileNotFoundException, IOException {
+	public DatabaseConnector() throws IOException {
 		this("database.properties");
 	}
 
@@ -46,7 +46,7 @@ public class DatabaseConnector {
 	 * @throws FileNotFoundException if properties file not found
 	 */
 	public DatabaseConnector(String configPath)
-			throws FileNotFoundException, IOException {
+			throws IOException {
 
 		// Try to load the configuration from file
 		Properties config = loadConfig(configPath);
@@ -72,7 +72,7 @@ public class DatabaseConnector {
 	 * @throws FileNotFoundException if properties file not found
 	 */
 	private Properties loadConfig(String configPath)
-			throws FileNotFoundException, IOException {
+			throws IOException {
 
 		// Specify which keys must be in properties file
 		Set<String> required = new HashSet<>();
@@ -116,7 +116,7 @@ public class DatabaseConnector {
 
 		// Create statement and close when done.
 		// Database connection will be closed elsewhere.
-		try (Statement sql = db.createStatement();) {
+		try (Statement sql = db.createStatement()) {
 			if (sql.execute("SHOW TABLES;")) {
 				ResultSet results = sql.getResultSet();
 
@@ -139,7 +139,7 @@ public class DatabaseConnector {
 		boolean okay = false;
 
 		// Open database connection and close when done
-		try (Connection db = getConnection();) {
+		try (Connection db = getConnection()) {
 			//System.out.println("Executing SHOW TABLES...");
 			Set<String> tables = getTables(db);
 

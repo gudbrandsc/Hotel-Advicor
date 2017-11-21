@@ -26,11 +26,15 @@ public enum Status {
 	INVALID_LOGIN("Invalid username and/or password."),
 	INVALID_USER("User does not exist."),
 	DUPLICATE_USER("User with that username already exists."),
-	SQL_EXCEPTION("Unable to execute SQL statement.");
+	SQL_EXCEPTION("Unable to execute SQL statement."),
+	INVALID_REVIEWID("There is no review with that reviewId."),
+	NO_USERREVIEWS("The user does not have any reviews yet"),
+	NO_HOTELREVIEWS("Hotel does not have any reviews yet"),
+	INVALID_HOTELID("No hotel related to hotelid.");
 
 	private final String message;
 
-	private Status(String message) {
+	Status(String message) {
 		this.message = message;
 	}
 

@@ -14,7 +14,13 @@ import javax.servlet.http.HttpServletResponse;
  */
 @SuppressWarnings("serial")
 public class LoginUserServlet extends LoginBaseServlet {
+    /**
+     * A method that gets executed when the get request is sent to the LoginUserServlet
+     * @param request
+     * @param response
+     * @throws IOException
 
+     */
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         prepareResponse("Login", response);
@@ -49,7 +55,7 @@ public class LoginUserServlet extends LoginBaseServlet {
         printForm(out);
         finishResponse(response);
     }
-    /** The method that will process the form once it's submitted
+    /** The method that will handle post requests sent to LoginUserServlet
      * @param request
      * @param response
      * */
@@ -57,8 +63,6 @@ public class LoginUserServlet extends LoginBaseServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) {
         String user = request.getParameter("user");
         String pass = request.getParameter("pass");
-
-        //
         Status status = databaseHandler.authenticateUser(user, pass);
 
         try {
@@ -78,7 +82,10 @@ public class LoginUserServlet extends LoginBaseServlet {
             log.error("Unable to process login form.", ex);
         }
     }
-
+    /**
+     * A method that is used to print the login form.
+     * @param out
+     */
     private void printForm(PrintWriter out) {
         assert out != null;
         out.println("<h3>Login</h3>");

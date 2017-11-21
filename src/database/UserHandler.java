@@ -90,7 +90,7 @@ public class UserHandler {
 
         try (
                 Connection connection = db.getConnection();
-                Statement statement = connection.createStatement();
+                Statement statement = connection.createStatement()
         ) {
             if (!statement.executeQuery(CHECK_LOGIN_USER_TABLE_SQL).next()) {
                 // Table missing, must create

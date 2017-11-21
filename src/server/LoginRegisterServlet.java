@@ -5,11 +5,19 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-// Example of Prof. Engle
 
+/**
+ * Servlet that handles all user registration requests
+ */
 @SuppressWarnings("serial")
 public class LoginRegisterServlet extends LoginBaseServlet {
 
+	/**
+	 * A method that gets executed when a get request is sent to the LoginRegisterServlet
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 */
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
@@ -27,6 +35,7 @@ public class LoginRegisterServlet extends LoginBaseServlet {
 		printForm(out);
 		finishResponse(response);
 	}
+
 	/** The method that will process the form once it's submitted
 	 * @param request
 	 * @param response
@@ -49,7 +58,10 @@ public class LoginRegisterServlet extends LoginBaseServlet {
 			response.sendRedirect(url);
 		}
 	}
-
+	/**
+	 * A method that is used to print the registration form.
+	 * @param out
+	 */
 	private void printForm(PrintWriter out) {
 		assert out != null;
 		out.println("<h3>Register</h3>");
@@ -57,14 +69,15 @@ public class LoginRegisterServlet extends LoginBaseServlet {
 		out.println("<table border=\"0\">");
 		out.println("<tr>");
 		out.println("<td>Usename:</td>");
-		out.println("<td><input placeholder=\"Enter username\" type=\"text\" name=\"user\" size=\"20\" ");
-		out.println("pattern=\"[a-zA-Z0-9_-]{5,20}\"></td>");
-		out.println("</tr>");
+		out.println("<td><input autofocus required placeholder=\"Enter username\" type=\"text\" name=\"user\"");
+		out.println("pattern=\"[a-zA-Z0-9_-]{5,20}\" title=\"- Length 5-20 characters ");
+		out.println("- Upper and lowercase letters");
+		out.println("- numbers and special character: _- \"></td></tr>");
 		out.println("<tr>");
 		out.println("<td>Password:</td>");
 		out.println("<td><input placeholder=\"Enter password\" type=\"password\" name=\"pass\" size=\"30\"");
 		out.println("pattern=\"(?=.*[a-z])(?=.*[A-Z])(?=.*[\\d])(?=.*[#?!@$%^&*-]).{8,}\"");
-		out.println("autofocus required title=\"- At least 8 characters");
+		out.println(" required title=\"- At least 8 characters");
 		out.println("- One upper- and one lowercase letter");
 		out.println("- One number from 0-9");
 		out.println("- One special character  #?!@$%^&*-\"");

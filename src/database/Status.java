@@ -30,7 +30,7 @@ public enum Status {
 
 	private final String message;
 
-	private Status(String message) {
+	Status(String message) {
 		this.message = message;
 	}
 

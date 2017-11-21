@@ -24,7 +24,6 @@ public class AllReviewsServlet extends LoginBaseServlet{
         if (getUsername(request) != null) {
             prepareResponse("Reviews", response);
             PrintWriter out = response.getWriter();
-            out.println("<button><a href=\"/login?logout\">Logout</a></button>");
             printForm(request,response);
             finishResponse(response);
         }
@@ -46,7 +45,7 @@ public class AllReviewsServlet extends LoginBaseServlet{
         //Check if there is a hotel with matching hotel id in the db
         if(!databaseHandler.getHotelIdName(request.getParameter("hotelid")).isEmpty()){
             //Check if hotel has any reviews
-            if (databaseHandler.checkHotelIdReviewSet(hotelid)){
+            if (databaseHandler.checkHotelIdReviewSet(hotelid)==Status.OK){
                 if (request.getParameter("success") != null) {
                     out.println("<p>Thank you, your review for hotel ");
                     out.println(databaseHandler.getHotelIdName(request.getParameter("hotelid"))+ " is now submitted.</p>");
@@ -54,11 +53,17 @@ public class AllReviewsServlet extends LoginBaseServlet{
                     out.println("<p>We where unfortunately not able to handle your request at this time ");
                     out.println("Pleas try again later</p>");
                 }
-                if(databaseHandler.checkForExistingUserReview(hotelid,getUsername(request))){
+                if(databaseHandler.checkForExistingUserReview(hotelid,getUsername(request))==Status.OK){
                     out.println("<p><a href=\"/editreview?username="+getUsername(request)+"&hotelid="+ hotelid+"\">Edit your review</a></p>" );
                 }else{
                     out.println("<p><a href=\"/addreview?hotelid="+ hotelid+"\">Add review</a></p>" );
                 }
+                out.println("<h3>Reviews for hotel:  "+databaseHandler.getHotelIdName(hotelid)+" </h3>");
+                out.println(" <form action = \"/attractions\" method = \"post\">");
+                out.println("<input type=\"hidden\" value=\""+hotelid+"\" name=\"hotelid\" />\n");
+                out.println("<input pattern=\"[0-9]{0,4}\" required placeholder=\"Enter radius..\" type=\"text\" name=\"radius\">");
+                out.println("<input type=\"submit\" value=\"Show attractions\">");
+                out.println("</form>");
                 out.println(databaseHandler.hotelIdReviewDisplayer(hotelid));
             } else {
                 out.println("<p>There is unfortunately no reviews for " + databaseHandler.getHotelIdName(hotelid)+"</p>");

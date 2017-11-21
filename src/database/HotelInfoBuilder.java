@@ -118,7 +118,7 @@ public class HotelInfoBuilder {
 
         try (
                 Connection connection = db.getConnection();
-                Statement statement = connection.createStatement();
+                Statement statement = connection.createStatement()
         ) {
             if (!statement.executeQuery(CHECK_HOTEL_INFO_TABLE_SQL).next()) {
                 log.debug("Creating hotel info table...");
@@ -182,7 +182,7 @@ public class HotelInfoBuilder {
                 float lng = Float.parseFloat((String) coords.get("lng"));
                 //TODO Check if id is duplicate
                 try (
-                        PreparedStatement statement = connection.prepareStatement(INSERT_HOTEL_SQL);
+                        PreparedStatement statement = connection.prepareStatement(INSERT_HOTEL_SQL)
                 ) {
                     statement.setString(1, hotelId);
                     statement.setString(2, name);

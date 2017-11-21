@@ -6,9 +6,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
 
+/**
+ * Servlet that lets a user edit their existing review for a hotel.
+ */
 public class EditReviewServlet extends LoginBaseServlet{
+
     /**
-     * A method that gets executed when the get request is sent to the AddReviewServlet
+     * A method that gets executed when the get request is sent to the EditReviewServlet
      * @param request
      * @param response
      */
@@ -19,7 +23,6 @@ public class EditReviewServlet extends LoginBaseServlet{
         if (getUsername(request) != null) {
             prepareResponse("Edit review", response);
             PrintWriter out = response.getWriter();
-            out.println("<button><a href=\"/login?logout\">Logout</a></button>");
             if(getUsername(request).equals(request.getParameter("username"))){
                 printForm(request,out);
             }else
@@ -67,13 +70,13 @@ public class EditReviewServlet extends LoginBaseServlet{
 
 
      /**
-      * Method to print html for a review form
+      * Method that is used to print the review form.
       * @param request
       * @param out
       * */
     private void printForm(HttpServletRequest request,PrintWriter out) {
         assert out != null;
-        Map<String,String> reviewmap = databaseHandler.editReview(getUsername(request),request.getParameter("hotelid"));
+        Map<String,String> reviewmap = databaseHandler.getUserReviewForHotel(getUsername(request),request.getParameter("hotelid"));
         String hotelid = request.getParameter("hotelid");
         out.println("<div style=\"background-color: #f1f1f1; padding: 0.01em 16px; margin: 0 auto; width:fit-content; box-shadow: 0 2px 4px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)\">");
         out.println("<h3 style=\"text-align: center;\">Edit your review for hotel:<br></h3>");
@@ -81,9 +84,9 @@ public class EditReviewServlet extends LoginBaseServlet{
         out.println("border-width: thin;\">"+databaseHandler.getHotelIdName(hotelid)+"</h6>");
         out.println("<form action=\"/editreview?hotelid="+reviewmap.get("hotelId")+"\" method=\"post\">");
         out.println("<p style=\"text-align: center;\">Title:</p>");
-        out.println("<input required value =\""+reviewmap.get("title")+"\" placeholder=\"Title\" type=\"text\" name=\"title\" size=\"50\">");
+        out.println("<input required autofocus value =\""+reviewmap.get("title")+"\" placeholder=\"Title\" type=\"text\" name=\"title\" size=\"50\">");
         out.println("<p style=\"text-align: center;\">Rating:</p>");
-        out.println("<input required value =\""+reviewmap.get("rating")+"\"  placeholder=\"Enter your rating from 1-5...\" type=\"text\" name=\"rating\" size=\"50\"pattern=\"[0-5]{1}\" autofocus required title=\"- Must be a number between 1-6\">");
+        out.println("<input required value =\""+reviewmap.get("rating")+"\"  placeholder=\"Enter your rating from 1-5...\" type=\"text\" name=\"rating\" size=\"50\"pattern=\"[0-5]{1}\"  title=\"- Must be a number between 1-6\">");
         out.println("<p style=\"text-align: center;\">Review:</p>");
         out.println("<textarea required placeholder=\"Write your review...\" rows=\"5\" type=\"text\" name=\"review\" maxlength=\"3000\" ");
         out.println("style=\"width:-webkit-fill-available; padding: 6px 12px;border: 1px solid #ccc; border-radius: 4px;\">"+reviewmap.get("review")+"</textArea>");
@@ -95,4 +98,3 @@ public class EditReviewServlet extends LoginBaseServlet{
         out.println("</div>");
     }
 }
-//TODO IF USERNAME IS NOT PROVIDED ADD IT FOR THEM

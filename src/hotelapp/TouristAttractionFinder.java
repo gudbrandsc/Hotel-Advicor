@@ -1,6 +1,5 @@
 package hotelapp;
 
-import database.Status;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -16,7 +15,7 @@ public class TouristAttractionFinder {
     private static final String host = "maps.googleapis.com";
     private static final String path = "/maps/api/place/textsearch/json";
     private static final String GOOGLE_API_KEY = "AIzaSyCBYUGa21uU2cRH8tksayshXs63HS-FpLk";
-    protected static final DatabaseHandler databaseHandler = DatabaseHandler.getInstance();
+    private static final DatabaseHandler databaseHandler = DatabaseHandler.getInstance();
 
     /** Takes a host and a string containing path/resource/query and creates a
      * string of the HTTP GET request
@@ -38,7 +37,7 @@ public class TouristAttractionFinder {
      * provides Places API, sends a GET request (to find attractions close to
      * the hotel within a given radius), and gets a response as a string.
      * Removes headers from the response string and parses the remaining json to
-     * get Attractions info. Adds attractions to the ThreadSafeHotelData.
+     * get Attractions info. Returns a html formated string for attractions table
      *
      * @param radiusInMiles
      * @param hId
@@ -97,6 +96,7 @@ public class TouristAttractionFinder {
         }
         return resp;
     }
+
     /**Creates a Json object. Iterates trough the json file and adds
      * add information to table
      * @param jsonfile String containing Json
@@ -126,4 +126,3 @@ public class TouristAttractionFinder {
         return sb.toString();
     }
 }
-//TODO add logger

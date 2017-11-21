@@ -5,7 +5,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletHandler;
-//TODO javadoc & encapsulation duplicate names rating -15 my reviews show
+
+/**
+ * Server that handles all servlets.
+ */
 public class HotelAppServer {
     protected static Logger log = LogManager.getLogger();
     private static int PORT = 8080;

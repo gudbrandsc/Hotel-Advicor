@@ -18,13 +18,11 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Handles all database-related actions. Uses singleton design pattern.
- * Example of Prof. Engle
- *
  *
  */
 public class DatabaseHandler {
 
-    /** A {@link org.apache.log4j.Logger log4j} logger for debugging. */
+    /** A  logger for debugging. */
     private static Logger log = LogManager.getLogger();
 
     /** Makes sure only one database handler is instantiated. */
@@ -52,10 +50,6 @@ public class DatabaseHandler {
             "SELECT username FROM login_users " +
                     "WHERE username = ? AND password = ?";
 
-    /** Used to remove a user from the database. */
-    private static final String DELETE_SQL =
-            "DELETE FROM login_users WHERE username = ?";
-
     /** Used to get all reviews for a hotel by hotelId*/
     private static final String GET_HOTEL_REVIEWS_HOTELID_SQL =
             "SELECT * FROM hotel_reviews WHERE hotelId=?;";
@@ -81,12 +75,12 @@ public class DatabaseHandler {
     private static final String UPDATE_HOTEL_REVIEW_SQL =
             "UPDATE hotel_reviews SET title = ?, review = ?, intRating =?, submissiondate=? WHERE reviewId=?;";
 
-    /** Used to get all info of a hotel review.*/
+    /** Used to get all review info by primary key*/
     private static final String GET_HOTEL_REVIEW_INFO_BY_KEY_SQL =
             "SELECT * FROM hotel_reviews where reviewID=?;";
 
 
-    /** Used to get all info of a hotel review.*/
+    /** Used to get latitude for a hotel.*/
     private static final String GET_HOTEL_LATITUDE_SQL =
             "SELECT latitude FROM hotel_info where hotelId=?;";
 
@@ -94,11 +88,11 @@ public class DatabaseHandler {
     private static final String GET_HOTEL_LONGITUDE_SQL =
             "SELECT longitude FROM hotel_info where hotelId=?;";
 
-    /** Used to get longitude for a hotel.*/
+    /** Used to get city for a hotelid*/
     private static final String GET_HOTEL_CITY_SQL =
             "SELECT longitude FROM hotel_info where hotelId=?;";
 
-    /** Used to get longitude for a hotel.*/
+    /** Used to check if hotel with id exist*/
     private static final String CHECK_HOTEL_EXIST_SQL =
             "SELECT * FROM hotel_info where hotelId=?;";
     /**
@@ -108,7 +102,7 @@ public class DatabaseHandler {
             "SELECT intRating FROM hotel_reviews WHERE hotelId=?";
 
     /**
-     * Used to get all ratings for a hotel
+     * Used to update average rating for a hotel
      */
     private static final String SET_AVERAGE_RATING_FOR_HOTEL_SQL =
             "UPDATE hotel_info SET avgRating = ? WHERE hotelId=?;";
@@ -184,7 +178,7 @@ public class DatabaseHandler {
         Status status = Status.ERROR;
 
         try (
-                PreparedStatement statement = connection.prepareStatement(USER_SQL);
+                PreparedStatement statement = connection.prepareStatement(USER_SQL)
         ) {
             statement.setString(1, user);
 
@@ -244,7 +238,7 @@ public class DatabaseHandler {
      *
      * @param newuser - username of new user
      * @param newpass - password of new user
-     * @return {@link Status.OK} if registration successful
+     * @return Status.OK if registration successful
      */
     private Status registerUser(Connection connection, String newuser, String newpass) {
 
@@ -257,7 +251,7 @@ public class DatabaseHandler {
         String passhash = getHash(newpass, usersalt);
 
         try (
-                PreparedStatement statement = connection.prepareStatement(REGISTER_SQL);
+                PreparedStatement statement = connection.prepareStatement(REGISTER_SQL)
         ) {
             statement.setString(1, newuser);
             statement.setString(2, passhash);
@@ -280,7 +274,7 @@ public class DatabaseHandler {
      *
      * @param newuser - username of new user
      * @param newpass - password of new user
-     * @return {@link Status.OK} if registration successful
+     * @return Status.OK if registration successful
      */
     public Status registerUser(String newuser, String newpass) {
         Status status = Status.ERROR;
@@ -297,7 +291,7 @@ public class DatabaseHandler {
         System.out.println(db);
 
         try (
-                Connection connection = db.getConnection();
+                Connection connection = db.getConnection()
         ) {
             status = duplicateUser(connection, newuser);
 
@@ -329,7 +323,7 @@ public class DatabaseHandler {
         String salt = null;
 
         try (
-                PreparedStatement statement = connection.prepareStatement(SALT_SQL);
+                PreparedStatement statement = connection.prepareStatement(SALT_SQL)
         ) {
             statement.setString(1, user);
 
@@ -349,7 +343,7 @@ public class DatabaseHandler {
      *
      * @param username - username to authenticate
      * @param password - password to authenticate
-     * @return {@link Status.OK} if authentication successful
+     * @return Status.OK if authentication successful
      * @throws SQLException
      */
     private Status authenticateUser(Connection connection, String username,
@@ -358,7 +352,7 @@ public class DatabaseHandler {
         Status status = Status.ERROR;
 
         try (
-                PreparedStatement statement = connection.prepareStatement(AUTH_SQL);
+                PreparedStatement statement = connection.prepareStatement(AUTH_SQL)
         ) {
             String usersalt = getSalt(connection, username);
             String passhash = getHash(password, usersalt);
@@ -384,7 +378,7 @@ public class DatabaseHandler {
      *
      * @param username - username to authenticate
      * @param password - password to authenticate
-     * @return {@link Status.OK} if authentication successful
+     * @return Status.OK if authentication successful
      */
     public Status authenticateUser(String username, String password) {
         Status status = Status.ERROR;
@@ -392,7 +386,7 @@ public class DatabaseHandler {
         log.debug("Authenticating user " + username + ".");
 
         try (
-                Connection connection = db.getConnection();
+                Connection connection = db.getConnection()
         ) {
             status = authenticateUser(connection, username, password);
         }
@@ -404,68 +398,12 @@ public class DatabaseHandler {
         return status;
     }
 
-    /**
-     * Removes a user from the database if the username and password are
-     * provided correctly.
-     *
-     * @param username - username to remove
-     * @param password - password of user
-     * @return {@link Status.OK} if removal successful
-     */
-    private Status removeUser(Connection connection, String username, String password) {
-        Status status = Status.ERROR;
-
-        try (
-                PreparedStatement statement = connection.prepareStatement(DELETE_SQL);
-        ) {
-            statement.setString(1, username);
-
-            int count = statement.executeUpdate();
-            status = (count == 1) ? Status.OK : Status.INVALID_USER;
-        }
-        catch (SQLException ex) {
-            status = Status.SQL_EXCEPTION;
-            log.debug(status, ex);
-        }
-
-        return status;
-    }
-
-    /**
-     * Removes a user from the database if the username and password are
-     * provided correctly.
-     *
-     * @param username - username to remove
-     * @param password - password of user
-     * @return {@link Status.OK} if removal successful
-     */
-    public Status removeUser(String username, String password) {
-        Status status = Status.ERROR;
-        //TODO check if this can be one method
-        log.debug("Removing user " + username + ".");
-
-        try (
-                Connection connection = db.getConnection();
-        ) {
-            status = authenticateUser(connection, username, password);
-
-            if(status == Status.OK) {
-                status = removeUser(connection, username, password);
-            }
-        }
-        catch (Exception ex) {
-            status = Status.CONNECTION_FAILED;
-            log.debug(status, ex);
-        }
-
-        return status;
-    }
     /**
      * Removes a hotel review for a user.
      *
      * @param username - username connected to review
      * @param hotelId - hotel id that is  connected to review
-     * @return {@link Status.OK} if removal successful
+     * @return Status.OK if removal successful
      */
     public Status removeReview(String username, String hotelId) {
         Status status = Status.ERROR;
@@ -473,7 +411,7 @@ public class DatabaseHandler {
         String primkey=username+hotelId;
         try (
                 Connection connection = db.getConnection();
-                PreparedStatement statement = connection.prepareStatement(REMOVE_HOTEL_REVIEW_SQL);
+                PreparedStatement statement = connection.prepareStatement(REMOVE_HOTEL_REVIEW_SQL)
         ) {
             statement.setString(1,primkey);
             log.debug("Removing review " +primkey+".");
@@ -487,19 +425,18 @@ public class DatabaseHandler {
         return status;
     }
     /**
-     * Used to edit an existing hotel review
-     *
+     * Used to fetch information about a users old review for a hotel.
      * @param username - username for the that submitted review
      * @param hotelId - Hotel id connected to the hotel review
-     * @return {@link Status.OK} if removal successful
+     * @return Status.OK if removal successful
      */
-    public Map<String, String> editReview(String username, String hotelId) {
+    public Map<String, String> getUserReviewForHotel(String username, String hotelId) {
         Status status = Status.ERROR;
         Map<String,String> reviewsmap = new HashMap<String, String>();
         String primkey=username+hotelId;
         try (
                 Connection connection = db.getConnection();
-                PreparedStatement statement = connection.prepareStatement(GET_HOTEL_REVIEW_INFO_BY_KEY_SQL);
+                PreparedStatement statement = connection.prepareStatement(GET_HOTEL_REVIEW_INFO_BY_KEY_SQL)
         ) {
             statement.setString(1,primkey);
             log.debug("Editing review " +primkey+".");
@@ -520,18 +457,16 @@ public class DatabaseHandler {
         return reviewsmap;
     }
     /**
-     * Method used to display information about all hotels
-     * @return A html table string with hotel name, address and rating
+     * Method used to display general information about all hotels
+     * @return A html table string with hotel name, address and average rating
      * */
     public String hotelInfoDisplayer(){
-        Status status = Status.ERROR;
-
+        StringBuilder sb = new StringBuilder();
         try (
                 Connection connection = db.getConnection();
                 PreparedStatement statement = connection.prepareStatement(GET_HOTEL_GENERAL_INFO_SQL)
 
         ) {
-            StringBuilder sb = new StringBuilder();
             ResultSet hotelNames =statement.executeQuery();
             sb.append("<table>" +
                     "<tr>" +
@@ -548,57 +483,55 @@ public class DatabaseHandler {
                 sb.append("</tr>");
             }
             sb.append("</table>");
-            return sb.toString();
         }
         catch (SQLException e) {
             log.debug(e.getMessage(), e);
-            status = Status.SQL_EXCEPTION;
-            return null;
         }
-
+        return sb.toString();
     }
     /**
      * Tests if a hotel has any reviews
-     *
+     * @param hotelId
      * @return true if set is not empty
      */
-    public boolean checkHotelIdReviewSet(String hotelId) {
-        Boolean exist=null;
+    public Status checkHotelIdReviewSet(String hotelId) {
+        Status status = Status.ERROR;
         try (
                 Connection connection = db.getConnection();
-                PreparedStatement statement = connection.prepareStatement(GET_HOTEL_REVIEWS_HOTELID_SQL);
+                PreparedStatement statement = connection.prepareStatement(GET_HOTEL_REVIEWS_HOTELID_SQL)
         ) {
             statement.setString(1,hotelId);
-             exist= statement.executeQuery().next();
+            ResultSet results = statement.executeQuery();
+            status = results.next() ? status = Status.OK : Status.NO_HOTELREVIEWS;
         }
         catch (SQLException e) {
             log.debug(e.getMessage(), e);
         }
-        log.debug(exist);
-        return exist;
+        return status;
     }
     /**
      * Tests if a user have any reviews
-     *
      * @return true if set is not empty
      */
-    public boolean checkUsernameReviewSet(String username) {
-        Boolean exist=null;
+    public Status checkUsernameReviewSet(String username) {
+        Status status = Status.ERROR;
         try (
                 Connection connection = db.getConnection();
-                PreparedStatement statement = connection.prepareStatement(GET_HOTEL_REVIEWS_USERNAME_SQL);
+                PreparedStatement statement = connection.prepareStatement(GET_HOTEL_REVIEWS_USERNAME_SQL)
         ) {
             statement.setString(1,username);
-            exist= statement.executeQuery().next();
+            ResultSet results = statement.executeQuery();
+            status = results.next() ? status = Status.OK : Status.NO_USERREVIEWS;
         }
         catch (SQLException e) {
+            status=Status.SQL_EXCEPTION;
             log.debug(e.getMessage(), e);
         }
-        return exist;
+        return status;
     }
     /**
      * Used to get the name of a hotel connected to hotel id
-     *
+     *@param hotelId
      * @return hotel name
      */
     public String getHotelIdName(String hotelId) {
@@ -653,7 +586,7 @@ public class DatabaseHandler {
     }
 
     /**
-     * Method used to build a html string containing all reviews posted by a user
+     * Method used to get all reviews for a user, and sends each review to review builder.
      * @param username
      * @return ResultSet
      * */
@@ -686,15 +619,19 @@ public class DatabaseHandler {
     }
 
     /**
-     * Builds a html string of a review
-     * @return html string*/
-    public String reviewBuilder(String title, String username, String date, int rating, String review,boolean userReview,String hotelId) {
+     * Builds a html string with all reviews for a hotel or user. If user-> add functionality to remove and edit review
+     * @param title
+     * @param username
+     * @param date
+     * @param rating
+     * @param review
+     * @param userReview
+     * @param hotelId
+     * @return
+     */
+    private String reviewBuilder(String title, String username, String date, int rating, String review,boolean userReview,String hotelId) {
         StringBuilder sb = new StringBuilder();
-        if(userReview){
-            sb.append("<h3>Reviews for by user: "+username+" </h3>");
-        }else{
-            sb.append("<h3>Reviews for "+getHotelIdName(hotelId)+" </h3>");
-        }
+
         sb.append("<div style=\"background-color: #f1f1f1; padding: 0.01em 16px; margin: 20px 0; box-shadow: 0 2px 4px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)\">");
         sb.append("<h4 style=\"margin-bottom: 0px;\">" + title + "</h4>");
         sb.append("<p style=\"margin-top: 0px;\"><small>Submited by " + username);
@@ -704,6 +641,7 @@ public class DatabaseHandler {
         sb.append("<p>" + review + "</p>");
         sb.append("</div>");
         if(userReview){
+            sb.append("<p style=\"margin-top: 0px;\"><small>Review for hotel: "+getHotelIdName(hotelId)+" </small></p>");
             sb.append(" <form action = \"/myreviews?username="+username+"\" method = \"post\">");
             sb.append("<input type=\"hidden\" value=\""+hotelId+"\" name=\"hotelid\" />\n");
             sb.append("<input type=\"submit\" name=\"edit\" value=\"Edit\" />");
@@ -715,7 +653,7 @@ public class DatabaseHandler {
     }
     // TODO make most methods return status
     /**
-     * Used to insert a hotel review to the database
+     * Used to add a new hotel review
      * @param hotelId
      * @param rating
      * @param title
@@ -750,7 +688,7 @@ public class DatabaseHandler {
         return status;
     }
     /**
-     * Used to update a hotel review to the database
+     * Used to update a users hotel review
      * @param hotelId
      * @param rating
      * @param title
@@ -760,7 +698,7 @@ public class DatabaseHandler {
      * @return
      */
 
-    public Status editReview(String hotelId,int rating, String title, String review, String date, String username){
+    public Status editReview(String hotelId, int rating, String title, String review, String date, String username){
         Status status = Status.ERROR;
 
         try (
@@ -787,27 +725,31 @@ public class DatabaseHandler {
      *Check if user has a existing review for hotel
      * @param hotelId
      * @param username
+     * @return
      */
 
-    public boolean checkForExistingUserReview(String hotelId, String username){
-        Boolean exist=null;
+    public Status checkForExistingUserReview(String hotelId, String username){
+        Status status = Status.ERROR;
         try (
                 Connection connection = db.getConnection();
                 PreparedStatement statement = connection.prepareStatement(GET_HOTEL_REVIEW_INFO_BY_KEY_SQL)
         ) {
             statement.setString(1,username+hotelId);
-            exist= statement.executeQuery().next();
+            ResultSet results= statement.executeQuery();
+            status = results.next() ? status = Status.OK : Status.INVALID_REVIEWID;
         }
         catch (SQLException e) {
+            status=Status.SQL_EXCEPTION;
             log.debug(e.getMessage(), e);
         }
-        log.debug("Review with primary key "+username+hotelId+" exist: "+ exist);
-        return exist;
+        return status;
     }
 
 
     /**
      * Get latitude for a hotel using hotel id
+     * @param hotelId
+     * @return latitude
      * */
     public String getHotelLat(String hotelId){
         String latitude="";
@@ -829,6 +771,8 @@ public class DatabaseHandler {
 
     /**
      * Get longitude for a hotel using hotel id
+     * @param hotelId
+     * @return longitude
      * */
     public String getHotelLon(String hotelId){
         String longitude="";
@@ -847,8 +791,11 @@ public class DatabaseHandler {
         }
         return longitude;
     }
+
     /**
      * Get city for a hotel
+     * @param hotelId
+     * @return city
      * */
     public String getHotelCity(String hotelId){
         String city="";
@@ -872,25 +819,36 @@ public class DatabaseHandler {
     /**
      *Check if hotel with hotel id exist
      * @param hotelId
+     * @return
      *
      */
 
-    public boolean checkIfHotelExist(String hotelId){
+    public Status checkIfHotelExist(String hotelId){
+        Status status = Status.ERROR;
         Boolean exist=null;
         try (
                 Connection connection = db.getConnection();
                 PreparedStatement statement = connection.prepareStatement(CHECK_HOTEL_EXIST_SQL)
         ) {
             statement.setString(1,hotelId);
-            exist= statement.executeQuery().next();
+            ResultSet results= statement.executeQuery();
+            status = results.next() ? status = Status.OK : Status.INVALID_HOTELID;
+            log.debug(status);
+
         }
         catch (SQLException e) {
+            status=Status.SQL_EXCEPTION;
             log.debug(e.getMessage(), e);
         }
-        return exist;
+        return status;
     }
 
-
+    /**
+     * Gets all review ratings and calculate the new average
+     * @param hotelId
+     * @param connection
+     * @return
+     */
     private Status updateAvgRating(String hotelId,Connection connection) {
         Status status = Status.ERROR;
         int count = 0;
@@ -902,14 +860,10 @@ public class DatabaseHandler {
             ResultSet set = statement.executeQuery();
 
             if (set.next()) {
-                log.debug("inside if");
                 do {
-                    log.debug("value"+set.getDouble(1));
                     count++;
                     total=total+set.getDouble(1);
                 } while (set.next());
-            } else {
-                log.debug("inside else");
             }
             Double avgRating = total/count;
             if(avgRating.isNaN()){
@@ -926,6 +880,13 @@ public class DatabaseHandler {
         return status;
     }
 
+    /**
+     * Updates the average rating for a hotel
+     * @param hotelId
+     * @param avgRating
+     * @param connection
+     * @return
+     */
     private Status setAvgRatingForHotel(String hotelId, Double avgRating,Connection connection) {
         Status status = Status.ERROR;
         try (

@@ -125,7 +125,7 @@ public class HotelReviewBuilder {
 
         try (
                 Connection connection = db.getConnection();
-                Statement statement = connection.createStatement();
+                Statement statement = connection.createStatement()
         ) {
             if (!statement.executeQuery(CHECK_HOTEL_REVIEW_TABLE_SQL).next()) {
                 log.debug("Creating hotel review table...");
@@ -201,12 +201,7 @@ public class HotelReviewBuilder {
             while (iterator.hasNext()) {
                 JSONObject res = iterator.next();
                 boolean isRecom;
-                if (res.get("isRecommended") == ("YES")) {
-                    isRecom = true;
-                } else {
-                    isRecom = false;
-
-                }
+                isRecom = res.get("isRecommended") == ("YES");
                 String hotelId = (String) res.get("hotelId");
                 String reviewId = (String) res.get("reviewId");
                 String rating = res.get("ratingOverall").toString();
@@ -216,7 +211,7 @@ public class HotelReviewBuilder {
                 String date =(String) res.get("reviewSubmissionTime");
                 String username = (String) res.get("userNickname");
                 try (
-                        PreparedStatement statement = connection.prepareStatement(INSERT_HOTEL_SQL);
+                        PreparedStatement statement = connection.prepareStatement(INSERT_HOTEL_SQL)
                 ) {
                     statement.setString(1, hotelId);
                     statement.setString(2, reviewId);

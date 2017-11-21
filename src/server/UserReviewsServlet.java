@@ -5,35 +5,36 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+/**
+ * Servlet that handles display of user reviews, and lets user edit and delete there reviews.
+ */
 public class UserReviewsServlet extends LoginBaseServlet {
 
     /**
-     * A method that gets executed when the get request is sent to the HotelAttractionsServlet
+     * A method that gets executed when the get request is sent to the UserReviewsServlet
      * @param request
      * @param response
+     * @throws IOException
      */
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
         if (getUsername(request) != null) {
-            PrintWriter out = response.getWriter();
             if(request.getParameter("username")==null){
-                log.debug("Missing username in get request");
+                log.debug("Missing username in request");
                 response.sendRedirect("myreviews?username="+getUsername(request));
             }else{
                 prepareResponse("My reviews", response);
-                out.println("<button><a href=\"/login?logout\">Logout</a></button>");
                 printForm(request,response);
                 finishResponse(response);
             }
-
         }
         else {
             response.sendRedirect("/login");
         }
     }
-    /** The method that will process the form once it's submitted. Handles what button user clicks on.
+    /** The method that will handle post request sent to UserReviewsServlet.
      * @param request
      * @param response
      * */
@@ -66,21 +67,19 @@ public class UserReviewsServlet extends LoginBaseServlet {
 
 
     /**
-     * Method that prints hotel reviews to a specific hotel. Also handeles if get request miss param
+     * Method that prints hotel reviews to a specific hotel. Also handles if get request is missing parameters
      * @param request
      * @param response
      */
     private void printForm(HttpServletRequest request, HttpServletResponse response) throws IOException {
         PrintWriter out = response.getWriter();
         if(request.getParameter("username")!=null){
-            log.debug(getUsername(request));
-
             String username = request.getParameter("username");
             //Check that request username is the same as the currant user.
             if(username.equalsIgnoreCase(getUsername(request))){
-                log.debug(getUsername(request));
                 //Check if currant user has any reviews
-                if(databaseHandler.checkUsernameReviewSet(getUsername(request))){
+                if(databaseHandler.checkUsernameReviewSet(getUsername(request))==Status.OK){
+                    out.println("<h3>Reviews for by user: "+username+" </h3>");
                     out.println(databaseHandler.usernameReviewDisplayer(username));
                 }else {
                     out.println("<p>You don't have any reviews yet</p>");

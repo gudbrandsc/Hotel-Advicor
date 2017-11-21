@@ -17,17 +17,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Provides base functionality to all servlets in this example.
- *
+ * Provides base functionality to all servlets.
  *
  */
 @SuppressWarnings("serial")
 public class LoginBaseServlet extends HttpServlet {
 
 	protected static Logger log = LogManager.getLogger();
+	//Creates a single instance of the database handler that is accessible by all child classes
 	protected static final DatabaseHandler databaseHandler = DatabaseHandler.getInstance();
 
-
+	/**
+	 * Method that is used to prepare html header and body.
+	 * @param title
+	 * @param response
+	 */
 	protected void prepareResponse(String title, HttpServletResponse response) {
 		try {
 			PrintWriter writer = response.getWriter();
@@ -39,6 +43,8 @@ public class LoginBaseServlet extends HttpServlet {
 			writer.printf("\t<meta charset=\"utf-8\">%n");
 			writer.printf("</head>%n%n");
 			writer.printf("<body>%n%n");
+			writer.println("<button><a href=\"/login?logout\">Logout</a></button>");
+
 
 		}
 		catch (IOException ex) {
@@ -47,6 +53,11 @@ public class LoginBaseServlet extends HttpServlet {
 		}
 	}
 
+	/**
+	 * Method that is used to close html tag and body.
+	 * Also used to flush writer.
+	 * @param response
+	 */
 	protected void finishResponse(HttpServletResponse response) {
 		try {
 			PrintWriter writer = response.getWriter();
@@ -71,6 +82,10 @@ public class LoginBaseServlet extends HttpServlet {
 		}
 	}
 
+	/**
+	 * Used to return a date.
+	 * @return date
+	 */
 	protected String getDate() {
 		String format = "hh:mm a 'on' EEE, MMM dd, yyyy";
 		DateFormat dateFormat = new SimpleDateFormat(format);
@@ -91,6 +106,11 @@ public class LoginBaseServlet extends HttpServlet {
 		return map;
 	}
 
+	/**
+	 * Used to clear all cookies.
+	 * @param request
+	 * @param response
+	 */
 	protected void clearCookies(HttpServletRequest request, HttpServletResponse response) {
 		Cookie[] cookies = request.getCookies();
 
@@ -105,7 +125,11 @@ public class LoginBaseServlet extends HttpServlet {
 		}
 	}
 
-
+	/**
+	 * Used to return a string of the value of a Status error message.
+	 * @param errorName
+	 * @return
+	 */
 	protected String getStatusMessage(String errorName) {
 		Status status = null;
 
@@ -120,6 +144,11 @@ public class LoginBaseServlet extends HttpServlet {
 		return status.toString();
 	}
 
+	/**
+	 * Used to get a status message using a integer code
+	 * @param code
+	 * @return
+	 */
 	protected String getStatusMessage(int code) {
 		Status status = null;
 
@@ -134,6 +163,11 @@ public class LoginBaseServlet extends HttpServlet {
 		return status.toString();
 	}
 
+	/**
+	 * Used to get the username of the person in the session, using cookies.
+	 * @param request
+	 * @return
+	 */
 	protected String getUsername(HttpServletRequest request) {
 		Map<String, String> cookies = getCookieMap(request);
 

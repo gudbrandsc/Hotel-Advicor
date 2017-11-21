@@ -17,9 +17,7 @@ public class HotelAttractionsServlet extends LoginBaseServlet{
             throws ServletException, IOException {
 
         if (getUsername(request) != null) {
-            PrintWriter out = response.getWriter();
             prepareResponse("Hotel attraction", response);
-            out.println("<button><a href=\"/login?logout\">Logout</a></button>");
             printForm(request,response);
             finishResponse(response);
             }
@@ -27,6 +25,18 @@ public class HotelAttractionsServlet extends LoginBaseServlet{
         else {
             response.sendRedirect("/login");
         }
+    }
+    /** The method that will process the form once it's submitted
+     * @param request
+     * @param response
+     * */
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        prepareResponse("Hotel attractions", response);
+        String hotelid = request.getParameter("hotelid");
+        String radius = request.getParameter("radius");
+        response.sendRedirect(response.encodeRedirectURL("/attractions?hotelId="+hotelid+"&radius="+radius));
     }
 
     /**
@@ -38,12 +48,13 @@ public class HotelAttractionsServlet extends LoginBaseServlet{
         int radius;
         String hotelId;
         PrintWriter out = response.getWriter();
-
-
-        if(request.getParameter("radius") != null && request.getParameter("hotelId") != null){ //Check that both param are in GET request
+        //Check that both param are in the GET request
+        if(request.getParameter("radius") != null && request.getParameter("hotelId") != null){
             hotelId = request.getParameter("hotelId");
             radius = Integer.parseInt(request.getParameter("radius"));
-            if(databaseHandler.checkIfHotelExist(hotelId)){
+            Status status = databaseHandler.checkIfHotelExist(hotelId);
+
+            if(status==Status.OK){
                 out.printf(hotelapp.TouristAttractionFinder.fetchAttractions(radius, hotelId));
             }else{
                 out.println("<p>Hotel does not exist</p>");
@@ -53,4 +64,3 @@ public class HotelAttractionsServlet extends LoginBaseServlet{
         }
     }
 }
-//TODO: add average rating
