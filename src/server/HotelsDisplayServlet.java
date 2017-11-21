@@ -2,16 +2,11 @@ package server;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Handles display of user information.
- * Example of Prof. Engle
- *
+ * Handles display of hotel info
  */
 @SuppressWarnings("serial")
 public class HotelsDisplayServlet extends LoginBaseServlet {
@@ -22,7 +17,6 @@ public class HotelsDisplayServlet extends LoginBaseServlet {
 
         if (getUsername(request) != null) {
             prepareResponse("View hotels", response);
-            StringBuilder sb = new StringBuilder();
             PrintWriter out = response.getWriter();
             out.println("<button><a href=\"/login?logout\">Logout</a></button>");
             out.println(databaseHandler.hotelInfoDisplayer());

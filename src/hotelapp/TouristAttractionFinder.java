@@ -64,7 +64,6 @@ public class TouristAttractionFinder {
             String fixedQuery = query.replaceAll(" ", "%20");
 
             String header = getRequest(path + "?" + fixedQuery);
-            System.out.println(header);
             out.println(header); // send a request to the server
             out.flush();
 
@@ -79,8 +78,6 @@ public class TouristAttractionFinder {
             }
             resp = sb.toString();
             String jsonString = resp.substring(resp.indexOf("{"));
-            System.out.println("my string");
-            System.out.println(jsonString);
             resp = "<table><tr><th>Name</th><th>Address</th></tr>" + jsonReader(jsonString)+"</table>";
 
             in.close();
@@ -118,7 +115,6 @@ public class TouristAttractionFinder {
                 JSONObject res = iterator.next();
                 String name = (String) res.get("name");
                 String address= (String) res.get("formatted_address");
-                //TODO Check if id is duplicate
                 sb.append("<tr>");
                 sb.append("<td>"+name+"</td>");
                 sb.append("<td>"+address+"</td>");
@@ -130,3 +126,4 @@ public class TouristAttractionFinder {
         return sb.toString();
     }
 }
+//TODO add logger

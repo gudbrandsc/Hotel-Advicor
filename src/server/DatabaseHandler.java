@@ -32,10 +32,7 @@ public class DatabaseHandler {
 
     /** Get a list of all hotel names in alphabetical order */
     private static final String GET_HOTEL_GENERAL_INFO_SQL =
-            "SELECT DISTINCT hotelnames,address,intRating, hotel_info.hotelId " +
-                    "FROM hotel_info " +
-                    "LEFT JOIN hotel_reviews ON hotel_info.hotelId = hotel_reviews.hotelId " +
-                    "ORDER BY hotelnames;";
+            "SELECT hotelnames,address,avgRating,hotelId FROM hotel_info order by hotelnames";
 
     /** Used to register a new user in the database. */
     private static final String REGISTER_SQL =
@@ -104,6 +101,18 @@ public class DatabaseHandler {
     /** Used to get longitude for a hotel.*/
     private static final String CHECK_HOTEL_EXIST_SQL =
             "SELECT * FROM hotel_info where hotelId=?;";
+    /**
+     * Used to get all ratings for a hotel
+     */
+    private static final String GET_ALL_RATINGS_HOTELID_SQL =
+            "SELECT intRating FROM hotel_reviews WHERE hotelId=?";
+
+    /**
+     * Used to get all ratings for a hotel
+     */
+    private static final String SET_AVERAGE_RATING_FOR_HOTEL_SQL =
+            "UPDATE hotel_info SET avgRating = ? WHERE hotelId=?;";
+
 
     /** Used to configure connection to database. */
     //TODO     private DatabaseConnector db;
@@ -469,7 +478,7 @@ public class DatabaseHandler {
             statement.setString(1,primkey);
             log.debug("Removing review " +primkey+".");
             statement.executeUpdate();
-            status=status.OK;
+            status=updateAvgRating(hotelId,connection);
         }
         catch (Exception ex) {
             status = Status.CONNECTION_FAILED;
@@ -503,7 +512,6 @@ public class DatabaseHandler {
                 reviewsmap.put("review",rs.getString(5));
                 reviewsmap.put("subDate",rs.getString(6));
                 reviewsmap.put("username",rs.getString(7));
-                log.debug(reviewsmap.isEmpty());
             }
         }
         catch (Exception ex) {
@@ -536,7 +544,7 @@ public class DatabaseHandler {
                 sb.append("<td><a href=\"/allreviews?hotelid="+hotelNames.getString(4)+"\">");
                 sb.append(hotelNames.getString(1)+"</a></td>");
                 sb.append("<td>"+hotelNames.getString(2)+"</td>");
-                sb.append("<td>"+hotelNames.getInt(3)+"</td>");
+                sb.append("<td>"+hotelNames.getDouble(3)+"</td>");
                 sb.append("</tr>");
             }
             sb.append("</table>");
@@ -682,7 +690,11 @@ public class DatabaseHandler {
      * @return html string*/
     public String reviewBuilder(String title, String username, String date, int rating, String review,boolean userReview,String hotelId) {
         StringBuilder sb = new StringBuilder();
-        log.debug("this is your hotelID: "+ hotelId+ " val:" + userReview);
+        if(userReview){
+            sb.append("<h3>Reviews for by user: "+username+" </h3>");
+        }else{
+            sb.append("<h3>Reviews for "+getHotelIdName(hotelId)+" </h3>");
+        }
         sb.append("<div style=\"background-color: #f1f1f1; padding: 0.01em 16px; margin: 20px 0; box-shadow: 0 2px 4px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)\">");
         sb.append("<h4 style=\"margin-bottom: 0px;\">" + title + "</h4>");
         sb.append("<p style=\"margin-top: 0px;\"><small>Submited by " + username);
@@ -692,7 +704,6 @@ public class DatabaseHandler {
         sb.append("<p>" + review + "</p>");
         sb.append("</div>");
         if(userReview){
-            log.debug(title+ ": " +hotelId);
             sb.append(" <form action = \"/myreviews?username="+username+"\" method = \"post\">");
             sb.append("<input type=\"hidden\" value=\""+hotelId+"\" name=\"hotelid\" />\n");
             sb.append("<input type=\"submit\" name=\"edit\" value=\"Edit\" />");
@@ -729,7 +740,7 @@ public class DatabaseHandler {
             statement.setString(6,date);
             statement.setString(7,username);
             statement.executeUpdate();
-            status = Status.OK;
+            status = updateAvgRating(hotelId,connection);
         }
         catch (SQLException e) {
             status = Status.SQL_EXCEPTION;
@@ -762,7 +773,7 @@ public class DatabaseHandler {
             statement.setString(4,date);
             statement.setString(5,username+hotelId);
             statement.executeUpdate();
-            status = Status.OK;
+            status = updateAvgRating(hotelId,connection);
         }
         catch (SQLException e) {
             status = Status.SQL_EXCEPTION;
@@ -796,7 +807,7 @@ public class DatabaseHandler {
 
 
     /**
-     * Get lat for a hotel
+     * Get latitude for a hotel using hotel id
      * */
     public String getHotelLat(String hotelId){
         String latitude="";
@@ -817,7 +828,7 @@ public class DatabaseHandler {
     }
 
     /**
-     * Get lot for a hotel
+     * Get longitude for a hotel using hotel id
      * */
     public String getHotelLon(String hotelId){
         String longitude="";
@@ -859,7 +870,7 @@ public class DatabaseHandler {
 
 
     /**
-     *Check if user has a existing review for hotel
+     *Check if hotel with hotel id exist
      * @param hotelId
      *
      */
@@ -877,5 +888,61 @@ public class DatabaseHandler {
             log.debug(e.getMessage(), e);
         }
         return exist;
+    }
+
+
+    private Status updateAvgRating(String hotelId,Connection connection) {
+        Status status = Status.ERROR;
+        int count = 0;
+        Double total = 0.0;
+        try (
+                PreparedStatement statement = connection.prepareStatement(GET_ALL_RATINGS_HOTELID_SQL)
+        ) {
+            statement.setString(1,hotelId);
+            ResultSet set = statement.executeQuery();
+
+            if (set.next()) {
+                log.debug("inside if");
+                do {
+                    log.debug("value"+set.getDouble(1));
+                    count++;
+                    total=total+set.getDouble(1);
+                } while (set.next());
+            } else {
+                log.debug("inside else");
+            }
+            Double avgRating = total/count;
+            if(avgRating.isNaN()){
+                setAvgRatingForHotel(hotelId,0.0,connection);
+            }else{
+                setAvgRatingForHotel(hotelId,avgRating,connection);
+            }
+            status = Status.OK;
+        }
+        catch (SQLException e) {
+            status = Status.SQL_EXCEPTION;
+            log.debug(e.getMessage(), e);
+        }
+        return status;
+    }
+
+    private Status setAvgRatingForHotel(String hotelId, Double avgRating,Connection connection) {
+        Status status = Status.ERROR;
+        try (
+                PreparedStatement statement = connection.prepareStatement(SET_AVERAGE_RATING_FOR_HOTEL_SQL)
+        ) {
+            log.debug("Updating average rating..");
+            log.debug(avgRating);
+            statement.setDouble(1,avgRating);
+            statement.setString(2,hotelId);
+            statement.executeUpdate();
+            status = Status.OK;
+        }
+        catch (SQLException e) {
+            status = Status.SQL_EXCEPTION;
+            log.debug(e.getMessage(), e);
+        }
+        log.debug("AvgRating for " +hotelId+" was changed " + status);
+        return status;
     }
 }

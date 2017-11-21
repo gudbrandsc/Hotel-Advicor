@@ -40,6 +40,7 @@ public class UserReviewsServlet extends LoginBaseServlet {
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
+
         String username=request.getParameter("username");
         if(request.getParameter("delete")!=null){
             prepareResponse("Delete hotel review", response);
@@ -73,6 +74,7 @@ public class UserReviewsServlet extends LoginBaseServlet {
         PrintWriter out = response.getWriter();
         if(request.getParameter("username")!=null){
             log.debug(getUsername(request));
+
             String username = request.getParameter("username");
             //Check that request username is the same as the currant user.
             if(username.equalsIgnoreCase(getUsername(request))){

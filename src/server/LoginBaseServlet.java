@@ -18,8 +18,8 @@ import java.util.Map;
 
 /**
  * Provides base functionality to all servlets in this example.
- * Example of Prof. Engle
- * @see LoginServer
+ *
+ *
  */
 @SuppressWarnings("serial")
 public class LoginBaseServlet extends HttpServlet {

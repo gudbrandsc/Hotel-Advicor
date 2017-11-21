@@ -9,9 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Handles login requests.
- * Example of Prof. Engle
- * @see LoginServer
+ * Class that handles login requests.
+ *
  */
 @SuppressWarnings("serial")
 public class LoginUserServlet extends LoginBaseServlet {
@@ -59,6 +58,7 @@ public class LoginUserServlet extends LoginBaseServlet {
         String user = request.getParameter("user");
         String pass = request.getParameter("pass");
 
+        //
         Status status = databaseHandler.authenticateUser(user, pass);
 
         try {
@@ -84,13 +84,13 @@ public class LoginUserServlet extends LoginBaseServlet {
         out.println("<h3>Login</h3>");
         out.println("<form action=\"/login\" method=\"post\">");
         out.println("<table border=\"0\">");
-        out.println("\t<tr>");
-        out.println("\t\t<td>Usename:</td>");
-        out.println("\t\t<td><input placeholder=\"Enter username\" type=\"text\" name=\"user\" size=\"30\"></td>");
-        out.println("\t</tr>");
-        out.println("\t<tr>");
-        out.println("\t\t<td>Password:</td>");
-        out.println("\t\t<td><input placeholder=\"Enter password\" type=\"password\" name=\"pass\" size=\"30\"></td>");
+        out.println("<tr>");
+        out.println("<td>Usename:</td>");
+        out.println("<td><input placeholder=\"Enter username\" type=\"text\" name=\"user\" size=\"30\"></td>");
+        out.println("</tr>");
+        out.println("<tr>");
+        out.println("<td>Password:</td>");
+        out.println("<td><input placeholder=\"Enter password\" type=\"password\" name=\"pass\" size=\"30\"></td>");
         out.println("</tr>");
         out.println("</table>");
         out.println("<p><input type=\"submit\" value=\"Login\"></p>");

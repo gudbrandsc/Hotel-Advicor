@@ -48,6 +48,12 @@ public class HotelReviewBuilder {
     private static final String DROP_HOTEL_REVIEW_TABLE_SQL =
             "DROP TABLE hotel_reviews;";
 
+    /** Used to check if a review with id exist*/
+    private static final String CHECK_IF_REVIEW_EXIST =
+            "SELECT * FROM hotel_reviews WHERE reviewId=?";
+
+
+
     /**
      * Create table for hotel reviews
      */
@@ -55,7 +61,7 @@ public class HotelReviewBuilder {
             "CREATE TABLE hotel_reviews (hotelId VARCHAR(50) NOT NULL," +
                     "                    reviewId VARCHAR(100) PRIMARY KEY," +
                     "                    intRating INTEGER (50) NOT NULL, " +
-                    "                    title VARCHAR(50) NOT NULL," +
+                    "                    title VARCHAR(255) NOT NULL," +
                     "                    review VARCHAR(3000) NOT NULL," +
                     "                    submissiondate VARCHAR (255) NOT NULL," +
                     "                    username VARCHAR(50) NOT NULL);";

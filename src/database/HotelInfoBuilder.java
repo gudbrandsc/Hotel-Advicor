@@ -56,14 +56,15 @@ public class HotelInfoBuilder {
                     "state VARCHAR(50) NOT NULL, " +
                     "address VARCHAR(100) NOT NULL," +
                     "latitude FLOAT(50) NOT NULL," +
-                    "longitude FLOAT(50) NOT NULL);";
+                    "longitude FLOAT(50) NOT NULL," +
+                    "avgRating DOUBLE (3,2) NOT NULL );";
 
     /**
      * Used to insert a new user into the database.
      */
     private static final String INSERT_HOTEL_SQL =
-            "INSERT INTO hotel_info (hotelId, hotelnames, city, state, address, latitude, longitude) " +
-                    "VALUES (?,?,?,?,?,?,?);";
+            "INSERT INTO hotel_info (hotelId, hotelnames, city, state, address, latitude, longitude,avgRating) " +
+                    "VALUES (?,?,?,?,?,?,?,?);";
 
 
     /**
@@ -168,6 +169,7 @@ public class HotelInfoBuilder {
             log.debug("Started loading data from " + jsonFilename);
             JSONArray arr = (JSONArray) obj.get("sr");
             Iterator<JSONObject> iterator = arr.iterator();
+            Double rating =0.0;
             while (iterator.hasNext()) {
                 JSONObject res = iterator.next();
                 JSONObject coords = (JSONObject) res.get("ll");
@@ -189,6 +191,8 @@ public class HotelInfoBuilder {
                     statement.setString(5, address);
                     statement.setFloat(6, lat);
                     statement.setFloat(7, lng);
+                    statement.setDouble(8, rating);
+
                     statement.executeUpdate();
                     status = Status.OK;
                     log.debug("Hotel added");
