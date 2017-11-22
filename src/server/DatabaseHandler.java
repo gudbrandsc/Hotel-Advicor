@@ -91,7 +91,7 @@ public class DatabaseHandler {
 
     /** Used to get city for a hotelid*/
     private static final String GET_HOTEL_CITY_SQL =
-            "SELECT longitude FROM hotel_info where hotelId=?;";
+            "SELECT city FROM hotel_info where hotelId=?;";
 
     /** Used to check if hotel with id exist*/
     private static final String CHECK_HOTEL_EXIST_SQL =
