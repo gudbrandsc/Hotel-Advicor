@@ -1,6 +1,6 @@
 package server;
 import database.DatabaseConnector;
-
+import databaseObjects.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -458,34 +459,27 @@ public class DatabaseHandler {
      * Method used to display general information about all hotels
      * @return A html table string with hotel name, address and average rating
      * */
-    public String hotelInfoDisplayer(){
-        StringBuilder sb = new StringBuilder();
+    public ArrayList<BasicHotelInfo> hotelInfoDisplayer(){
+        ArrayList<BasicHotelInfo> hotelInfoArrayList = new ArrayList<>();
         try (
                 Connection connection = db.getConnection();
                 PreparedStatement statement = connection.prepareStatement(GET_HOTEL_GENERAL_INFO_SQL)
 
         ) {
             ResultSet hotelNames =statement.executeQuery();
-            sb.append("<table>" +
-                    "<tr>" +
-                    "<th><b>Hotel name</b></th>" +
-                    "<th><b>Address</b></th>" +
-                    "<th><b>Rating</b></th>" +
-                    "</tr>");
             while (hotelNames.next()){
-                sb.append("<tr>");
-                sb.append("<td><a href=\"/allreviews?hotelid="+hotelNames.getString(4)+"\">");
-                sb.append(hotelNames.getString(1)+"</a></td>");
-                sb.append("<td>"+hotelNames.getString(2)+"</td>");
-                sb.append("<td>"+hotelNames.getDouble(3)+"</td>");
-                sb.append("</tr>");
+                BasicHotelInfo hInfo = new BasicHotelInfo(hotelNames.getString(1),
+                        hotelNames.getString(2),
+                        hotelNames.getDouble(3),
+                        hotelNames.getString(4));
+                hotelInfoArrayList.add(hInfo);
+
             }
-            sb.append("</table>");
         }
         catch (SQLException e) {
             log.debug(e.getMessage(), e);
         }
-        return sb.toString();
+        return hotelInfoArrayList;
     }
     /**
      * Tests if a hotel has any reviews
