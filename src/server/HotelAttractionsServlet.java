@@ -9,8 +9,9 @@ import java.io.PrintWriter;
 public class HotelAttractionsServlet extends LoginBaseServlet{
     /**
      * A method that gets executed when the get request is sent to the HotelAttractionsServlet
-     * @param request
-     * @param response
+     * @param request HttpServletRequest
+     * @param response HttpServletResponse
+     * @throws IOException IOException
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -27,8 +28,9 @@ public class HotelAttractionsServlet extends LoginBaseServlet{
         }
     }
     /** The method that will process the form once it's submitted
-     * @param request
-     * @param response
+     * @param request HttpServletRequest
+     * @param response HttpServletResponse
+     * @throws IOException IOException
      * */
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -41,8 +43,8 @@ public class HotelAttractionsServlet extends LoginBaseServlet{
 
     /**
      * Method to print attraction information to response writer. Also handel if get request miss param
-     * @param request
-     * @param response
+     * @param request HttpServletRequest
+     * @param response HttpServletResponse
      */
     private void printForm(HttpServletRequest request, HttpServletResponse response) throws IOException {
         int radius;

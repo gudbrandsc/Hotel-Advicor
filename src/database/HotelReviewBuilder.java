@@ -22,14 +22,12 @@ import org.json.simple.parser.ParseException;
 //TODO CHECK JAVADOC FOR ALL BUILDER FILES
 /**
  * Handles all database-related actions. Uses singleton design pattern.
- * Example of Prof. Engle
  *
- * @see LoginServer
  */
 public class HotelReviewBuilder {
 
     /**
-     * A {@link org.apache.log4j.Logger log4j} logger for debugging.
+     * A logger for debugging.
      */
     private static Logger log = LogManager.getLogger();
 
@@ -117,8 +115,8 @@ public class HotelReviewBuilder {
     /**
      * Checks if necessary table exists in database, and if it does deletes it and creates a new.
      * If it does not exist just create new table
-     *
-     * @return {@link Status.OK} if table exists or create is successful
+     *@param hotelFiles list of all json files that the user want to be read
+     * @return Status.OK if table exists or create is successful
      */
     private Status setupTable(ArrayList<Path> hotelFiles) {
         Status status = Status.ERROR;
@@ -164,7 +162,7 @@ public class HotelReviewBuilder {
      * read them, parse them using JSONSimple library, and
      * load review info to the TreeMap that contains a TreeSet of Review-s for each hotel id (you should
      * have defined this instance variable above)
-     * @param path
+     * @param path path to directory filename
      */
     public void loadReviews(Path path){
         final List<Path> files = new ArrayList<>();

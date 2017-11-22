@@ -108,8 +108,9 @@ public class DatabaseConnector {
 	/**
 	 * Opens a database connection and returns a set of found tables. Will
 	 * return an empty set if there are no results.
-	 *
+	 * @param db database connection
 	 * @return set of tables
+	 * @throws SQLException SQLException
 	 */
 	public Set<String> getTables(Connection db) throws SQLException {
 		Set<String> tables = new HashSet<>();

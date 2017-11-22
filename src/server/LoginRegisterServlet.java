@@ -14,9 +14,9 @@ public class LoginRegisterServlet extends LoginBaseServlet {
 
 	/**
 	 * A method that gets executed when a get request is sent to the LoginRegisterServlet
-	 * @param request
-	 * @param response
-	 * @throws IOException
+	 * @param request HttpServletRequest
+	 * @param response HttpServletResponse
+	 * @throws IOException IOException
 	 */
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -37,8 +37,9 @@ public class LoginRegisterServlet extends LoginBaseServlet {
 	}
 
 	/** The method that will process the form once it's submitted
-	 * @param request
-	 * @param response
+	 * @param request HttpServletRequest
+	 * @param response HttpServletResponse
+	 * @throws IOException IOException
 	 * */
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -60,7 +61,7 @@ public class LoginRegisterServlet extends LoginBaseServlet {
 	}
 	/**
 	 * A method that is used to print the registration form.
-	 * @param out
+	 * @param out printwriter from HttpServletResponse
 	 */
 	private void printForm(PrintWriter out) {
 		assert out != null;

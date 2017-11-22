@@ -4,7 +4,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.regex.Pattern;
 
 /**
  * Servlet class to handle server get requests for hotelReviews
@@ -14,8 +13,10 @@ public class AllReviewsServlet extends LoginBaseServlet{
 
     /**
      * A method that gets executed when the get request is sent to the AllReviewsServlet
-     * @param request
-     * @param response
+     * @param request httpservletrequest
+     * @param response httpservletrespons
+     * @throws IOException IOException
+
      */
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -24,6 +25,7 @@ public class AllReviewsServlet extends LoginBaseServlet{
         if (getUsername(request) != null) {
             prepareResponse("Reviews", response);
             PrintWriter out = response.getWriter();
+            out.println("<button><a href=\"/login?logout\">Logout</a></button>");
             printForm(request,response);
             finishResponse(response);
         }
@@ -34,9 +36,10 @@ public class AllReviewsServlet extends LoginBaseServlet{
 
     /**
      * Method that prints all hotel reviews to a specific hotel.
-     * @param request
-     * @param response
-     *
+     * @param request httpservletrequest
+     * @param response httpservletrespons
+     * @throws IOException IOException
+
      */
     private void printForm(HttpServletRequest request, HttpServletResponse response) throws IOException {
         PrintWriter out = response.getWriter();

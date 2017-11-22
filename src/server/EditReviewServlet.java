@@ -13,8 +13,9 @@ public class EditReviewServlet extends LoginBaseServlet{
 
     /**
      * A method that gets executed when the get request is sent to the EditReviewServlet
-     * @param request
-     * @param response
+     * @param request HttpServletRequest
+     * @param response HttpServletResponse
+     * @throws IOException IOException
      */
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -35,8 +36,9 @@ public class EditReviewServlet extends LoginBaseServlet{
     }
     /**
      * A method that is executed when the post request is sent to the AddReviewServlet
-     * @param request
-     * @param response
+     * @param request HttpServletRequest
+     * @param response HttpServletResponse
+     * @throws IOException IOException
      */
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -71,8 +73,8 @@ public class EditReviewServlet extends LoginBaseServlet{
 
      /**
       * Method that is used to print the review form.
-      * @param request
-      * @param out
+      * @param request HttpServletRequest
+      * @param out printwriter from respons
       * */
     private void printForm(HttpServletRequest request,PrintWriter out) {
         assert out != null;

@@ -19,8 +19,8 @@ public class TouristAttractionFinder {
 
     /** Takes a host and a string containing path/resource/query and creates a
      * string of the HTTP GET request
-     * @param pathResourceQuery
-     * @return
+     * @param pathResourceQuery string containing path and request query
+     * @return a string with built api request string
      * */
     private static String getRequest(String pathResourceQuery) {
         String request = "GET " + pathResourceQuery + " HTTP/1.1" + System.lineSeparator() // GET
@@ -39,8 +39,9 @@ public class TouristAttractionFinder {
      * Removes headers from the response string and parses the remaining json to
      * get Attractions info. Returns a html formated string for attractions table
      *
-     * @param radiusInMiles
-     * @param hId
+     * @param radiusInMiles radius in miles
+     * @param hId hotelid
+     * @return html with all attractions name and address
      */
     public static String fetchAttractions(int radiusInMiles, String hId) {
         String resp = "";

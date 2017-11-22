@@ -29,8 +29,8 @@ public class LoginBaseServlet extends HttpServlet {
 
 	/**
 	 * Method that is used to prepare html header and body.
-	 * @param title
-	 * @param response
+	 * @param title header title
+	 * @param response HttpServletResponse
 	 */
 	protected void prepareResponse(String title, HttpServletResponse response) {
 		try {
@@ -43,7 +43,6 @@ public class LoginBaseServlet extends HttpServlet {
 			writer.printf("\t<meta charset=\"utf-8\">%n");
 			writer.printf("</head>%n%n");
 			writer.printf("<body>%n%n");
-			writer.println("<button><a href=\"/login?logout\">Logout</a></button>");
 
 
 		}
@@ -56,7 +55,7 @@ public class LoginBaseServlet extends HttpServlet {
 	/**
 	 * Method that is used to close html tag and body.
 	 * Also used to flush writer.
-	 * @param response
+	 * @param response HttpServletResponse
 	 */
 	protected void finishResponse(HttpServletResponse response) {
 		try {
@@ -108,8 +107,8 @@ public class LoginBaseServlet extends HttpServlet {
 
 	/**
 	 * Used to clear all cookies.
-	 * @param request
-	 * @param response
+	 * @param request HttpServletRequest
+	 * @param response HttpServletResponse
 	 */
 	protected void clearCookies(HttpServletRequest request, HttpServletResponse response) {
 		Cookie[] cookies = request.getCookies();
@@ -127,8 +126,8 @@ public class LoginBaseServlet extends HttpServlet {
 
 	/**
 	 * Used to return a string of the value of a Status error message.
-	 * @param errorName
-	 * @return
+	 * @param errorName name of the error
+	 * @return string of status
 	 */
 	protected String getStatusMessage(String errorName) {
 		Status status = null;
@@ -146,8 +145,8 @@ public class LoginBaseServlet extends HttpServlet {
 
 	/**
 	 * Used to get a status message using a integer code
-	 * @param code
-	 * @return
+	 * @param code status code number
+	 * @return with error message
 	 */
 	protected String getStatusMessage(int code) {
 		Status status = null;
@@ -165,8 +164,8 @@ public class LoginBaseServlet extends HttpServlet {
 
 	/**
 	 * Used to get the username of the person in the session, using cookies.
-	 * @param request
-	 * @return
+	 * @param request HttpServletRequest
+	 * @return string containing username
 	 */
 	protected String getUsername(HttpServletRequest request) {
 		Map<String, String> cookies = getCookieMap(request);

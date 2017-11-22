@@ -12,9 +12,9 @@ public class UserReviewsServlet extends LoginBaseServlet {
 
     /**
      * A method that gets executed when the get request is sent to the UserReviewsServlet
-     * @param request
-     * @param response
-     * @throws IOException
+     * @param request HttpServletRequest
+     * @param response HttpServletResponse
+     * @throws IOException IOException
      */
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -35,8 +35,9 @@ public class UserReviewsServlet extends LoginBaseServlet {
         }
     }
     /** The method that will handle post request sent to UserReviewsServlet.
-     * @param request
-     * @param response
+     * @param request HttpServletRequest
+     * @param response HttpServletResponse
+     * @throws IOException IOException
      * */
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -68,8 +69,9 @@ public class UserReviewsServlet extends LoginBaseServlet {
 
     /**
      * Method that prints hotel reviews to a specific hotel. Also handles if get request is missing parameters
-     * @param request
-     * @param response
+     * @param request HttpServletRequest
+     * @param response HttpServletResponse
+     * @throws IOException IOException
      */
     private void printForm(HttpServletRequest request, HttpServletResponse response) throws IOException {
         PrintWriter out = response.getWriter();

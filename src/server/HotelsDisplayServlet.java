@@ -13,9 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 public class HotelsDisplayServlet extends LoginBaseServlet {
     /**
      * A method that gets executed when a get request is sent to the HotelsDisplayServlet.
-     * @param request
-     * @param response
-     * @throws IOException
+     * @param request HttpServletRequest
+     * @param response HttpServletResponse
+     * @throws IOException IOException
      */
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)

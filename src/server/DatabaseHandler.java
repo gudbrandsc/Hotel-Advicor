@@ -109,7 +109,6 @@ public class DatabaseHandler {
 
 
     /** Used to configure connection to database. */
-    //TODO     private DatabaseConnector db;
 
     private DatabaseConnector db;
 
@@ -123,7 +122,6 @@ public class DatabaseHandler {
     private DatabaseHandler() {
         Status status = Status.OK;
         random = new Random(System.currentTimeMillis());
-        //Change so that u can use all SQL statments from databse dir
 
         try {
             db = new DatabaseConnector("database.properties");
@@ -491,7 +489,7 @@ public class DatabaseHandler {
     }
     /**
      * Tests if a hotel has any reviews
-     * @param hotelId
+     * @param hotelId id for the hotel
      * @return true if set is not empty
      */
     public Status checkHotelIdReviewSet(String hotelId) {
@@ -511,6 +509,7 @@ public class DatabaseHandler {
     }
     /**
      * Tests if a user have any reviews
+     * @param username username
      * @return true if set is not empty
      */
     public Status checkUsernameReviewSet(String username) {
@@ -531,7 +530,7 @@ public class DatabaseHandler {
     }
     /**
      * Used to get the name of a hotel connected to hotel id
-     *@param hotelId
+     * @param hotelId id for hotel
      * @return hotel name
      */
     public String getHotelIdName(String hotelId) {
@@ -555,7 +554,7 @@ public class DatabaseHandler {
     /**
      * Method used to build a html string containing all reviews for a hotel
      * using a hotel id
-     * @param hotelId
+     * @param hotelId hotel id
      * @return A html table string with hotel name, address and rating
      *
      * */
@@ -587,8 +586,8 @@ public class DatabaseHandler {
 
     /**
      * Method used to get all reviews for a user, and sends each review to review builder.
-     * @param username
-     * @return ResultSet
+     * @param username for currant user
+     * @return string of reviews in a html format
      * */
     public String usernameReviewDisplayer(String username) {
         StringBuilder sb = new StringBuilder();
@@ -620,14 +619,14 @@ public class DatabaseHandler {
 
     /**
      * Builds a html string with all reviews for a hotel or user. If user-> add functionality to remove and edit review
-     * @param title
-     * @param username
-     * @param date
-     * @param rating
-     * @param review
-     * @param userReview
-     * @param hotelId
-     * @return
+     * @param title review title
+     * @param username username for person posting the review
+     * @param date date of post
+     * @param rating rating for hotel
+     * @param review review text
+     * @param userReview value to print delete and edit button
+     * @param hotelId id for hotel
+     * @return  string with all reviews
      */
     private String reviewBuilder(String title, String username, String date, int rating, String review,boolean userReview,String hotelId) {
         StringBuilder sb = new StringBuilder();
@@ -654,13 +653,13 @@ public class DatabaseHandler {
     // TODO make most methods return status
     /**
      * Used to add a new hotel review
-     * @param hotelId
-     * @param rating
-     * @param title
-     * @param review
-     * @param date
-     * @param username
-     * @return
+     * @param hotelId hotel id
+     * @param rating rating for hotel
+     * @param title title for hotel
+     * @param review review text
+     * @param date date review was posted
+     * @param username username
+     * @return status.OK if review was added
      */
 
     public Status addReview(String hotelId,int rating, String title, String review, String date, String username){
@@ -689,13 +688,13 @@ public class DatabaseHandler {
     }
     /**
      * Used to update a users hotel review
-     * @param hotelId
-     * @param rating
-     * @param title
-     * @param review
-     * @param date
-     * @param username
-     * @return
+     * @param hotelId hotel id
+     * @param rating new rating
+     * @param title new title
+     * @param review new review text
+     * @param date new post date
+     * @param username username
+     * @return return Status.OK if edit was success
      */
 
     public Status editReview(String hotelId, int rating, String title, String review, String date, String username){
@@ -723,9 +722,9 @@ public class DatabaseHandler {
 
     /**
      *Check if user has a existing review for hotel
-     * @param hotelId
-     * @param username
-     * @return
+     * @param hotelId id for hotel
+     * @param username username
+     * @return status.ok if has any reviews
      */
 
     public Status checkForExistingUserReview(String hotelId, String username){
@@ -748,7 +747,7 @@ public class DatabaseHandler {
 
     /**
      * Get latitude for a hotel using hotel id
-     * @param hotelId
+     * @param hotelId id for hotel
      * @return latitude
      * */
     public String getHotelLat(String hotelId){
@@ -771,7 +770,7 @@ public class DatabaseHandler {
 
     /**
      * Get longitude for a hotel using hotel id
-     * @param hotelId
+     * @param hotelId hotel id
      * @return longitude
      * */
     public String getHotelLon(String hotelId){
@@ -794,7 +793,7 @@ public class DatabaseHandler {
 
     /**
      * Get city for a hotel
-     * @param hotelId
+     * @param hotelId id for hotel
      * @return city
      * */
     public String getHotelCity(String hotelId){
@@ -818,8 +817,8 @@ public class DatabaseHandler {
 
     /**
      *Check if hotel with hotel id exist
-     * @param hotelId
-     * @return
+     * @param hotelId id for hotel
+     * @return status.OK if hotel exist
      *
      */
 
@@ -845,9 +844,9 @@ public class DatabaseHandler {
 
     /**
      * Gets all review ratings and calculate the new average
-     * @param hotelId
-     * @param connection
-     * @return
+     * @param hotelId id for hotel
+     * @param connection connection to database
+     * @return status.OK if update was success
      */
     private Status updateAvgRating(String hotelId,Connection connection) {
         Status status = Status.ERROR;
@@ -882,10 +881,10 @@ public class DatabaseHandler {
 
     /**
      * Updates the average rating for a hotel
-     * @param hotelId
-     * @param avgRating
-     * @param connection
-     * @return
+     * @param hotelId id for hotel
+     * @param avgRating calculated average rating
+     * @param connection database connection
+     * @return status.OK if rating was updated for the hotel
      */
     private Status setAvgRatingForHotel(String hotelId, Double avgRating,Connection connection) {
         Status status = Status.ERROR;

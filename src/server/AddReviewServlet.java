@@ -11,8 +11,9 @@ import java.io.PrintWriter;
 public class AddReviewServlet extends LoginBaseServlet {
     /**
      * A method that gets executed when the get request is sent to the AddReviewServlet
-     * @param request
-     * @param response
+     * @param request httpservletrequest
+     * @param response httpsservletrespons
+     * @throws IOException IOException
      */
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -36,8 +37,10 @@ public class AddReviewServlet extends LoginBaseServlet {
     }
     /**
      * A method that is executed when the post request is sent to the AddReviewServlet
-     * @param request
-     * @param response
+     * @param request httpservletrequest
+     * @param response httpsservletrespons
+     * @throws IOException IOException
+
      */
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -70,8 +73,8 @@ public class AddReviewServlet extends LoginBaseServlet {
 
     /**
      * Method to print html for a review form
-     * @param request
-     * @param out
+     * @param request httpservletrequest
+     * @param out printwriter from getmethod
      * */
     private void printForm(HttpServletRequest request,PrintWriter out) {
         assert out != null;

@@ -105,6 +105,12 @@ public class SetHotelRating {
         return status;
     }
 
+    /**
+     * Method that gets all ratings for a hotel and calculate average rating
+     * @param hotelId hotel id
+     * @param connection response connection
+     * @return status.OK if rating was added
+     */
 
     private Status calculateAvgRating(String hotelId,Connection connection) {
         Status status = Status.ERROR;
@@ -135,6 +141,13 @@ public class SetHotelRating {
         return status;
     }
 
+    /**
+     * Method to set average rating for a hotel
+     * @param hotelId hotel id
+     * @param avgRating average calculated rating
+     * @param connection db connection
+     * @return
+     */
     private Status setAvgRatingForHotel(String hotelId, Double avgRating,Connection connection) {
         Status status = Status.ERROR;
         try (

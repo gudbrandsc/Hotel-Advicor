@@ -16,9 +16,9 @@ import javax.servlet.http.HttpServletResponse;
 public class LoginUserServlet extends LoginBaseServlet {
     /**
      * A method that gets executed when the get request is sent to the LoginUserServlet
-     * @param request
-     * @param response
-     * @throws IOException
+     * @param request HttpServletRequest
+     * @param response HttpServletResponse
+     * @throws IOException IOException
 
      */
     @Override
@@ -56,8 +56,8 @@ public class LoginUserServlet extends LoginBaseServlet {
         finishResponse(response);
     }
     /** The method that will handle post requests sent to LoginUserServlet
-     * @param request
-     * @param response
+     * @param request HttpServletRequest
+     * @param response HttpServletResponse
      * */
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) {
@@ -84,7 +84,7 @@ public class LoginUserServlet extends LoginBaseServlet {
     }
     /**
      * A method that is used to print the login form.
-     * @param out
+     * @param out printwriter from HttpServletResponse
      */
     private void printForm(PrintWriter out) {
         assert out != null;

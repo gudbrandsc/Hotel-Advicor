@@ -21,12 +21,12 @@ import org.json.simple.parser.ParseException;
  * Handles all database-related actions. Uses singleton design pattern.
  * Example of Prof. Engle
  *
- * @see LoginServer
+ *
  */
 public class HotelInfoBuilder {
 
     /**
-     * A {@link org.apache.log4j.Logger log4j} logger for debugging.
+     * A logger for debugging.
      */
     private static Logger log = LogManager.getLogger();
 
@@ -110,8 +110,8 @@ public class HotelInfoBuilder {
     /**
      * Checks if necessary table exists in database, and if it does deletes it and creates a new.
      * If it does not exist just create new table
-     *
-     * @return {@link Status.OK} if table exists or create is successful
+     * @param hotelFiles list with all jsonfiles that user wants to be processed
+     * @return status.ok if table was created and all hotels where added
      */
     private Status setupTables(ArrayList<String> hotelFiles) {
         Status status = Status.ERROR;
@@ -159,6 +159,7 @@ public class HotelInfoBuilder {
     /**
      * Read the given json file with information about the hotels (check hotels.json to see the expected format)
      * and load it into the appropriate data structure(s).
+     * @param jsonFilename string with json filename
      */
     public void loadHotelInfo(String jsonFilename) {
         Status status = Status.ERROR;
