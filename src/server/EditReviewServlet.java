@@ -88,7 +88,7 @@ public class EditReviewServlet extends LoginBaseServlet{
         out.println("<p style=\"text-align: center;\">Title:</p>");
         out.println("<input required autofocus value =\""+reviewmap.get("title")+"\" placeholder=\"Title\" type=\"text\" name=\"title\" size=\"50\">");
         out.println("<p style=\"text-align: center;\">Rating:</p>");
-        out.println("<input required value =\""+reviewmap.get("rating")+"\"  placeholder=\"Enter your rating from 1-5...\" type=\"text\" name=\"rating\" size=\"50\"pattern=\"[0-5]{1}\"  title=\"- Must be a number between 1-6\">");
+        out.println("<input required value =\""+reviewmap.get("rating")+"\"  placeholder=\"Enter your rating from 1-5...\" type=\"text\" name=\"rating\" size=\"50\"pattern=\"[0-5]{1}\"  title=\"- Must be a number between 1-5\">");
         out.println("<p style=\"text-align: center;\">Review:</p>");
         out.println("<textarea required placeholder=\"Write your review...\" rows=\"5\" type=\"text\" name=\"review\" maxlength=\"3000\" ");
         out.println("style=\"width:-webkit-fill-available; padding: 6px 12px;border: 1px solid #ccc; border-radius: 4px;\">"+reviewmap.get("review")+"</textArea>");

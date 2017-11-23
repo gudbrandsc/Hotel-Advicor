@@ -60,8 +60,8 @@ public class DatabaseHandler {
             "SELECT * FROM hotel_reviews WHERE username=?;";
 
     /*** Used to get a hotel name using hotelid.*/
-    private static final String GET_HOTEL_NAME_SQL =
-            "SELECT hotelnames FROM hotel_info WHERE hotelId=? ORDER BY hotelId DESC LIMIT 1";
+    private static final String GET_HOTELID_INFO_SQL =
+            "SELECT * FROM hotel_info WHERE hotelId=?";
 
     /*** Used to insert a new review for a hotel.*/
     private static final String INSERT_REVIEW_SQL =
@@ -531,7 +531,7 @@ public class DatabaseHandler {
         String hotelName="";
         try (
                 Connection connection = db.getConnection();
-                PreparedStatement statement = connection.prepareStatement(GET_HOTEL_NAME_SQL)
+                PreparedStatement statement = connection.prepareStatement(GET_HOTELID_INFO_SQL)
         ) {
             statement.setString(1,hotelId);
             ResultSet rs = statement.executeQuery();
@@ -545,6 +545,57 @@ public class DatabaseHandler {
         log.debug(hotelName);
         return hotelName;
     }
+
+    /**
+     * Used to get the address of a hotel using the hotel id
+     * @param hotelId id for hotel
+     * @return hotel name
+     */
+    public String getHotelIdAddress(String hotelId) {
+        String hotelAddress="";
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(GET_HOTELID_INFO_SQL)
+        ) {
+            statement.setString(1,hotelId);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                hotelAddress = rs.getString("address");
+            }
+        }
+        catch (SQLException e) {
+            log.debug(e.getMessage(), e);
+        }
+        return hotelAddress;
+    }
+
+    /**
+     * Used to get the address of a hotel using the hotel id
+     * @param hotelId id for hotel
+     * @return hotel name
+     */
+    public Double getHotelIdRating(String hotelId) {
+        Double hotelRating=0.0;
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(GET_HOTELID_INFO_SQL)
+        ) {
+            statement.setString(1,hotelId);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                hotelRating = rs.getDouble("avgRating");
+            }
+        }
+        catch (SQLException e) {
+            log.debug(e.getMessage(), e);
+        }
+        return hotelRating;
+    }
+
+
+
+
+
     /**
      * Method used to build a html string containing all reviews for a hotel
      * using a hotel id
@@ -552,8 +603,9 @@ public class DatabaseHandler {
      * @return A html table string with hotel name, address and rating
      *
      * */
-    public String hotelIdReviewDisplayer(String hotelId) {
-        StringBuilder sb = new StringBuilder();
+    public ArrayList<HotelReview> hotelIdReviewDisplayer(String hotelId) {
+        ArrayList<HotelReview> reviews = new ArrayList<>();
+
         try (
                 Connection connection = db.getConnection();
                 PreparedStatement statement = connection.prepareStatement(GET_HOTEL_REVIEWS_HOTELID_SQL)
@@ -562,21 +614,23 @@ public class DatabaseHandler {
             statement.setString(1,hotelId);
             ResultSet hotelReviews = statement.executeQuery();
             while (hotelReviews.next()) {
-                sb.append(reviewBuilder(
-                        hotelReviews.getString(4),
-                        hotelReviews.getString(7),
-                        hotelReviews.getString(6),
-                        hotelReviews.getInt(3),
-                        hotelReviews.getString(5),
-                        false,
-                        hotelReviews.getString(1)
-                        ));
+                String hotelid = hotelReviews.getString(1);
+                String reviewid = hotelReviews.getString(2);
+                int rating = hotelReviews.getInt(3);
+                String title = hotelReviews.getString(4);
+                String review = hotelReviews.getString(5);
+                String date = hotelReviews.getString(6);
+                String username = hotelReviews.getString(7) ;
+
+                HotelReview hr = new HotelReview(hotelid,reviewid,rating,title,review,date,username);
+               reviews.add(hr);
             }
         } catch (SQLException e) {
             log.debug(e.getMessage(), e);
         }
-        return sb.toString();
+        return reviews;
     }
+//    public HotelReview(String hotelid, String reviewid,int rating,String title, String review,String date, String username){
 
     /**
      * Method used to get all reviews for a user, and sends each review to review builder.

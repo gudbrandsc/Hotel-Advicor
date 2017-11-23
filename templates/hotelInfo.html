@@ -1,19 +1,10 @@
 <!DOCTYPE html>
 <html>
-<style>
-    .reviewtext{
-        border: 1px solid #e3e3e3;
-        background: #ffffff;
-        padding: 9px;
-        border-radius: 3px;
-    }
-</style>
 <head>
     <title>Hotel info</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
@@ -34,21 +25,17 @@
         </div>
     </nav>
 </div>
-#foreach($review in $reviews)
 <div class="container">
-    <div class="well well-sm">
+    <div class="jumbotron">
 
-        <div>
-            <h3>$!review.title</h3>
-            <p><small>posted by $!review.username on $!review.date</small></p>
-        </div>
+        <h3>$name</h3>
+        <p>Address: $address</p>
+        <p>Rating: $rating</p>
+        <p><a href="/reviews?hotelid=$hotelid" class="btn btn-primary" role="Reviews">Reviews</a>
+        <p><a href="$expedia" class="btn btn-default" role="Reviews">Expedia</a>
 
-        <div class="reviewtext">
-            <p>$!review.review</p>
-        </div>
-        <p>Rating: $!review.rating</p>
+        </p>
     </div>
 </div>
-#end
 </body>
 </html>

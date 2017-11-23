@@ -64,6 +64,7 @@ public class TouristAttractionFinder {
             String fixedQuery = query.replaceAll(" ", "%20");
 
             String header = getRequest(path + "?" + fixedQuery);
+            System.out.println(header);
             out.println(header); // send a request to the server
             out.flush();
 

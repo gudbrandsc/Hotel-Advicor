@@ -1,10 +1,10 @@
 package databaseObjects;
 
 public class BasicHotelInfo {
-    String name;
-    String address;
-    String hotelId;
-    Double rating;
+    private String name;
+    private String address;
+    private String hotelId;
+    private Double rating;
 
     public BasicHotelInfo(String name, String address, Double rating,String hotelId){
         this.name=name;

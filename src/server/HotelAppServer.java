@@ -23,7 +23,8 @@ public class HotelAppServer {
         context.addServlet(LoginUserServlet.class,     "/login");
         context.addServlet(LoginRegisterServlet.class, "/register");
         context.addServlet(HotelsDisplayServlet.class,  "/viewhotels");
-        context.addServlet(AllReviewsServlet.class,  "/allreviews");
+        context.addServlet(HotelPageServlet.class,  "/hotel");
+        context.addServlet(AllReviewsServlet.class,  "/reviews");
         context.addServlet(UserReviewsServlet.class,  "/myreviews");
         context.addServlet(AddReviewServlet.class,  "/addreview");
         context.addServlet(EditReviewServlet.class,  "/editreview");
@@ -54,3 +55,4 @@ public class HotelAppServer {
         }
     }
 }
+//TODO database table with hotelid and links to all photos fro expedia

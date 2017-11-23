@@ -5,19 +5,14 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-/**
- * Servlet that displays all hotel names, address and average rating.
- *
- */
-@SuppressWarnings("serial")
-public class HotelsDisplayServlet extends LoginBaseServlet {
+public class HotelPageServlet extends LoginBaseServlet {
     /**
      * A method that gets executed when a get request is sent to the HotelsDisplayServlet.
      * @param request HttpServletRequest
@@ -30,12 +25,27 @@ public class HotelsDisplayServlet extends LoginBaseServlet {
 
         if (getUsername(request) != null) {
             PrintWriter out = response.getWriter();
+
             VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
             VelocityContext context = new VelocityContext();
-            Template template = ve.getTemplate("templates/basicHotelInfo.html");
-            ArrayList<BasicHotelInfo> hotelInfo = databaseHandler.hotelInfoDisplayer();
-            context.put("username",getUsername(request));
-            context.put("hotels", hotelInfo);
+            Template template = ve.getTemplate("templates/hotelInfo.html");
+            String hotelId = request.getParameter("hotelid");
+            String name = databaseHandler.getHotelIdName(hotelId);
+            String address = databaseHandler.getHotelIdAddress(hotelId);
+            String city = databaseHandler.getHotelCity(hotelId);
+            Double rating = databaseHandler.getHotelIdRating(hotelId);
+
+            String expedia = "https://www.expedia.com/"+city+"-hotels-"+name+".h"+hotelId+".Hotel-Information";
+            expedia = expedia.replaceAll(" ","-");
+
+            context.put("name",name);
+            context.put("address", address);
+            context.put("rating", rating);
+            context.put("hotelid",hotelId);
+            context.put("expedia",expedia);
+            System.out.println(expedia);
+
+
             StringWriter writer = new StringWriter();
             template.merge(context, writer);
 
@@ -46,5 +56,4 @@ public class HotelsDisplayServlet extends LoginBaseServlet {
             response.sendRedirect("/login");
         }
     }
-
 }
