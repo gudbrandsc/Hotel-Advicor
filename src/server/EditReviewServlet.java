@@ -24,6 +24,7 @@ public class EditReviewServlet extends LoginBaseServlet{
         if (getUsername(request) != null) {
             prepareResponse("Edit review", response);
             PrintWriter out = response.getWriter();
+            log.debug(getUsername(request)+" & "+ request.getParameter("username"));
             if(getUsername(request).equals(request.getParameter("username"))){
                 printForm(request,out);
             }else

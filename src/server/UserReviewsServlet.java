@@ -1,9 +1,16 @@
 package server;
 
+import databaseObjects.HotelReview;
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.ArrayList;
 
 /**
  * Servlet that handles display of user reviews, and lets user edit and delete there reviews.
@@ -21,16 +28,30 @@ public class UserReviewsServlet extends LoginBaseServlet {
             throws IOException {
 
         if (getUsername(request) != null) {
-            if(request.getParameter("username")==null){
-                log.debug("Missing username in request");
-                response.sendRedirect("myreviews?username="+getUsername(request));
-            }else{
-                prepareResponse("My reviews", response);
-                printForm(request,response);
-                finishResponse(response);
+            if(request.getParameter("username")!=getUsername(request)){
+                String username = request.getParameter("username");
+                if(databaseHandler.checkUsernameReviewSet(getUsername(request)) == Status.OK){
+                    PrintWriter out = response.getWriter();
+                    VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
+                    VelocityContext context = new VelocityContext();
+                    Template template = ve.getTemplate("templates/myReviews.html");
+                    ArrayList<HotelReview> reviews = databaseHandler.usernameReviewDisplayer(username);
+                    context.put("reviews", reviews);
+                    StringWriter writer = new StringWriter();
+                    template.merge(context, writer);
+                    log.debug(writer.toString());
+                    out.println(writer.toString());
+                }else{
+                    log.debug("user has no reviews");
+
+                }
+                //response.sendRedirect("myreviews?username="+getUsername(request));
+            }else {
+                //response.sendRedirect("myreviews?username="+getUsername(request));
+
             }
-        }
-        else {
+
+        } else {
             response.sendRedirect("/login");
         }
     }

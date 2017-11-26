@@ -637,8 +637,8 @@ public class DatabaseHandler {
      * @param username for currant user
      * @return string of reviews in a html format
      * */
-    public String usernameReviewDisplayer(String username) {
-        StringBuilder sb = new StringBuilder();
+    public ArrayList<HotelReview> usernameReviewDisplayer(String username) {
+        ArrayList<HotelReview> reviews = new ArrayList<>();
 
         try (
                 Connection connection = db.getConnection();
@@ -648,21 +648,20 @@ public class DatabaseHandler {
             statement.setString(1,username);
             ResultSet hotelReviews = statement.executeQuery();
                 while (hotelReviews.next()) {
-                    sb.append(reviewBuilder(
-                            hotelReviews.getString(4),
-                            hotelReviews.getString(7),
-                            hotelReviews.getString(6),
-                            hotelReviews.getInt(3),
-                            hotelReviews.getString(5),
-                            true,
-                    hotelReviews.getString(1)
-                    ));
+                    String hotelid = hotelReviews.getString(1);
+                    String reviewid = hotelReviews.getString(2);
+                    int rating = hotelReviews.getInt(3);
+                    String title = hotelReviews.getString(4);
+                    String review = hotelReviews.getString(5);
+                    String date = hotelReviews.getString(6);
+
+                    HotelReview hr = new HotelReview(hotelid,reviewid,rating,title,review,date,username);
+                    reviews.add(hr);
                 }
             } catch (SQLException e) {
                 log.debug(e.getMessage(), e);
             }
-            log.debug("Building string with all reviews");
-        return sb.toString();
+        return reviews;
     }
 
     /**
@@ -880,7 +879,6 @@ public class DatabaseHandler {
             statement.setString(1,hotelId);
             ResultSet results= statement.executeQuery();
             status = results.next() ? status = Status.OK : Status.INVALID_HOTELID;
-            log.debug(status);
 
         }
         catch (SQLException e) {

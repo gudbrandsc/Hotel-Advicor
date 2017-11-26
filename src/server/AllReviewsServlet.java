@@ -30,12 +30,12 @@ public class AllReviewsServlet extends LoginBaseServlet{
             throws IOException {
 
         if (getUsername(request) != null) {
-            PrintWriter out = response.getWriter();
             //Check that request contains hotel id
             if (request.getParameterMap().containsKey("hotelid")) {
                 String hotelid = request.getParameter("hotelid");
                 //Chack that hotel exist in database
                 if (databaseHandler.checkHotelIdReviewSet(hotelid) == Status.OK) {
+                    PrintWriter out = response.getWriter();
                     VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
                     VelocityContext context = new VelocityContext();
                     Template template = ve.getTemplate("templates/allreviews.html");
