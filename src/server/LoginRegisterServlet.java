@@ -1,9 +1,14 @@
 package server;
 
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 
 
 /**
@@ -22,18 +27,22 @@ public class LoginRegisterServlet extends LoginBaseServlet {
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 
-		prepareResponse("Register New User", response);
 
 		PrintWriter out = response.getWriter();
 		String error = request.getParameter("error");
+		boolean alert = false;
 
 		if(error != null) {
-			String errorMessage = getStatusMessage(error);
-			out.println("<p style=\"color: red;\">" + errorMessage + "</p>");
+			alert=true;
 		}
 
-		printForm(out);
-		finishResponse(response);
+		VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
+		VelocityContext context = new VelocityContext();
+		Template template = ve.getTemplate("templates/register.html");
+		context.put("alert",alert);
+		StringWriter writer = new StringWriter();
+		template.merge(context, writer);
+		out.println(writer.toString());
 	}
 
 	/** The method that will process the form once it's submitted
@@ -58,34 +67,5 @@ public class LoginRegisterServlet extends LoginBaseServlet {
 			url = response.encodeRedirectURL(url);
 			response.sendRedirect(url);
 		}
-	}
-	/**
-	 * A method that is used to print the registration form.
-	 * @param out printwriter from HttpServletResponse
-	 */
-	private void printForm(PrintWriter out) {
-		assert out != null;
-		out.println("<h3>Register</h3>");
-		out.println("<form action=\"/register\" method=\"post\">");
-		out.println("<table border=\"0\">");
-		out.println("<tr>");
-		out.println("<td>Usename:</td>");
-		out.println("<td><input autofocus required placeholder=\"Enter username\" type=\"text\" name=\"user\"");
-		out.println("pattern=\"[a-zA-Z0-9_-]{5,20}\" title=\"- Length 5-20 characters ");
-		out.println("- Upper and lowercase letters");
-		out.println("- numbers and special character: _- \"></td></tr>");
-		out.println("<tr>");
-		out.println("<td>Password:</td>");
-		out.println("<td><input placeholder=\"Enter password\" type=\"password\" name=\"pass\" size=\"30\"");
-		out.println("pattern=\"(?=.*[a-z])(?=.*[A-Z])(?=.*[\\d])(?=.*[#?!@$%^&*-]).{8,}\"");
-		out.println(" required title=\"- At least 8 characters");
-		out.println("- One upper- and one lowercase letter");
-		out.println("- One number from 0-9");
-		out.println("- One special character  #?!@$%^&*-\"");
-		out.println("></td>");
-		out.println("</tr>");
-		out.println("</table>");
-		out.println("<p><input type=\"submit\" value=\"Register user\"></p>");
-		out.println("</form>");
 	}
 }

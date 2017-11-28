@@ -85,32 +85,4 @@ public class UserReviewsServlet extends LoginBaseServlet {
         }
 
     }
-
-
-    /**
-     * Method that prints hotel reviews to a specific hotel. Also handles if get request is missing parameters
-     * @param request HttpServletRequest
-     * @param response HttpServletResponse
-     * @throws IOException IOException
-     */
-    private void printForm(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        PrintWriter out = response.getWriter();
-        if(request.getParameter("username")!=null){
-            String username = request.getParameter("username");
-            //Check that request username is the same as the currant user.
-            if(username.equalsIgnoreCase(getUsername(request))){
-                //Check if currant user has any reviews
-                if(databaseHandler.checkUsernameReviewSet(getUsername(request))==Status.OK){
-                    out.println("<h3>Reviews for by user: "+username+" </h3>");
-                    out.println(databaseHandler.usernameReviewDisplayer(username));
-                }else {
-                    out.println("<p>You don't have any reviews yet</p>");
-                }
-            }else{
-                out.println("<p>Username is invalid</p>");
-            }
-        }else{
-            out.println("Invalid request");
-        }
-    }
 }

@@ -1,8 +1,15 @@
 package server;
 
 
+import databaseObjects.HotelReview;
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
+
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.ArrayList;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -27,6 +34,10 @@ public class LoginUserServlet extends LoginBaseServlet {
         PrintWriter out = response.getWriter();
         String error = request.getParameter("error");
         int code = 0;
+        boolean newuser=false;
+        boolean logout = false;
+        boolean erroralert = false;
+        String errorMessage =null;
 
         if (error != null) {
             try {
@@ -35,25 +46,32 @@ public class LoginUserServlet extends LoginBaseServlet {
                 code = -1;
             }
 
-            String errorMessage = getStatusMessage(code);
-            out.println("<p style=\"color: red;\">" + errorMessage + "</p>");
+             errorMessage = getStatusMessage(code);
+            erroralert = true;
         }
 
         if (request.getParameter("newuser") != null) {
-            out.println("<p>Registration was successful!");
-            out.println("Login with your new username and password below.</p>");
+            newuser=true;
         }
 
         if (request.getParameter("logout") != null) {
-            clearCookies(request, response);
-            out.println("<p>Successfully logged out.</p>");
+            logout=true;
         }
         if (getUsername(request) != null){
             response.sendRedirect("/viewhotels");
         }
 
-        printForm(out);
-        finishResponse(response);
+        VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
+        VelocityContext context = new VelocityContext();
+        Template template = ve.getTemplate("templates/login.html");
+        context.put("newuser",newuser);
+        context.put("logout",logout);
+        context.put("error",erroralert);
+        context.put("errormessage",errorMessage);
+        StringWriter writer = new StringWriter();
+        template.merge(context, writer);
+        out.println(writer.toString());
+
     }
     /** The method that will handle post requests sent to LoginUserServlet
      * @param request HttpServletRequest
@@ -82,26 +100,5 @@ public class LoginUserServlet extends LoginBaseServlet {
             log.error("Unable to process login form.", ex);
         }
     }
-    /**
-     * A method that is used to print the login form.
-     * @param out printwriter from HttpServletResponse
-     */
-    private void printForm(PrintWriter out) {
-        assert out != null;
-        out.println("<h3>Login</h3>");
-        out.println("<form action=\"/login\" method=\"post\">");
-        out.println("<table border=\"0\">");
-        out.println("<tr>");
-        out.println("<td>Usename:</td>");
-        out.println("<td><input placeholder=\"Enter username\" type=\"text\" name=\"user\" size=\"30\"></td>");
-        out.println("</tr>");
-        out.println("<tr>");
-        out.println("<td>Password:</td>");
-        out.println("<td><input placeholder=\"Enter password\" type=\"password\" name=\"pass\" size=\"30\"></td>");
-        out.println("</tr>");
-        out.println("</table>");
-        out.println("<p><input type=\"submit\" value=\"Login\"></p>");
-        out.println("</form>");
-        out.println("<p>(<a href=\"/register\">new user? register here.</a>)</p>");
-    }
+
 }
