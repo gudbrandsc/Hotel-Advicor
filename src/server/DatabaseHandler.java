@@ -55,9 +55,9 @@ public class DatabaseHandler {
     private static final String GET_HOTEL_REVIEWS_HOTELID_SQL =
             "SELECT * FROM hotel_reviews WHERE hotelId=?;";
 
-    /** Used to get all reviews created by a specific user*/
+    /** Used to get all reviews and full hotel info for each review created by a specific user*/
     private static final String GET_HOTEL_REVIEWS_USERNAME_SQL =
-            "SELECT * FROM hotel_reviews WHERE username=?;";
+            "SELECT * FROM hotel_reviews INNER JOIN hotel_info ON hotel_reviews.hotelId = hotel_info.hotelId AND username=?;";
 
     /*** Used to get a hotel name using hotelid.*/
     private static final String GET_HOTELID_INFO_SQL =
@@ -429,9 +429,8 @@ public class DatabaseHandler {
      * @param hotelId - Hotel id connected to the hotel review
      * @return Status.OK if removal successful
      */
-    public Map<String, String> getUserReviewForHotel(String username, String hotelId) {
-        Status status = Status.ERROR;
-        Map<String,String> reviewsmap = new HashMap<String, String>();
+    public HotelReview getUserReviewForHotel(String username, String hotelId) {
+        HotelReview review=null;
         String primkey=username+hotelId;
         try (
                 Connection connection = db.getConnection();
@@ -440,20 +439,20 @@ public class DatabaseHandler {
             statement.setString(1,primkey);
             log.debug("Editing review " +primkey+".");
             ResultSet rs = statement.executeQuery();
-            while(rs.next()) {
-                reviewsmap.put("hotelId",rs.getString(1));
-                reviewsmap.put("reviewId",rs.getString(2));
-                reviewsmap.put("rating",rs.getString(3));
-                reviewsmap.put("title",rs.getString(4));
-                reviewsmap.put("review",rs.getString(5));
-                reviewsmap.put("subDate",rs.getString(6));
-                reviewsmap.put("username",rs.getString(7));
+            if(rs.next()) {
+                review = new HotelReview(rs.getString(1),
+                        rs.getString(2),
+                        rs.getInt(3),
+                        rs.getString(4),
+                        rs.getString(5),
+                        rs.getString(6),
+                        rs.getString(7));
             }
         }
         catch (Exception ex) {
-            log.debug(status, ex);
+            log.debug(ex.getMessage());
         }
-        return reviewsmap;
+        return review;
     }
     /**
      * Method used to display general information about all hotels
@@ -622,6 +621,7 @@ public class DatabaseHandler {
                 String date = hotelReviews.getString(6);
                 String username = hotelReviews.getString(7) ;
 
+
                 HotelReview hr = new HotelReview(hotelid,reviewid,rating,title,review,date,username);
                reviews.add(hr);
             }
@@ -654,8 +654,10 @@ public class DatabaseHandler {
                     String title = hotelReviews.getString(4);
                     String review = hotelReviews.getString(5);
                     String date = hotelReviews.getString(6);
+                    String hotelName = hotelReviews.getString(9);
 
-                    HotelReview hr = new HotelReview(hotelid,reviewid,rating,title,review,date,username);
+
+                    HotelReview hr = new HotelReview(hotelid,reviewid,rating,title,review,date,username,hotelName);
                     reviews.add(hr);
                 }
             } catch (SQLException e) {
@@ -664,39 +666,7 @@ public class DatabaseHandler {
         return reviews;
     }
 
-    /**
-     * Builds a html string with all reviews for a hotel or user. If user-> add functionality to remove and edit review
-     * @param title review title
-     * @param username username for person posting the review
-     * @param date date of post
-     * @param rating rating for hotel
-     * @param review review text
-     * @param userReview value to print delete and edit button
-     * @param hotelId id for hotel
-     * @return  string with all reviews
-     */
-    private String reviewBuilder(String title, String username, String date, int rating, String review,boolean userReview,String hotelId) {
-        StringBuilder sb = new StringBuilder();
 
-        sb.append("<div style=\"background-color: #f1f1f1; padding: 0.01em 16px; margin: 20px 0; box-shadow: 0 2px 4px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)\">");
-        sb.append("<h4 style=\"margin-bottom: 0px;\">" + title + "</h4>");
-        sb.append("<p style=\"margin-top: 0px;\"><small>Submited by " + username);
-        sb.append(", on " + date + "</p></small>");
-        sb.append("<p> Rating: " + rating);
-        sb.append("<div style=\"background-color: #fff;\">");
-        sb.append("<p>" + review + "</p>");
-        sb.append("</div>");
-        if(userReview){
-            sb.append("<p style=\"margin-top: 0px;\"><small>Review for hotel: "+getHotelIdName(hotelId)+" </small></p>");
-            sb.append(" <form action = \"/myreviews?username="+username+"\" method = \"post\">");
-            sb.append("<input type=\"hidden\" value=\""+hotelId+"\" name=\"hotelid\" />\n");
-            sb.append("<input type=\"submit\" name=\"edit\" value=\"Edit\" />");
-            sb.append("<input type=\"submit\" name=\"delete\" value=\"Delete\" />");
-            sb.append("</form>");
-        }
-        sb.append("</div>");
-        return sb.toString();
-    }
     // TODO make most methods return status
     /**
      * Used to add a new hotel review

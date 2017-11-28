@@ -7,8 +7,19 @@ public class HotelReview {
     private String title;
     private String review;
     private String date;
-    private String username ;
+    private String username;
+    private String hotelName;
 
+    public HotelReview(String hotelid, String reviewid,int rating,String title, String review,String date, String username,String hotelName){
+        this.hotelid = hotelid;
+        this.reviewid =reviewid;
+        this.rating=rating;
+        this.title=title;
+        this.review=review;
+        this.date=date;
+        this.username=username;
+        this.hotelName=hotelName;
+    }
     public HotelReview(String hotelid, String reviewid,int rating,String title, String review,String date, String username){
         this.hotelid = hotelid;
         this.reviewid =reviewid;
@@ -17,7 +28,6 @@ public class HotelReview {
         this.review=review;
         this.date=date;
         this.username=username;
-
     }
 
     public String getHotelid() { return this.hotelid; }
@@ -33,4 +43,8 @@ public class HotelReview {
     public String getUsername() { return this.username; }
 
     public String getTitle() { return this.title; }
+
+    public String getHotelName() {
+        return hotelName;
+    }
 }

@@ -40,6 +40,13 @@ public class AllReviewsServlet extends LoginBaseServlet{
                     VelocityContext context = new VelocityContext();
                     Template template = ve.getTemplate("templates/allreviews.html");
                     ArrayList<HotelReview> reviews = databaseHandler.hotelIdReviewDisplayer(hotelid);
+                    Boolean existingReview  = false;
+                    if (databaseHandler.checkForExistingUserReview(hotelid,getUsername(request))==Status.OK){
+                        existingReview = true;
+                    }
+                    context.put("exist",existingReview);
+                    context.put("hotelid", hotelid);
+                    context.put("username", getUsername(request));
                     context.put("reviews", reviews);
                     StringWriter writer = new StringWriter();
                     template.merge(context, writer);
@@ -56,5 +63,5 @@ public class AllReviewsServlet extends LoginBaseServlet{
         }
     }
 }
-
+//TODO: Add review button
 

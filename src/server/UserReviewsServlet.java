@@ -39,7 +39,6 @@ public class UserReviewsServlet extends LoginBaseServlet {
                     context.put("reviews", reviews);
                     StringWriter writer = new StringWriter();
                     template.merge(context, writer);
-                    log.debug(writer.toString());
                     out.println(writer.toString());
                 }else{
                     log.debug("user has no reviews");

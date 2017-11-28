@@ -1,5 +1,5 @@
 package hotelapp;
-
+import databaseObjects.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -9,6 +9,7 @@ import server.DatabaseHandler;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 public class TouristAttractionFinder {
@@ -43,9 +44,10 @@ public class TouristAttractionFinder {
      * @param hId hotelid
      * @return html with all attractions name and address
      */
-    public static String fetchAttractions(int radiusInMiles, String hId) {
+    public static ArrayList<HotelAttractions> fetchAttractions(int radiusInMiles, String hId) {
         String resp = "";
         PrintWriter out = null;
+        ArrayList<HotelAttractions> attractions=null;
         BufferedReader in = null;
         SSLSocket socket = null;
         int radiusInMeters = radiusInMiles * 1609;
@@ -79,7 +81,7 @@ public class TouristAttractionFinder {
             }
             resp = sb.toString();
             String jsonString = resp.substring(resp.indexOf("{"));
-            resp = "<table><tr><th>Name</th><th>Address</th></tr>" + jsonReader(jsonString)+"</table>";
+            attractions = jsonReader(jsonString);
 
             in.close();
             out.close();
@@ -96,7 +98,7 @@ public class TouristAttractionFinder {
             }
 
         }
-        return resp;
+        return attractions;
     }
 
     /**Creates a Json object. Iterates trough the json file and adds
@@ -104,27 +106,24 @@ public class TouristAttractionFinder {
      * @param jsonfile String containing Json
      * @return A html string with all the attractions related to a hotel
      * */
-    private static String jsonReader(String jsonfile) {
+    private static ArrayList<HotelAttractions> jsonReader(String jsonfile) {
         JSONParser parser = new JSONParser();
-        StringBuilder sb = new StringBuilder();
-
+        ArrayList<HotelAttractions> attractions = new ArrayList<>();
         try {
             JSONObject json = (JSONObject) parser.parse(jsonfile);
             JSONArray results = (JSONArray) json.get("results");
             Iterator<JSONObject> iterator = results.iterator();
             while (iterator.hasNext()) {
-
                 JSONObject res = iterator.next();
                 String name = (String) res.get("name");
                 String address= (String) res.get("formatted_address");
-                sb.append("<tr>");
-                sb.append("<td>"+name+"</td>");
-                sb.append("<td>"+address+"</td>");
-                sb.append("</tr>");
+                HotelAttractions h = new HotelAttractions(name,address);
+                attractions.add(h);
+
             }
         } catch (ParseException e) {
             System.out.println("Can not parse a given json file. ");
         }
-        return sb.toString();
+        return attractions;
     }
 }

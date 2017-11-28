@@ -13,7 +13,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
@@ -25,8 +24,8 @@
                 <a class="navbar-brand " href="/viewhotels">Hotels site</a>
             </div>
             <ul class="nav navbar-nav">
-                <li class="active "><a href="#">Hotels</a></li>
-                <li><a href="/myreviews?username=$username">My reviews</a></li>
+                <li ><a href="/viewhotels">Hotels</a></li>
+                <li class= "active "><a href="/myreviews?username=$username">My reviews</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="/login?logout"><span class="glyphicon glyphicon-log-in"></span> Sign out</a></li>
@@ -47,7 +46,7 @@
             <p>$!review.review</p>
         </div>
         <p>Rating: $!review.rating</p>
-        <p><small>Review for hotel....</small></p>
+        <p><small>Review for hotel $!review.hotelName</small></p>
         <form action ="/myreviews" method = "post">
             <input type="hidden" value="$!review.hotelid" name="hotelid" />
             <input type="hidden" value="$!review.username" name="username" />

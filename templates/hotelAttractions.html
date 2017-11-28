@@ -1,19 +1,10 @@
 <!DOCTYPE html>
 <html>
-<style>
-    .reviewtext{
-        border: 1px solid #e3e3e3;
-        background: #ffffff;
-        padding: 9px;
-        border-radius: 3px;
-    }
-</style>
 <head>
-    <title>Hotel info</title>
+    <title>Edit review</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
@@ -25,7 +16,7 @@
                 <a class="navbar-brand " href="/viewhotels">Hotels site</a>
             </div>
             <ul class="nav navbar-nav">
-                <li class="active "><a href="#">Hotels</a></li>
+                <li class="active"><a href="/viewhotels">Hotels</a></li>
                 <li><a href="/myreviews?username=$username">My reviews</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
@@ -34,30 +25,24 @@
         </div>
     </nav>
 </div>
-#if($exist)
-<a href="/editreview?username=$username&hotelid=$hotelid">
-    <button class="btn btn-primary" >Edit review</button>
-</a>
-#else
-<a href="/addreview?hotelid=$hotelid">
-    <button class="btn btn-primary" >Add review</button>
-</a>
-#end
-#foreach($review in $reviews)
 <div class="container">
-    <div class="well well-sm">
-
-        <div>
-            <h3>$!review.title</h3>
-            <p><small>posted by $!review.username on $!review.date</small></p>
-        </div>
-
-        <div class="reviewtext">
-            <p>$!review.review</p>
-        </div>
-        <p>Rating: $!review.rating</p>
-    </div>
+    <h3>Attractions near hotel $hotelname</h3>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Attraction name</th>
+            <th>Address</th>
+        </tr>
+        </thead>
+        <tbody>
+        #foreach($attraction in $attractions)
+        <tr>
+            <td>$!attraction.name</a></td>
+            <td>$!attraction.address</td>
+        </tr>
+        #end
+        </tbody>
+    </table>
 </div>
-#end
 </body>
 </html>
