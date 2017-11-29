@@ -46,7 +46,7 @@ public class LoginUserServlet extends LoginBaseServlet {
                 code = -1;
             }
 
-             errorMessage = getStatusMessage(code);
+            errorMessage = getStatusMessage(code);
             erroralert = true;
         }
 
@@ -55,6 +55,8 @@ public class LoginUserServlet extends LoginBaseServlet {
         }
 
         if (request.getParameter("logout") != null) {
+            clearCookies(request, response);
+
             logout=true;
         }
         if (getUsername(request) != null){

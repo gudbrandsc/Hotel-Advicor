@@ -33,6 +33,8 @@
         </div>
     </nav>
 </div>
+
+#if($userReviews)
 #foreach($review in $reviews)
 <div class="container">
     <div class="well well-sm">
@@ -56,5 +58,9 @@
     </div>
 </div>
 #end
+#else
+<p>You don't have any reviews yet</p>
+#end
+
 </body>
 </html>

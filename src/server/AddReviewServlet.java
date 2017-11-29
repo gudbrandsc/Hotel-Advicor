@@ -25,33 +25,33 @@ public class AddReviewServlet extends LoginBaseServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-
         if (getUsername(request) != null) {
             if (request.getParameterMap().containsKey("hotelid")) {
                 String hotelid = request.getParameter("hotelid");
-                if (databaseHandler.checkHotelIdReviewSet(hotelid) == Status.OK) {
-                    PrintWriter out = response.getWriter();
-                    VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
-                    VelocityContext context = new VelocityContext();
-                    Template template = ve.getTemplate("templates/addReview.html");
-                    String username = getUsername(request);
-                    context.put("hotelname",databaseHandler.getHotelIdName(hotelid));
-                    context.put("hotelid", hotelid);
-                    context.put("username", username);
-                    context.put("date",getDate());
-                    StringWriter writer = new StringWriter();
-                    template.merge(context, writer);
-                    out.println(writer.toString());
+                if(databaseHandler.checkIfHotelExist(hotelid)==Status.OK){
+                    if(databaseHandler.checkForExistingUserReview(hotelid,getUsername(request))!=Status.OK){
+                        PrintWriter out = response.getWriter();
+                        VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
+                        VelocityContext context = new VelocityContext();
+                        Template template = ve.getTemplate("templates/addReview.html");
+                        String username = getUsername(request);
+                        context.put("hotelname",databaseHandler.getHotelIdName(hotelid));
+                        context.put("hotelid", hotelid);
+                        context.put("username", username);
+                        context.put("date",getDate());
+                        StringWriter writer = new StringWriter();
+                        template.merge(context, writer);
+                        out.println(writer.toString());
+                    }else{
+                        response.sendRedirect("/editreview?username="+getUsername(request)+"&hotelid="+hotelid);
+                    }
                 }else {
-
+                    response.sendRedirect("/viewhotels?error=INVALID_HOTELID");
                 }
-
             }else {
-
+            response.sendRedirect("/viewhotels?error=MISSING_HOTELID");
             }
-
-        }
-        else {
+        } else {
             response.sendRedirect("/login");
         }
     }

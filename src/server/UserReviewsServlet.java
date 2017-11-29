@@ -30,20 +30,21 @@ public class UserReviewsServlet extends LoginBaseServlet {
         if (getUsername(request) != null) {
             if(request.getParameter("username")!=getUsername(request)){
                 String username = request.getParameter("username");
-                if(databaseHandler.checkUsernameReviewSet(getUsername(request)) == Status.OK){
-                    PrintWriter out = response.getWriter();
-                    VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
-                    VelocityContext context = new VelocityContext();
-                    Template template = ve.getTemplate("templates/myReviews.html");
-                    ArrayList<HotelReview> reviews = databaseHandler.usernameReviewDisplayer(username);
-                    context.put("reviews", reviews);
-                    StringWriter writer = new StringWriter();
-                    template.merge(context, writer);
-                    out.println(writer.toString());
-                }else{
-                    log.debug("user has no reviews");
-
+                boolean userReviews = false;
+                ArrayList<HotelReview> reviews=null;
+                if(databaseHandler.checkUsernameReviewSet(username) == Status.OK){
+                    userReviews=true;
+                    reviews = databaseHandler.usernameReviewDisplayer(username);
                 }
+                PrintWriter out = response.getWriter();
+                VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
+                VelocityContext context = new VelocityContext();
+                Template template = ve.getTemplate("templates/myReviews.html");
+                context.put("reviews", reviews);
+                context.put("userReviews",userReviews);
+                StringWriter writer = new StringWriter();
+                template.merge(context, writer);
+                out.println(writer.toString());
                 //response.sendRedirect("myreviews?username="+getUsername(request));
             }else {
                 //response.sendRedirect("myreviews?username="+getUsername(request));

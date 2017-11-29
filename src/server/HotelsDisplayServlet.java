@@ -29,12 +29,23 @@ public class HotelsDisplayServlet extends LoginBaseServlet {
             throws IOException {
 
         if (getUsername(request) != null) {
+            String error = request.getParameter("error");
+            boolean erroralert = false;
+            String errorMessage =null;
+
+            if (error != null) {
+                errorMessage = getStatusMessage(error);
+                erroralert = true;
+            }
+
             PrintWriter out = response.getWriter();
             VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
             VelocityContext context = new VelocityContext();
             Template template = ve.getTemplate("templates/basicHotelInfo.html");
             ArrayList<BasicHotelInfo> hotelInfo = databaseHandler.hotelInfoDisplayer();
             context.put("username",getUsername(request));
+            context.put("errorMessage", errorMessage);
+            context.put("erroralert", erroralert);
             context.put("hotels", hotelInfo);
             StringWriter writer = new StringWriter();
             template.merge(context, writer);

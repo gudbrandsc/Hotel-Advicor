@@ -29,7 +29,9 @@ public enum Status {
 	INVALID_REVIEWID("There is no review with that reviewId."),
 	NO_USERREVIEWS("The user does not have any reviews yet"),
 	NO_HOTELREVIEWS("Hotel does not have any reviews yet"),
-	INVALID_HOTELID("No hotel related to hotelid.");
+	INVALID_HOTELID("No hotel related to hotelid."),
+	MISSING_HOTELID("There is no hotelid in your request");
+
 
 	private final String message;
 

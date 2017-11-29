@@ -25,6 +25,12 @@
         </div>
     </nav>
 </div>
+#if($erroralert)
+<div class="alert alert-danger alert-dismissable">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    <strong>$errorMessage</strong>
+</div>
+#end
 <div class="container">
 <h3>View all hotels</h3>
 <table class="table table-striped">
