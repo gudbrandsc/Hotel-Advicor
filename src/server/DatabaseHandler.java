@@ -32,7 +32,7 @@ public class DatabaseHandler {
 
     /** Get a list of all hotel names in alphabetical order */
     private static final String GET_HOTEL_GENERAL_INFO_SQL =
-            "SELECT hotelnames,address,avgRating,hotelId FROM hotel_info order by hotelnames";
+            "SELECT * FROM hotel_info order by hotelnames";
 
     /** Used to register a new user in the database. */
     private static final String REGISTER_SQL =
@@ -108,6 +108,23 @@ public class DatabaseHandler {
      */
     private static final String SET_AVERAGE_RATING_FOR_HOTEL_SQL =
             "UPDATE hotel_info SET avgRating = ? WHERE hotelId=?;";
+
+
+    /**
+     * Used to update average rating for a hotel
+     */
+    private static final String GET_ALL_HOTEL_CITIES_SQL =
+            "SELECT distinct city FROM hotel_info ORDER BY city;";
+
+
+    /**
+     * Used to update average rating for a hotel
+     */
+    private static final String SEARCH_HOTEL_TABLE_SQL =
+            "SELECT * FROM hotel_info where city LIKE ? AND hotelnames LIKE ?;";
+
+
+
 
 
     /** Used to configure connection to database. */
@@ -468,10 +485,13 @@ public class DatabaseHandler {
         ) {
             ResultSet hotelNames =statement.executeQuery();
             while (hotelNames.next()){
-                BasicHotelInfo hInfo = new BasicHotelInfo(hotelNames.getString(1),
+                BasicHotelInfo hInfo = new BasicHotelInfo(
+                        hotelNames.getString(1),
                         hotelNames.getString(2),
-                        hotelNames.getDouble(3),
-                        hotelNames.getString(4));
+                        hotelNames.getString(3),
+                        hotelNames.getString(5),
+                        hotelNames.getDouble(8));
+
                 hotelInfoArrayList.add(hInfo);
 
             }
@@ -481,6 +501,50 @@ public class DatabaseHandler {
         }
         return hotelInfoArrayList;
     }
+    /**
+     * Method used to display general information about all hotels
+     * @return A html table string with hotel name, address and average rating
+     * */
+    public ArrayList<BasicHotelInfo> hotelInfoSearchDisplayer(String city, String text){
+        ArrayList<BasicHotelInfo> hotelInfoArrayList = new ArrayList<>();
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(SEARCH_HOTEL_TABLE_SQL)
+
+        ) {
+            statement.setString(1,"%"+city+"%");
+            statement.setString(2,"%"+text+"%");
+
+            ResultSet hotelNames =statement.executeQuery();
+            while (hotelNames.next()){
+                BasicHotelInfo hInfo = new BasicHotelInfo(
+                        hotelNames.getString(1),
+                        hotelNames.getString(2),
+                        hotelNames.getString(3),
+                        hotelNames.getString(5),
+                        hotelNames.getDouble(8));
+
+                hotelInfoArrayList.add(hInfo);
+
+            }
+        }
+        catch (SQLException e) {
+            log.debug(e.getMessage(), e);
+        }
+        return hotelInfoArrayList;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
     /**
      * Tests if a hotel has any reviews
      * @param hotelId id for the hotel
@@ -830,6 +894,27 @@ public class DatabaseHandler {
             log.debug(e.getMessage(), e);
         }
         return city;
+    }
+
+    /**
+     * Get all hotel cities
+     * @return List of all cities
+     * */
+    public ArrayList<String> getAllHotelCities(){
+        ArrayList<String> cities = new ArrayList<>();
+            try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(GET_ALL_HOTEL_CITIES_SQL)
+        ) {
+            ResultSet set = statement.executeQuery();
+            while(set.next()){
+                cities.add(set.getString(1));
+            }
+        }
+        catch (SQLException e) {
+            log.debug(e.getMessage(), e);
+        }
+        return cities;
     }
 
 

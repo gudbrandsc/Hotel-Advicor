@@ -6,6 +6,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../style/style.css">
+    <script src="../js/script.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script></head>
 <body>
@@ -27,37 +29,69 @@
 </div>
 <div class="container">
 
-#if($erroralert)
-<div class="alert alert-danger alert-dismissable">
-    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-    <strong>$errorMessage</strong>
-</div>
-#end
-#if($successalert)
-<div class="alert alert-info alert-dismissable">
-    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-    <strong>$successMessage</strong>
-</div>
-#end
-<h3>View all hotels</h3>
-<table class="table table-striped">
-    <thead>
+    #if($erroralert)
+    <div class="alert alert-danger alert-dismissable">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>$errorMessage</strong>
+    </div>
+    #end
+    #if($successalert)
+    <div class="alert alert-info alert-dismissable">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>$successMessage</strong>
+    </div>
+    #end
+
+    <h3>View all hotels</h3>
+    <form action="/viewhotels" method="GET">
+        <div class="form-group">
+            <label>City</label>
+            <select name="city" class="form-control"  id="citySelect">
+                <option>--Select city--</option>
+                #foreach($city in $cities)
+                <option>$!city</option>
+                #end
+            </select>
+        </div>
+        <div class="form-group has-feedback has-feedback-left">
+            <input type="text" id="myInput" name="hotelname" placeholder="Search for hotel names.." class=" form-control">
+            <i class="glyphicon glyphicon-search form-control-feedback"></i>
+        </div>
+        <input class="blue-button-small blue-button" type="submit" value="Search" />
+    </form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <table id="myTable" class="table table-striped">
+        <thead>
         <tr>
             <th>Hotel name</th>
+            <th>City</th>
             <th>Address</th>
             <th>Rating</th>
         </tr>
-    </thead>
-    <tbody>
-    #foreach($hotel in $hotels)
-    <tr>
-        <td><a href="/hotel?hotelid=$!hotel.hotelId">$!hotel.name</a></td>
-        <td>$!hotel.address</td>
-        <td>$!hotel.rating</td>
-    </tr>
-    #end
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+        #foreach($hotel in $hotels)
+        <tr>
+            <td><a href="/hotel?hotelid=$!hotel.hotelId">$!hotel.name</a></td>
+            <td>$!hotel.city</td>
+            <td>$!hotel.address</td>
+            <td>$!hotel.rating</td>
+        </tr>
+        #end
+        </tbody>
+    </table>
 </div>
 </body>
 </html>

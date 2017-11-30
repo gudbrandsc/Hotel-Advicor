@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -29,6 +30,19 @@ public class HotelsDisplayServlet extends LoginBaseServlet {
             throws IOException {
 
         if (getUsername(request) != null) {
+            ArrayList<BasicHotelInfo> hotelInfo = null;
+            if(request.getParameter("city")!=null && request.getParameter("hotelname")!=null){
+                String city = request.getParameter("city").replaceAll(Pattern.quote("+")," ");
+                String hotelname = request.getParameter("hotelname").replaceAll(Pattern.quote("+")," ");
+                if(city.equals("--Select city--")){
+                    city="";
+                }
+                hotelInfo = databaseHandler.hotelInfoSearchDisplayer(city,hotelname);
+
+            }else{
+                hotelInfo = databaseHandler.hotelInfoDisplayer();
+            }
+
             String error = request.getParameter("error");
             String success = request.getParameter("success");
             String errorMessage =null;
@@ -46,17 +60,20 @@ public class HotelsDisplayServlet extends LoginBaseServlet {
                 successMessage = getStatusMessage(code);
                 successalert = true;
             }
+
+
             PrintWriter out = response.getWriter();
             VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
             VelocityContext context = new VelocityContext();
             Template template = ve.getTemplate("static/templates/basicHotelInfo.html");
-            ArrayList<BasicHotelInfo> hotelInfo = databaseHandler.hotelInfoDisplayer();
+            ArrayList<String> cities = databaseHandler.getAllHotelCities();
             context.put("username",getUsername(request));
             context.put("errorMessage", errorMessage);
             context.put("erroralert", erroralert);
             context.put("successMessage", successMessage);
             context.put("successalert", successalert);
             context.put("hotels", hotelInfo);
+            context.put("cities", cities);
             StringWriter writer = new StringWriter();
             template.merge(context, writer);
             out.println(writer.toString());

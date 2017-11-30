@@ -28,7 +28,7 @@ public class UserReviewsServlet extends LoginBaseServlet {
             throws IOException {
 
         if (getUsername(request) != null) {
-            if(request.getParameter("username")!=getUsername(request)){
+            if(request.getParameter("username").equals(getUsername(request))){
                 String error = request.getParameter("error");
                 String success = request.getParameter("success");
                 String errorMessage =null;
@@ -36,7 +36,7 @@ public class UserReviewsServlet extends LoginBaseServlet {
                 boolean successalert = false;
                 boolean erroralert = false;
                 int code = 0;
-
+                log.debug("inside");
                 if (error != null) {
                     code = integerParser(error);
                     errorMessage = getStatusMessage(code);
@@ -54,6 +54,7 @@ public class UserReviewsServlet extends LoginBaseServlet {
                     userHasReviews=true;
                     reviews = databaseHandler.usernameReviewDisplayer(username);
                 }
+                log.debug(userHasReviews);
                 PrintWriter out = response.getWriter();
                 VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
                 VelocityContext context = new VelocityContext();
@@ -68,6 +69,7 @@ public class UserReviewsServlet extends LoginBaseServlet {
                 template.merge(context, writer);
                 out.println(writer.toString());
             }else {
+                log.debug("redirect");
                 response.sendRedirect("myreviews?username="+getUsername(request));
 
             }
