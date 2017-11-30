@@ -30,7 +30,6 @@ public class LoginUserServlet extends LoginBaseServlet {
      */
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        prepareResponse("Login", response);
         PrintWriter out = response.getWriter();
         String error = request.getParameter("error");
         int code = 0;
@@ -65,7 +64,7 @@ public class LoginUserServlet extends LoginBaseServlet {
 
         VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
         VelocityContext context = new VelocityContext();
-        Template template = ve.getTemplate("templates/login.html");
+        Template template = ve.getTemplate("static/templates/login.html");
         context.put("newuser",newuser);
         context.put("logout",logout);
         context.put("error",erroralert);
@@ -95,6 +94,8 @@ public class LoginUserServlet extends LoginBaseServlet {
             else {
                 response.addCookie(new Cookie("login", "false"));
                 response.addCookie(new Cookie("name", ""));
+                System.out.println(status);
+                System.out.println(status.ordinal());
                 response.sendRedirect(response.encodeRedirectURL("/login?error=" + status.ordinal()));
             }
         }

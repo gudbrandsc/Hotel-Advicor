@@ -1,0 +1,105 @@
+
+*{
+    box-sizing:border-box;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    font-family:arial;
+}
+
+h1{
+    color:#ffffffed;
+    text-align:center;
+    font-faimly:icon;
+}
+
+.login-form{
+    width:450px;
+    padding:40px 30px;
+    background:rgba(16, 14, 10, 0.57);
+    border-radius:4px;
+    margin:50px auto;
+}
+.form-group{
+    position: relative;
+    margin-bottom:15px;
+}
+.form-control{
+    width:100%;
+    height:50px;
+    border:none;
+    padding:5px 7px 5px 15px;
+    background:#00000057;
+    color:#666;
+    border-radius:4px;
+
+}
+
+.form-group .fa{
+    position: absolute;
+    right:15px;
+    top:17px;
+    color:#999;
+}
+
+.green-btn{
+    background:#0AC986;
+    dispaly:inline-block;
+    font-size:16px;
+    height:50px;
+    color:#fff;
+    text-decoration:none;
+    border:none;
+    border-radius:4px;
+}
+
+.green-btn-medium{
+     width:49%;
+ }
+.green-btn-large{
+    width:100%;
+}
+.green-btn:hover{
+    background:#04af73;
+
+}
+.blue-button{
+    background:#27abe3;
+    dispaly:inline-block;
+    font-size:16px;
+    height:50px;
+    color:#fff;
+    text-decoration:none;
+    border:none;
+    border-radius:4px;
+}
+.blue-button-medium{
+    width:49%;
+}
+
+.blue-button-large{
+    width:100%;
+}
+.blue-button:hover {
+    background:#1681af;
+
+}
+.float-left{
+    float: left;
+}
+.float-right{
+    float: right;
+}
+
+.top-padding-5px{
+margin-top: 5px;
+}
+
+
+
+.footer{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 60px;
+    background-color: #f5f5f5;
+}

@@ -27,59 +27,7 @@ public class LoginBaseServlet extends HttpServlet {
 	//Creates a single instance of the database handler that is accessible by all child classes
 	protected static final DatabaseHandler databaseHandler = DatabaseHandler.getInstance();
 
-	/**
-	 * Method that is used to prepare html header and body.
-	 * @param title header title
-	 * @param response HttpServletResponse
-	 */
-	protected void prepareResponse(String title, HttpServletResponse response) {
-		try {
-			PrintWriter writer = response.getWriter();
 
-			writer.printf("<!DOCTYPE html>%n%n");
-			writer.printf("<html lang=\"en\">%n%n");
-			writer.printf("<head>%n");
-			writer.printf("\t<title>%s</title>%n", title);
-			writer.printf("\t<meta charset=\"utf-8\">%n");
-			writer.printf("</head>%n%n");
-			writer.printf("<body>%n%n");
-
-
-		}
-		catch (IOException ex) {
-			log.warn("Unable to prepare HTTP response.");
-			return;
-		}
-	}
-
-	/**
-	 * Method that is used to close html tag and body.
-	 * Also used to flush writer.
-	 * @param response HttpServletResponse
-	 */
-	protected void finishResponse(HttpServletResponse response) {
-		try {
-			PrintWriter writer = response.getWriter();
-
-			writer.printf("%n");
-			writer.printf("<p style=\"font-size: 10pt; font-style: italic;\">");
-			//writer.printf("Last updated at %s.", getDate());
-			writer.printf("</p>%n%n");
-
-			writer.printf("</body>%n");
-			writer.printf("</html>%n");
-
-			writer.flush();
-
-			response.setStatus(HttpServletResponse.SC_OK);
-			response.flushBuffer();
-		}
-		catch (IOException ex) {
-			log.warn("Unable to finish HTTP response.");
-			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			return;
-		}
-	}
 
 	/**
 	 * Used to return a date.
@@ -124,24 +72,6 @@ public class LoginBaseServlet extends HttpServlet {
 		}
 	}
 
-	/**
-	 * Used to return a string of the value of a Status error message.
-	 * @param errorName name of the error
-	 * @return string of status
-	 */
-	protected String getStatusMessage(String errorName) {
-		Status status = null;
-
-		try {
-			status = Status.valueOf(errorName);
-		}
-		catch (Exception ex) {
-			log.debug(errorName, ex);
-			status = Status.ERROR;
-		}
-
-		return status.toString();
-	}
 
 	/**
 	 * Used to get a status message using a integer code
@@ -180,4 +110,14 @@ public class LoginBaseServlet extends HttpServlet {
 
 		return null;
 	}
+	protected int integerParser(String value){
+		int num=0;
+		try {
+			num = Integer.parseInt(value);
+		} catch (Exception ex) {
+			num = -1;
+		}
+		return num;
+	}
+
 }

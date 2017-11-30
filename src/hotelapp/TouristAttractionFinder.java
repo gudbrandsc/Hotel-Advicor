@@ -116,8 +116,20 @@ public class TouristAttractionFinder {
             while (iterator.hasNext()) {
                 JSONObject res = iterator.next();
                 String name = (String) res.get("name");
+                System.out.println(res.get("rating"));
+                Object value= res.get("rating");
+                double rating =0;
+
+                if(value instanceof Long) {
+                    rating = ((Long) value).doubleValue();
+                }else if(value == null) {
+                    rating=0.0;
+                }else{
+                    rating=(double)value;
+                }
+                System.out.println(rating);
                 String address= (String) res.get("formatted_address");
-                HotelAttractions h = new HotelAttractions(name,address);
+                HotelAttractions h = new HotelAttractions(name,address,rating);
                 attractions.add(h);
 
             }

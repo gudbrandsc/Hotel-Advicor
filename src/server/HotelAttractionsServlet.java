@@ -33,7 +33,7 @@ public class HotelAttractionsServlet extends LoginBaseServlet{
                     PrintWriter out = response.getWriter();
                     VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
                     VelocityContext context = new VelocityContext();
-                    Template template = ve.getTemplate("templates/hotelAttractions.html");
+                    Template template = ve.getTemplate("static/templates/hotelAttractions.html");
                     context.put("hotelname",databaseHandler.getHotelIdName(hotelid));
                     context.put("attractions", attractions);
                     StringWriter writer = new StringWriter();

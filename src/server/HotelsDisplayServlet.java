@@ -30,26 +30,35 @@ public class HotelsDisplayServlet extends LoginBaseServlet {
 
         if (getUsername(request) != null) {
             String error = request.getParameter("error");
-            boolean erroralert = false;
+            String success = request.getParameter("success");
             String errorMessage =null;
+            String successMessage =null;
+            boolean successalert = false;
+            boolean erroralert = false;
+            int code = 0;
 
             if (error != null) {
-                errorMessage = getStatusMessage(error);
+                code = integerParser(error);
+                errorMessage = getStatusMessage(code);
                 erroralert = true;
+            } else if (success != null) {
+                code = integerParser(success);
+                successMessage = getStatusMessage(code);
+                successalert = true;
             }
-
             PrintWriter out = response.getWriter();
             VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
             VelocityContext context = new VelocityContext();
-            Template template = ve.getTemplate("templates/basicHotelInfo.html");
+            Template template = ve.getTemplate("static/templates/basicHotelInfo.html");
             ArrayList<BasicHotelInfo> hotelInfo = databaseHandler.hotelInfoDisplayer();
             context.put("username",getUsername(request));
             context.put("errorMessage", errorMessage);
             context.put("erroralert", erroralert);
+            context.put("successMessage", successMessage);
+            context.put("successalert", successalert);
             context.put("hotels", hotelInfo);
             StringWriter writer = new StringWriter();
             template.merge(context, writer);
-
             out.println(writer.toString());
 
         }

@@ -29,25 +29,46 @@ public class UserReviewsServlet extends LoginBaseServlet {
 
         if (getUsername(request) != null) {
             if(request.getParameter("username")!=getUsername(request)){
+                String error = request.getParameter("error");
+                String success = request.getParameter("success");
+                String errorMessage =null;
+                String successMessage =null;
+                boolean successalert = false;
+                boolean erroralert = false;
+                int code = 0;
+
+                if (error != null) {
+                    code = integerParser(error);
+                    errorMessage = getStatusMessage(code);
+                    erroralert = true;
+                } else if (success != null) {
+                    code = integerParser(success);
+                    successMessage = getStatusMessage(code);
+                    successalert = true;
+                }
+
+                boolean userHasReviews = false;
                 String username = request.getParameter("username");
-                boolean userReviews = false;
                 ArrayList<HotelReview> reviews=null;
                 if(databaseHandler.checkUsernameReviewSet(username) == Status.OK){
-                    userReviews=true;
+                    userHasReviews=true;
                     reviews = databaseHandler.usernameReviewDisplayer(username);
                 }
                 PrintWriter out = response.getWriter();
                 VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
                 VelocityContext context = new VelocityContext();
-                Template template = ve.getTemplate("templates/myReviews.html");
+                Template template = ve.getTemplate("static/templates/myReviews.html");
+                context.put("errorAlert", erroralert);
+                context.put("errorMessage", errorMessage);
+                context.put("successAlert", successalert);
+                context.put("successMessage", successMessage);
                 context.put("reviews", reviews);
-                context.put("userReviews",userReviews);
+                context.put("userReviews",userHasReviews);
                 StringWriter writer = new StringWriter();
                 template.merge(context, writer);
                 out.println(writer.toString());
-                //response.sendRedirect("myreviews?username="+getUsername(request));
             }else {
-                //response.sendRedirect("myreviews?username="+getUsername(request));
+                response.sendRedirect("myreviews?username="+getUsername(request));
 
             }
 
@@ -66,17 +87,18 @@ public class UserReviewsServlet extends LoginBaseServlet {
 
         String username=request.getParameter("username");
         if(request.getParameter("delete")!=null){
-            prepareResponse("Delete hotel review", response);
             Status status = databaseHandler.removeReview(username,request.getParameter("hotelid"));
 
             if(status == Status.OK) {
                 log.debug("Review successfully removed");
-                String url = "/myreviews?username="+username+"&delete=true";
+                status=Status.REMOVE_REVIEW_SUCCESS;
+                String url = "/myreviews?username="+username+"&success="+status.ordinal();
                 response.sendRedirect(response.encodeRedirectURL(url));
             }
             else {
                 log.debug("Not able to remove review:" + status);
-                String url = "/myreviews?username="+username+"&delete=true";
+                status=Status.REMOVE_REVIEW_ERROR;
+                String url = "/myreviews?username="+username+"&error="+status.ordinal();
                 url = response.encodeRedirectURL(url);
                 response.sendRedirect(url);
             }

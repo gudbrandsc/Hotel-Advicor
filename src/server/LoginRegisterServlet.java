@@ -30,16 +30,20 @@ public class LoginRegisterServlet extends LoginBaseServlet {
 
 		PrintWriter out = response.getWriter();
 		String error = request.getParameter("error");
-		boolean alert = false;
+		boolean erroralert = false;
+		String errorMessage =null;
+		int code = 0;
 
-		if(error != null) {
-			alert=true;
+		if (error != null) {
+			code = integerParser(error);
+			errorMessage = getStatusMessage(code);
+			erroralert = true;
 		}
-
 		VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
 		VelocityContext context = new VelocityContext();
-		Template template = ve.getTemplate("templates/register.html");
-		context.put("alert",alert);
+		Template template = ve.getTemplate("static/templates/register.html");
+		context.put("errorAlert",erroralert);
+		context.put("errorMessage",errorMessage);
 		StringWriter writer = new StringWriter();
 		template.merge(context, writer);
 		out.println(writer.toString());
@@ -53,7 +57,6 @@ public class LoginRegisterServlet extends LoginBaseServlet {
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
-		prepareResponse("Register New User", response);
 
 		String newuser = request.getParameter("user");
 		String newpass = request.getParameter("pass");
@@ -63,7 +66,7 @@ public class LoginRegisterServlet extends LoginBaseServlet {
 			response.sendRedirect(response.encodeRedirectURL("/login?newuser=true"));
 		}
 		else {
-			String url = "/register?error=" + status.name();
+			String url = "/register?error=" + status.ordinal();
 			url = response.encodeRedirectURL(url);
 			response.sendRedirect(url);
 		}

@@ -28,7 +28,7 @@ public class HotelPageServlet extends LoginBaseServlet {
 
             VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
             VelocityContext context = new VelocityContext();
-            Template template = ve.getTemplate("templates/hotelInfo.html");
+            Template template = ve.getTemplate("static/templates/hotelInfo.html");
             String hotelId = request.getParameter("hotelid");
             String name = databaseHandler.getHotelIdName(hotelId);
             String address = databaseHandler.getHotelIdAddress(hotelId);

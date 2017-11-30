@@ -3,10 +3,12 @@ package databaseObjects;
 public class HotelAttractions {
     private String name;
     private String address;
+    private double rating;
 
-    public HotelAttractions(String name, String address){
+    public HotelAttractions(String name, String address, double rating){
         this.name=name;
         this.address=address;
+        this.rating=rating;
     }
 
     public String getAddress() {
@@ -15,5 +17,9 @@ public class HotelAttractions {
 
     public String getName() {
         return this.name;
+    }
+
+    public double getRating() {
+        return this.rating;
     }
 }
