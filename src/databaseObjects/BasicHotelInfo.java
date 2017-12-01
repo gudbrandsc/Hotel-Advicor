@@ -6,6 +6,7 @@ public class BasicHotelInfo {
     private String address;
     private String hotelId;
     private Double rating;
+    private String username;
 
     public BasicHotelInfo(String hotelId,String name, String city, String address, Double rating){
         this.hotelId=hotelId;
@@ -13,6 +14,15 @@ public class BasicHotelInfo {
         this.city=city;
         this.address=address;
         this.rating = rating;
+
+    }
+    public BasicHotelInfo(String hotelId,String name, String city, String address, Double rating, String username){
+        this.hotelId=hotelId;
+        this.name=name;
+        this.city=city;
+        this.address=address;
+        this.rating = rating;
+        this.username=username;
 
     }
 

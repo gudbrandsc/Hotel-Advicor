@@ -125,6 +125,39 @@ public class DatabaseHandler {
 
 
 
+    /**
+     * Used to update average rating for a hotel
+     */
+    private static final String SAVE_HOTEL_FOR_USER_SQL =
+            "INSERT INTO saved_hotels VALUES(?,?,?); ";
+    /**
+     * Used to update average rating for a hotel
+     */
+    private static final String REMOVE_SAVED_HOTEL_FOR_USER_SQL =
+            "DELETE FROM saved_hotels WHERE primkey=?;";
+
+
+    /**
+     * Used to update average rating for a hotel
+     */
+    private static final String CHECK_IF_HOTEL_IS_SAVED =
+            "SELECT * FROM saved_hotels where primkey=?;";
+
+    /**
+     * Used to update average rating for a hotel
+     */
+    private static final String CHECK_IF_USER_HAS_SAVED_HOTELS_SQL =
+            "SELECT * FROM saved_hotels where username=?;";
+
+    /**
+     * Used to update average rating for a hotel
+     */
+    private static final String DISPLAY_USER_LIKED_HOTELS_SQL =
+            "SELECT hotel_info.hotelId,hotelnames,city,address,avgRating ,username FROM saved_hotels INNER JOIN hotel_info ON hotel_info.hotelId=saved_hotels.hotelId where username=?;";
+
+
+
+
 
 
     /** Used to configure connection to database. */
@@ -533,15 +566,38 @@ public class DatabaseHandler {
         }
         return hotelInfoArrayList;
     }
+    /**
+     * Method used to display general information about all hotels
+     * @return A html table string with hotel name, address and average rating
+     * */
+    public ArrayList<BasicHotelInfo> userLikedHotelsDisplayer(String username){
+        ArrayList<BasicHotelInfo> hotelInfoArrayList = new ArrayList<>();
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(DISPLAY_USER_LIKED_HOTELS_SQL)
 
+        ) {
+            statement.setString(1,username);
 
+            ResultSet hotelNames =statement.executeQuery();
+            while (hotelNames.next()){
+                BasicHotelInfo hInfo = new BasicHotelInfo(
+                        hotelNames.getString(1),
+                        hotelNames.getString(2),
+                        hotelNames.getString(3),
+                        hotelNames.getString(4),
+                        hotelNames.getDouble(5),
+                        hotelNames.getString(6));
 
+                hotelInfoArrayList.add(hInfo);
 
-
-
-
-
-
+            }
+        }
+        catch (SQLException e) {
+            log.debug(e.getMessage(), e);
+        }
+        return hotelInfoArrayList;
+    }
 
 
 
@@ -1007,4 +1063,107 @@ public class DatabaseHandler {
         log.debug("AvgRating for " +hotelId+" was changed " + status);
         return status;
     }
+    /**
+     * Save a hotel for a user
+     * @param hotelId hotel id
+     * @param username username
+     * @return status.OK if review was added
+     */
+
+    public Status saveHotel(String hotelId,String username){
+        Status status = Status.ERROR;
+
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(SAVE_HOTEL_FOR_USER_SQL)
+        ) {
+            String key = username+hotelId;
+            statement.setString(1,key);
+            statement.setString(2,username);
+            statement.setString(3,hotelId);
+            statement.executeUpdate();
+            status = Status.OK;
+
+
+        }
+        catch (SQLException e) {
+            status = Status.SQL_EXCEPTION;
+            log.debug(e.getMessage(), e);
+        }
+        log.debug("Hotel was liked" + status);
+        return status;
+    }
+    /**
+     * Save a hotel for a user
+     * @param key primary
+     * @return status.OK if hotel is removed
+     */
+
+    public Status unsaveHotel(String key){
+        Status status = Status.ERROR;
+
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(REMOVE_SAVED_HOTEL_FOR_USER_SQL)
+        ) {
+            statement.setString(1,key);
+            statement.executeUpdate();
+            status = Status.OK;
+        }
+        catch (SQLException e) {
+            status = Status.SQL_EXCEPTION;
+            log.debug(e.getMessage(), e);
+        }
+        log.debug("Hotel was liked" + status);
+        return status;
+    }
+    /**
+     *Check if user has saved hotel
+     * @param key primary key
+     * @return status.OK if hotel exist
+     *
+     */
+
+    public boolean checkIfHotelIsSaved(String key){
+        Boolean exist=null;
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(CHECK_IF_HOTEL_IS_SAVED)
+        ) {
+            statement.setString(1,key);
+            ResultSet results= statement.executeQuery();
+            exist = results.next();
+            System.out.println(key);
+            System.out.println(exist);
+
+        }
+        catch (SQLException e) {
+            log.debug(e.getMessage());
+        }
+        return exist;
+    }
+    /**
+     *Check if user has saved any hotels
+     * @param username username
+     * @return status.ok if has any reviews
+     */
+
+    public Status checkIfUserHasSavedHotels(String username){
+        Status status = Status.ERROR;
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(CHECK_IF_USER_HAS_SAVED_HOTELS_SQL)
+        ) {
+            statement.setString(1,username);
+            ResultSet results= statement.executeQuery();
+            status = results.next() ? status = Status.OK : Status.INVALID_REVIEWID;
+        }
+        catch (SQLException e) {
+            status=Status.SQL_EXCEPTION;
+            log.debug(e.getMessage(), e);
+        }
+        return status;
+    }
+
+
 }

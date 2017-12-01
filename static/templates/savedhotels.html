@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Welcome</title>
+    <title>Saved hotels</title>
     <link rel="icon" href="/pictures/hotel.png" type="image/png">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -18,9 +18,9 @@
                 <a class="navbar-brand " href="/viewhotels">Hotels site</a>
             </div>
             <ul class="nav navbar-nav">
-                <li class="active "><a href="/viewhotels">Hotels</a></li>
+                <li><a href="/viewhotels">Hotels</a></li>
                 <li><a href="/myreviews?username=$username">My reviews</a></li>
-                <li><a href="/savedhotels">Saved hotels</a></li>
+                <li class="active "><a href="/savedhotels">Saved hotels</a></li>
 
             </ul>
             <ul class="nav navbar-nav navbar-right">
@@ -37,40 +37,15 @@
         <strong>$errorMessage</strong>
     </div>
     #end
-    #if($successalert)
-    <div class="alert alert-info alert-dismissable">
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-        <strong>$successMessage</strong>
-    </div>
-    #end
 
-    <h3>View all hotels</h3>
+    <h3>Saved hotels</h3>
     #if($invalidSearch)
     <div class="alert alert-danger alert-dismissable">
         <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
         <strong>There is no hotel matching your search</strong>
     </div>
 
-
     #end
-
-    <form action="/viewhotels" method="GET">
-        <div class="form-group">
-            <label>City</label>
-            <select name="city" class="form-control"  id="citySelect">
-                <option>--Select city--</option>
-                #foreach($city in $cities)
-                <option>$!city</option>
-                #end
-            </select>
-        </div>
-        <div class="form-group has-feedback has-feedback-left">
-            <input type="text" id="myInput" name="hotelname" placeholder="Search for hotel names.." class=" form-control">
-            <i class="glyphicon glyphicon-search form-control-feedback"></i>
-        </div>
-        <input class="blue-button-small blue-btn" type="submit" value="Search" />
-    </form>
-
     <table id="myTable" class="table table-striped">
         <thead>
         <tr>

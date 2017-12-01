@@ -50,6 +50,7 @@ public class HotelAppServer {
         sh.addServlet(EditReviewServlet.class,  "/editreview");
         sh.addServlet(HotelAttractionsServlet.class,  "/attractions");
         sh.addServlet(LoginRedirectServlet.class, "/*");
+        sh.addServlet(SavedHotelsServlet.class,"/savedhotels");
 
 
 

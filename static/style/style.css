@@ -34,6 +34,9 @@ h1{
 .green-btn-medium{
      width:49%;
  }
+.green-btn-small{
+    width:10%;
+}
 .green-btn-large{
     width:100%;
 }
@@ -41,7 +44,7 @@ h1{
     background:#04af73;
 
 }
-.blue-button{
+.blue-btn{
     background:#27abe3;
     dispaly:inline-block;
     font-size:16px;
@@ -75,7 +78,6 @@ h1{
 .top-padding-5px{
 margin-top: 5px;
 }
-
 
 
 .footer{

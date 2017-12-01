@@ -38,7 +38,10 @@ public enum Status {
 	SUBMIT_REVIEW_ERROR("Failed to submit your review, please try again."),
 	UPDATE_REVIEW_ERROR("Failed to update your review, please try again."),
 	FAILED_TO_POST("Failed to submit review, please try again."),
-	MISSING_HOTELID("There is no hotelid in your request.");
+	MISSING_HOTELID("There is no hotelid in your request."),
+	HOTEL_SAVED("Hotel was saved"),
+	NO_SAVED_HOTELS("You haven't saved any hotels yet.");
+
 
 
 	private final String message;

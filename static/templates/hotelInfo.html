@@ -18,6 +18,8 @@
             <ul class="nav navbar-nav">
                 <li class="active "><a href="/viewhotels">Hotels</a></li>
                 <li><a href="/myreviews?username=$username">My reviews</a></li>
+                <li><a href="/savedhotels">Saved hotels</a></li>
+
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="/login?logout"><span class="glyphicon glyphicon-log-in"></span> Sign out</a></li>
@@ -38,6 +40,19 @@
             <input pattern="[0-9]{0,4}" required placeholder="Enter radius.." type="text" name="radius">
             <input class="btn btn-primary" type="submit" value="Show attractions">
         </form>
+        <!-- check if saved or not -->
+        #if($saved)
+        <form action = "/hotel" method = "post">
+            <input type="hidden" value="$hotelid" name="hotelid" />
+            <input class="btn btn-danger" type="submit" name="unsave" value="Unsave">
+        </form>
+        #else
+        <form action = "/hotel" method = "post">
+            <input type="hidden" value="$hotelid" name="hotelid" />
+            <input class="btn btn-primary" type="submit" name="save" value="Save">
+        </form>
+        #end
+
         </p>
     </div>
 </div>
