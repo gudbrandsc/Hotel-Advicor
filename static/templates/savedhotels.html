@@ -21,6 +21,7 @@
                 <li><a href="/viewhotels">Hotels</a></li>
                 <li><a href="/myreviews?username=$username">My reviews</a></li>
                 <li class="active "><a href="/savedhotels">Saved hotels</a></li>
+                <li><a href="/expedialinks">Visited links</a></li>
 
             </ul>
             <ul class="nav navbar-nav navbar-right">
@@ -39,6 +40,10 @@
     #end
 
     <h3>Saved hotels</h3>
+    <form action ="/savedhotels" method = "post">
+        <input type="hidden" value="$username" name="username" />
+        <input class="btn btn-danger" type="submit"  value="Remove all saved hotels" />
+    </form>
     #if($invalidSearch)
     <div class="alert alert-danger alert-dismissable">
         <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>

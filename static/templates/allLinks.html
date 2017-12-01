@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Edit review</title>
+    <title>Visited links</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../style/style.css">
+    <script src="../js/script.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-</head>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script></head>
 <body>
 <div>
     <nav class="navbar navbar-default">
@@ -16,10 +17,11 @@
                 <a class="navbar-brand " href="/viewhotels">Hotels site</a>
             </div>
             <ul class="nav navbar-nav">
-                <li class="active"><a href="/viewhotels">Hotels</a></li>
+                <li><a href="/viewhotels">Hotels</a></li>
                 <li><a href="/myreviews?username=$username">My reviews</a></li>
                 <li><a href="/savedhotels">Saved hotels</a></li>
-                <li><a href="/expedialinks">Visited links</a></li>
+                <li class="active "><a href="/expedialinks">Visited links</a></li>
+
 
             </ul>
             <ul class="nav navbar-nav navbar-right">
@@ -29,26 +31,37 @@
     </nav>
 </div>
 <div class="container">
-    <h3>Attractions near hotel $hotelname</h3>
-    <table class="table table-striped">
+
+    #if($erroralert)
+    <div class="alert alert-danger alert-dismissable">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>$errorMessage</strong>
+    </div>
+    #end
+
+    <h3>Visited links history</h3>
+    <form action ="/expedialinks" method = "post">
+        <input type="hidden" value="$username" name="username" />
+        <input class="btn btn-danger" type="submit" name="clearhistory" value="Remove all history" />
+    </form>
+
+
+    <table id="myTable" class="table table-striped">
         <thead>
         <tr>
-            <th>Attraction name</th>
-            <th>Address</th>
-            <th>Rating</th>
-
+            <th>Hotel name</th>
+            <th>Expedia link</th>
         </tr>
         </thead>
         <tbody>
-        #foreach($attraction in $attractions)
+        #foreach($link in $links)
         <tr>
-            <td>$!attraction.name</a></td>
-            <td>$!attraction.address</td>
-            <td>$!attraction.rating</td>
-
+            <td>$!link.name</td>
+            <td><a href="$!link.link">$!link.link</a></td>
         </tr>
         #end
         </tbody>
+
     </table>
 </div>
 </body>

@@ -40,6 +40,11 @@ public enum Status {
 	FAILED_TO_POST("Failed to submit review, please try again."),
 	MISSING_HOTELID("There is no hotelid in your request."),
 	HOTEL_SAVED("Hotel was saved"),
+	REMOVED_ALL_SAVED_HOTELS_SUCCESS("All saved hotels has been removed."),
+	REMOVED_ALL_SAVED_HOTELS_ERROR("We where not able to remove your saved hotels."),
+	REMOVED_ALL_LINK_HISTORY_SUCCESS("Visited links history is cleared"),
+	REMOVED_ALL_LINK_HISTORY_ERROR("We where not able to clear link history."),
+	NO_LINK_HISTORY("You haven't visited any links yet."),
 	NO_SAVED_HOTELS("You haven't saved any hotels yet.");
 
 

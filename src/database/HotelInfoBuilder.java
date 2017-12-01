@@ -66,7 +66,11 @@ public class HotelInfoBuilder {
             "INSERT INTO hotel_info (hotelId, hotelnames, city, state, address, latitude, longitude,avgRating) " +
                     "VALUES (?,?,?,?,?,?,?,?);";
 
-
+    /**
+     * Used to insert a new user into the database.
+     */
+    private static final String ADD_VISITED_EXPEDIA_LINK_SQL =
+            " INSERT INTO expedia_links VALUES (?, ?, ?, ?);";
     /**
      * Used to configure connection to database.
      */

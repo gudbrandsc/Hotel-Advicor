@@ -31,15 +31,7 @@ h1{
     border-radius:4px;
 }
 
-.green-btn-medium{
-     width:49%;
- }
-.green-btn-small{
-    width:10%;
-}
-.green-btn-large{
-    width:100%;
-}
+
 .green-btn:hover{
     background:#04af73;
 
@@ -54,17 +46,17 @@ h1{
     border:none;
     border-radius:4px;
 }
-.blue-button-small{
+.btn-small{
     width:10%;
 }
-.blue-button-medium{
+.btn-medium{
     width:49%;
 }
 
-.blue-button-large{
+.btn-large{
     width:100%;
 }
-.blue-button:hover {
+.blue-btn:hover {
     background:#1681af;
 
 }

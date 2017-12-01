@@ -109,7 +109,6 @@ public class DatabaseHandler {
     private static final String SET_AVERAGE_RATING_FOR_HOTEL_SQL =
             "UPDATE hotel_info SET avgRating = ? WHERE hotelId=?;";
 
-
     /**
      * Used to update average rating for a hotel
      */
@@ -124,7 +123,6 @@ public class DatabaseHandler {
             "SELECT * FROM hotel_info where city LIKE ? AND hotelnames LIKE ?;";
 
 
-
     /**
      * Used to update average rating for a hotel
      */
@@ -136,13 +134,18 @@ public class DatabaseHandler {
     private static final String REMOVE_SAVED_HOTEL_FOR_USER_SQL =
             "DELETE FROM saved_hotels WHERE primkey=?;";
 
+    /**
+     * Used to update average rating for a hotel
+     */
+    private static final String REMOVE_SAVED_LINK_FOR_USER_SQL =
+            "DELETE FROM expedia_links WHERE primkey=?;";
+
 
     /**
      * Used to update average rating for a hotel
      */
     private static final String CHECK_IF_HOTEL_IS_SAVED =
             "SELECT * FROM saved_hotels where primkey=?;";
-
     /**
      * Used to update average rating for a hotel
      */
@@ -152,11 +155,40 @@ public class DatabaseHandler {
     /**
      * Used to update average rating for a hotel
      */
+    private static final String GET_ALL_SAVED_HOTELS_USER_SQL =
+            "SELECT primkey FROM saved_hotels where username=?;";
+
+
+
+    /**
+     * Used to update average rating for a hotel
+     */
+    private static final String GET_ALL_LINK_PRIMKEYS_FOR_USER_SQL =
+            "SELECT primkey FROM expedia_links where username=?;";
+
+    /**
+     * Used to update average rating for a hotel
+     */
     private static final String DISPLAY_USER_LIKED_HOTELS_SQL =
             "SELECT hotel_info.hotelId,hotelnames,city,address,avgRating ,username FROM saved_hotels INNER JOIN hotel_info ON hotel_info.hotelId=saved_hotels.hotelId where username=?;";
 
 
+    /**
+     * Used to insert a new user into the database.
+     */
+    private static final String ADD_VISITED_EXPEDIA_LINK_SQL =
+            " INSERT INTO expedia_links VALUES (?, ?, ?, ?,?);";
+    /**
+     * Used to update average rating for a hotel
+     */
+    private static final String CHECK_IF_USER_HAS_SAVED_LINK_SQL =
+            "SELECT * FROM expedia_links where primkey=?;";
 
+    /**
+     * Used to get all visited expedia links for a user
+     */
+    private static final String GET_ALL_EXPEDIALINKS_FOR_USER_SQL =
+            "SELECT * FROM expedia_links where username=?;";
 
 
 
@@ -337,8 +369,7 @@ public class DatabaseHandler {
             return status;
         }
 
-        // try to connect to database and test for duplicate user
-        System.out.println(db);
+
 
         try (
                 Connection connection = db.getConnection()
@@ -1093,6 +1124,7 @@ public class DatabaseHandler {
         log.debug("Hotel was liked" + status);
         return status;
     }
+
     /**
      * Save a hotel for a user
      * @param key primary
@@ -1114,9 +1146,34 @@ public class DatabaseHandler {
             status = Status.SQL_EXCEPTION;
             log.debug(e.getMessage(), e);
         }
-        log.debug("Hotel was liked" + status);
         return status;
     }
+    /**
+     * Save a hotel for a user
+     * @param username primary
+     * @return status.OK if hotel is removed
+     */
+
+    public Status removeAllSavedHotels(String username){
+        Status status = Status.ERROR;
+
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(GET_ALL_SAVED_HOTELS_USER_SQL)
+        ) {
+            statement.setString(1,username);
+            ResultSet set = statement.executeQuery();
+            while(set.next()){
+                unsaveHotel(set.getString(1));
+            }
+            status=Status.OK;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return status;
+    }
+
     /**
      *Check if user has saved hotel
      * @param key primary key
@@ -1133,8 +1190,7 @@ public class DatabaseHandler {
             statement.setString(1,key);
             ResultSet results= statement.executeQuery();
             exist = results.next();
-            System.out.println(key);
-            System.out.println(exist);
+
 
         }
         catch (SQLException e) {
@@ -1164,6 +1220,153 @@ public class DatabaseHandler {
         }
         return status;
     }
+    /**
+     * Adds a expedia link id a user visit the hotel link
+     * @param hotelId hotel id
+     * @param username username
+     * @return status.OK if review was added
+     */
+
+    public Status addVisitedExpedialink(String hotelId,String username,String link,String hotelname){
+        Status status = Status.ERROR;
+
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(ADD_VISITED_EXPEDIA_LINK_SQL)
+        ) {
+            String key = username+hotelId;
+            statement.setString(1,key);
+            statement.setString(2,hotelId);
+            statement.setString(3,hotelname);
+            statement.setString(4,username);
+            statement.setString(5,link);
+            statement.executeUpdate();
+            status = Status.OK;
 
 
+        }
+        catch (SQLException e) {
+            status = Status.SQL_EXCEPTION;
+            log.debug(e.getMessage(), e);
+        }
+        log.debug("Visited link was added to user" + status);
+        return status;
+    }
+
+    /**
+     *Check if user has saved any hotels
+     * @param key username
+     * @return status.ok if has any reviews
+     */
+
+    public Status checkIfUserHasSavedLink(String key){
+        Status status = Status.ERROR;
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(CHECK_IF_USER_HAS_SAVED_LINK_SQL)
+        ) {
+            statement.setString(1,key);
+            ResultSet results= statement.executeQuery();
+            status = results.next() ? status = Status.OK : Status.INVALID_REVIEWID;
+        }
+        catch (SQLException e) {
+            status=Status.SQL_EXCEPTION;
+            log.debug(e.getMessage(), e);
+        }
+        return status;
+    }
+    /**
+     * Get all visited links for a user
+     * @return List of all cities
+     * */
+    public ArrayList<ExpediaLinkInfo> getAllVisitedLinks(String username){
+        ArrayList<ExpediaLinkInfo> links = new ArrayList<>();
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(GET_ALL_EXPEDIALINKS_FOR_USER_SQL)
+        ) {
+            statement.setString(1,username);
+            ResultSet set = statement.executeQuery();
+            while(set.next()){
+                String hotelid= set.getString(2);
+                String name = set.getString(3);
+                String link = set.getString(5);
+                ExpediaLinkInfo info = new ExpediaLinkInfo(hotelid,name,username,link);
+                links.add(info);
+            }
+        }
+        catch (SQLException e) {
+            log.debug(e.getMessage(), e);
+        }
+        return links;
+    }
+    /**
+     * Save a hotel for a user
+     * @param key primary
+     * @return status.OK if hotel is removed
+     */
+
+    private Status clearSavedLink(Connection connection,String key){
+        Status status = Status.ERROR;
+
+        try (
+                PreparedStatement statement = connection.prepareStatement(REMOVE_SAVED_LINK_FOR_USER_SQL)
+        ) {
+            statement.setString(1,key);
+            statement.executeUpdate();
+            status = Status.OK;
+        }
+        catch (SQLException e) {
+            status = Status.SQL_EXCEPTION;
+            log.debug(e.getMessage(), e);
+        }
+        return status;
+    }
+    /**
+     * Save a hotel for a user
+     * @param username primary
+     * @return status.OK if hotel is removed
+     */
+
+    public Status clearUserLinkHistory(String username){
+        Status status = Status.ERROR;
+
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(GET_ALL_LINK_PRIMKEYS_FOR_USER_SQL)
+        ) {
+            statement.setString(1,username);
+            ResultSet set = statement.executeQuery();
+            while(set.next()){
+                clearSavedLink(connection,set.getString(1));
+            }
+            status=Status.OK;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return status;
+    }
+    /**
+     *Check if user has saved any hotels
+     * @param username username
+     * @return status.ok if has any reviews
+     */
+
+    public Status checkIfUserHasLinkHistory(String username){
+        Status status = Status.ERROR;
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(GET_ALL_EXPEDIALINKS_FOR_USER_SQL)
+        ) {
+            statement.setString(1,username);
+            ResultSet results= statement.executeQuery();
+            status = results.next() ? status = Status.OK : Status.INVALID_REVIEWID;
+        }
+        catch (SQLException e) {
+            status=Status.SQL_EXCEPTION;
+            log.debug(e.getMessage(), e);
+        }
+        return status;
+    }
 }

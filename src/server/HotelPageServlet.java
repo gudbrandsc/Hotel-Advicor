@@ -56,7 +56,6 @@ public class HotelPageServlet extends LoginBaseServlet {
             context.put("rating", rating);
             context.put("hotelid",hotelId);
             context.put("expedia",expedia);
-            System.out.println(expedia);
 
             StringWriter writer = new StringWriter();
             template.merge(context, writer);
@@ -96,7 +95,7 @@ public class HotelPageServlet extends LoginBaseServlet {
             response.sendRedirect(response.encodeRedirectURL("/hotel?hotelid="+hotelid));
         }
         else {
-            String url = "/asdsadsa?error=" + status.ordinal();
+            String url = "/viewhotels?error=" + status.ordinal();
             url = response.encodeRedirectURL(url);
             response.sendRedirect(url);
         }

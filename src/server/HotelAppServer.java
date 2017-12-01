@@ -51,6 +51,8 @@ public class HotelAppServer {
         sh.addServlet(HotelAttractionsServlet.class,  "/attractions");
         sh.addServlet(LoginRedirectServlet.class, "/*");
         sh.addServlet(SavedHotelsServlet.class,"/savedhotels");
+        sh.addServlet(ExpediaLinkHistory.class,"/expedialinks");
+
 
 
 

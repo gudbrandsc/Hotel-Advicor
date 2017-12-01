@@ -51,7 +51,6 @@ public class AddReviewServlet extends LoginBaseServlet {
                 }
             }else {
                 Status status=Status.MISSING_HOTELID;
-                System.out.println("here");
                 response.sendRedirect("/viewhotels?error="+status.ordinal());
             }
         } else {

@@ -94,8 +94,7 @@ public class LoginUserServlet extends LoginBaseServlet {
             else {
                 response.addCookie(new Cookie("login", "false"));
                 response.addCookie(new Cookie("name", ""));
-                System.out.println(status);
-                System.out.println(status.ordinal());
+
                 response.sendRedirect(response.encodeRedirectURL("/login?error=" + status.ordinal()));
             }
         }
