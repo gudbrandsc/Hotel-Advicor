@@ -79,3 +79,108 @@ margin-top: 5px;
     height: 60px;
     background-color: #f5f5f5;
 }
+.welcomeimage{
+    width:100%;
+    height:auto;
+    height:100%;
+    margin-bottom: 3%;
+
+}
+.imagescaler{
+    width: 100%;
+    height: fit-content;
+    display:table-cell;
+    vertical-align:middle;
+    text-align:center;
+    margin-bottom: 3%;
+}
+.navbar{
+    margin-bottom: 0px;
+}
+.centeredtext {
+    position: absolute;
+    top: 22%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.centeredsearch {
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    width: 25%;
+    transform: translate(-50%, -50%);
+}
+.navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:focus, .navbar-default .navbar-nav>.active>a:hover {
+    color: #fff;
+    background-color: #6cb39f;
+}
+.navbar-default{
+    background-color: #78C2AD;
+    border-color: #78C2AD;
+}
+.navbar{
+    border: 0px;
+}
+.navbar-default .navbar-nav>li>a {
+    color: rgba(255, 255, 255, 0.6);
+}
+.navbar-default .navbar-brand{
+    color: #fff;
+
+}
+.navbar-default .navbar-nav>li>a:focus, .navbar-default .navbar-nav>li>a:hover {
+    color: #fff;
+    background-color: transparent;
+}
+.footer{
+    background-color: #78C2AD;
+    border-color: #78C2AD;
+    height: 5%;
+
+}
+
+.footer a{
+    top:50%;
+    margin-top: 1.0000em ;
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+.footer-name {
+    position: absolute;
+    top: 75%;
+    left: 5%;
+    transform: translate(-50%, -50%);
+}
+.footer-contact {
+    position: absolute;
+    top: 75%;
+    left: 86%;
+    transform: translate(-50%, -50%);
+}
+.navbar-padding{
+    padding-top: 5%;
+}
+.panel-primary{
+    border-color:#78c2ad;
+}
+.panel-primary>.panel-heading{
+    background-color: #78c2ad;
+    border-color: #78c2ad;
+}
+.container-large{
+    max-width: 1000px;
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.border-bottom{
+    margin-top: 10px;
+    border-bottom: 1px solid #f2f2f2;
+    margin-bottom: 15px;
+}
+.centerHeader{
+    text-align: center;
+    margin-bottom: 1%;
+}

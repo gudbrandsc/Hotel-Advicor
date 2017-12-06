@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../style/style.css">
+    <link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../style/minty.css">
+    <link rel="stylesheet" type="text/css" href="../style/welcome.css">
+
+    <script src="../js/script.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script></head>
+<body>
+<div>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand " href="/viewhotels">HotelAdvisor</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="/viewhotels">Hotels</a></li>
+                <li><a href="/myreviews?username=$username">My reviews</a></li>
+                <li><a href="/savedhotels">Saved hotels</a></li>
+                <li><a href="/expedialinks">Visited links</a></li>
+                <li><a href="/expedialinks">Visited links</a></li>
+
+
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/login?logout"><span class="glyphicon glyphicon-log-in"></span> Sign out</a></li>
+            </ul>
+        </div>
+    </nav>
+</div>
+
+
+<div class="imagescaler">
+    <h1 class="display-4 centeredtext">Welcome to HotelAdvisor <i class="em em-hotel"></i></h1>
+
+    <div class="centeredsearch">
+        <form action="/viewhotels" method="GET">
+            <div class="form-group">
+                <select name="city" class="form-control"  id="citySelect">
+                    <option>--Select city--</option>
+                    #foreach($city in $cities)
+                    <option>$!city</option>
+                    #end
+                </select>
+            </div>
+            <div class="form-group has-feedback has-feedback-left">
+                <input type="text" id="myInput" name="key" placeholder="Search for hotel names.." class=" form-control">
+                <i class="glyphicon glyphicon-search form-control-feedback"></i>
+            </div>
+            <input class="btn btn-block btn-primary" type="submit" value="Search" />
+        </form>
+    </div>
+</div>
+</div>
+<footer class="footer ">
+        <div class="footer-name ">
+            <a>@Gudbrand Schistad</a>
+        </div>
+    <div class="footer-contact ">
+        <a href="gudbrand.schistad@gmail.com">Contact: Gudbrand.Schistad@gmail.com</a>
+    </div>
+
+</footer>
+</body>
+</html>

@@ -31,20 +31,10 @@ public class HotelsDisplayServlet extends LoginBaseServlet {
 
         if (getUsername(request) != null) {
             ArrayList<BasicHotelInfo> hotelInfo = null;
-            Boolean invalidSearch =false;
-            if(request.getParameter("city")!=null && request.getParameter("hotelname")!=null){
-                String city = request.getParameter("city").replaceAll(Pattern.quote("+")," ");
-                String hotelname = request.getParameter("hotelname").replaceAll(Pattern.quote("+")," ");
-                if(city.equals("--Select city--")){
-                    city="";
-                }
-                hotelInfo = databaseHandler.hotelInfoSearchDisplayer(city,hotelname);
-                if (hotelInfo.size()==0){
-                    invalidSearch=true;
-                }
-            }else{
-                hotelInfo = databaseHandler.hotelInfoDisplayer();
-            }
+            boolean invalidSearch =false;
+            System.out.println("load");
+            hotelInfo = databaseHandler.hotelInfoDisplayer();
+
 
             String error = request.getParameter("error");
             String success = request.getParameter("success");
