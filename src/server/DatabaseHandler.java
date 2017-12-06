@@ -120,7 +120,13 @@ public class DatabaseHandler {
      * Used to update average rating for a hotel
      */
     private static final String SEARCH_HOTEL_TABLE_SQL =
-            "SELECT * FROM hotel_info where city LIKE ? AND hotelnames LIKE ?;";
+            "SELECT * FROM hotel_info where city = ? AND hotelnames LIKE ?;";
+
+    /**
+     * Used to update average rating for a hotel
+     */
+    private static final String SEARCH_HOTEL_TABLE_CITY_SQL =
+            "SELECT * FROM hotel_info where city = ?;";
 
 
     /**
@@ -571,13 +577,32 @@ public class DatabaseHandler {
      * */
     public ArrayList<BasicHotelInfo> hotelInfoSearchDisplayer(String city, String text){
         ArrayList<BasicHotelInfo> hotelInfoArrayList = new ArrayList<>();
+
         try (
                 Connection connection = db.getConnection();
-                PreparedStatement statement = connection.prepareStatement(SEARCH_HOTEL_TABLE_SQL)
-
         ) {
-            statement.setString(1,"%"+city+"%");
-            statement.setString(2,"%"+text+"%");
+            if(!text.isEmpty()){
+                PreparedStatement statement = connection.prepareStatement(SEARCH_HOTEL_TABLE_SQL);
+                System.out.println(city);
+                statement.setString(1,city);
+                statement.setString(2,"%"+text+"%");
+
+                ResultSet hotelNames =statement.executeQuery();
+                while (hotelNames.next()){
+                    BasicHotelInfo hInfo = new BasicHotelInfo(
+                            hotelNames.getString(1),
+                            hotelNames.getString(2),
+                            hotelNames.getString(3),
+                            hotelNames.getString(5),
+                            hotelNames.getDouble(8));
+
+                    hotelInfoArrayList.add(hInfo);
+
+                }
+            }else{
+            PreparedStatement statement = connection.prepareStatement(SEARCH_HOTEL_TABLE_CITY_SQL);
+            System.out.println(city);
+            statement.setString(1,city);
 
             ResultSet hotelNames =statement.executeQuery();
             while (hotelNames.next()){
@@ -592,7 +617,7 @@ public class DatabaseHandler {
 
             }
         }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             log.debug(e.getMessage(), e);
         }
         return hotelInfoArrayList;

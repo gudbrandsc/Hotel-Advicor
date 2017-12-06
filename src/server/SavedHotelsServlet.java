@@ -45,7 +45,7 @@ public class SavedHotelsServlet extends LoginBaseServlet {
             PrintWriter out = response.getWriter();
             VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
             VelocityContext context = new VelocityContext();
-            Template template = ve.getTemplate("static/templates/savedhotels.html");
+            Template template = ve.getTemplate("static/templates/userprofile.html");
             ArrayList<String> cities = databaseHandler.getAllHotelCities();
             context.put("username",getUsername(request));
             context.put("errorMessage", errorMessage);

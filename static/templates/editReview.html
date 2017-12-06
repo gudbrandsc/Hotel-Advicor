@@ -5,7 +5,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../style/style.css">
     <link rel="stylesheet" type="text/css" href="../style/minty.css">
+    <link rel="stylesheet" type="text/css" href="../style/pagebackgroundcolour.css">
 
     <script src="/js/script.js"></script>
 
@@ -17,7 +19,7 @@
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand " href="/viewhotels">Hotels site</a>
+                <a class="navbar-brand " href="/welcome"><i class="glyphicon glyphicon-home"></i> HotelAdvisor</a>
             </div>
             <ul class="nav navbar-nav">
                 <li><a href="#">Hotels</a></li>
@@ -33,9 +35,9 @@
     </nav>
 </div>
 
-
+<div class="navbar-padding">
 <div class="container">
-    <div class="panel panel-default">
+    <div class="panel panel-primary">
         <div class="panel-heading">Edit review for hotel $hotelname</div>
         <div class="panel-body">
             <form action="/editreview" method="post">
@@ -64,6 +66,7 @@
             </form>
         </div>
     </div>
+</div>
 </div>
 </body>
 </html>

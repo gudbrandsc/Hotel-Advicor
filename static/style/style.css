@@ -184,3 +184,45 @@ margin-top: 5px;
     text-align: center;
     margin-bottom: 1%;
 }
+.navbar-default .navbar-brand:focus, .navbar-default .navbar-brand:hover{
+    color: #fff;
+}
+.panel-info>.panel-heading {
+    background-color: #6CC3D5;
+    color: #fff;
+    border-color: #6CC3D5;
+}
+.panel-warning>.panel-heading{
+    color: #fff;
+    background-color: #ffc241;
+    border-color: #ffbe34;
+}
+.navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:focus, .navbar-default .navbar-nav>.open>a:hover {
+    color: #fff;
+}
+
+.navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:focus, .navbar-default .navbar-nav>.open>a:hover {
+    color: #fff !important;
+    background-color: #6bb39f !important;
+}
+.dropdown-menu {
+    min-width: 100% !important;
+    background-color: #6ab39f !important;
+    border: 1px solid rgb(106, 179, 159) !important;
+}
+
+.dropdown-menu .divider {
+    height: 1px;
+    margin: 9px 0;
+    overflow: hidden;
+    background-color: #78c2ad;
+}
+
+.dropdown-menu>li>a {
+    color: #cbe7df;
+}
+.dropdown-menu>li>a:focus, .dropdown-menu>li>a:hover{
+    color: #fff !important;
+    text-decoration: none;
+    background-color: #78c2ad !important;
+}

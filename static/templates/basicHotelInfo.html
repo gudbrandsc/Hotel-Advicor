@@ -11,8 +11,8 @@
     <link rel="stylesheet" type="text/css" href="../style/minty.css">
     <link rel="stylesheet" type="text/css" href="../style/pagebackgroundcolour.css">
 
-
     <script src="../js/script.js"></script>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script></head>
 <body>
@@ -20,7 +20,7 @@
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand " href="/welcome">HotelAdvisor</a>
+                <a class="navbar-brand " href="/welcome"><i class="glyphicon glyphicon-home"></i> HotelAdvisor</a>
             </div>
             <ul class="nav navbar-nav">
                 <li class="active "><a href="/viewhotels">Hotels</a></li>
@@ -38,44 +38,46 @@
     </nav>
 </div>
 <div class="navbar-padding">
+
     <div class="container-large">
+        #if($erroralert)
+        <div class="alert alert-danger alert-dismissable">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>$errorMessage</strong>
+        </div>
+        #end
+        #if($successalert)
+        <div class="alert alert-info alert-dismissable">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>$successMessage</strong>
+        </div>
+        #end
         <div class="panel  panel-primary">
-            <div class="panel-heading">Panel Heading</div>
+            <div class="panel-heading">View hotels</div>
             <div class="panel-body">
-                    <div class="form-group">
-                        <select name="city" class="form-control"  id="citySelect">
-                            <option>--Select city--</option>
-                            #foreach($city in $cities)
-                            <option>$!city</option>
-                            #end
-                        </select>
-                    </div>
+                <div class="form-group">
+                    <label>Search for hotels:</label>
+
+                    <select name="city" class="form-control"  id="citySelect" >
+                        #foreach($city in $cities)
+                        <option>$!city</option>
+                        #end
+                    </select>
+                </div>
                 <div class="form-group has-feedback has-feedback-left">
                     <input type="text" id="myInput" name="key" placeholder="Search for hotel names.." class=" form-control">
                     <i class="glyphicon glyphicon-search form-control-feedback"></i>
                 </div>
-                    <input class="btn btn-info" type="submit" onclick="updateTable()" value="Search" />
+
+                <input class="btn btn-info" type="submit" onclick="updateTable()" value="Search" />
 
                 <div class="border-bottom"></div>
 
 
 
-                #if($erroralert)
-                <div class="alert alert-danger alert-dismissable">
-                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                    <strong>$errorMessage</strong>
-                </div>
-                #end
-                #if($successalert)
-                <div class="alert alert-info alert-dismissable">
-                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                    <strong>$successMessage</strong>
-                </div>
-                #end
+
 
                 <div id="hotelinfotable">
-                    <h3 class="centerHeader">View all hotels</h3>
-
                     #if($invalidSearch)
                     <div class="alert alert-danger alert-dismissable">
                         <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>

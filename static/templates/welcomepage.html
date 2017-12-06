@@ -18,7 +18,7 @@
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand " href="/viewhotels">HotelAdvisor</a>
+                <a class="navbar-brand " href="/welcome"><i class="glyphicon glyphicon-home"></i> HotelAdvisor</a>
             </div>
             <ul class="nav navbar-nav">
                 <li><a href="/viewhotels">Hotels</a></li>
@@ -30,7 +30,15 @@
 
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="/login?logout"><span class="glyphicon glyphicon-log-in"></span> Sign out</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <span class="glyphicon glyphicon-user"></span> Welcome, $username</span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/myprofile">My profile</a></li>
+                        <li><a href="/myreviews?username=$username">My Reviews</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="/login?logout"><span class="glyphicon glyphicon-log-in"></span> Sign out</a></li>
+                    </ul>
+                </li>
             </ul>
         </div>
     </nav>
@@ -43,8 +51,7 @@
     <div class="centeredsearch">
         <form action="/viewhotels" method="GET">
             <div class="form-group">
-                <select name="city" class="form-control"  id="citySelect">
-                    <option>--Select city--</option>
+                <select name="city" class="form-control"  id="citySelect" >
                     #foreach($city in $cities)
                     <option>$!city</option>
                     #end
@@ -59,14 +66,6 @@
     </div>
 </div>
 </div>
-<footer class="footer ">
-        <div class="footer-name ">
-            <a>@Gudbrand Schistad</a>
-        </div>
-    <div class="footer-contact ">
-        <a href="gudbrand.schistad@gmail.com">Contact: Gudbrand.Schistad@gmail.com</a>
-    </div>
 
-</footer>
 </body>
 </html>

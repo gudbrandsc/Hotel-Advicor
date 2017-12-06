@@ -33,6 +33,7 @@ public class WelcomeServlet extends LoginBaseServlet{
             Template template = ve.getTemplate("static/templates/welcomepage.html");
             ArrayList<String> cities = databaseHandler.getAllHotelCities();
             context.put("cities", cities);
+            context.put("username",getUsername(request));
             StringWriter writer = new StringWriter();
             template.merge(context, writer);
             out.println(writer.toString());

@@ -8,16 +8,19 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="../style/style.css">
     <link rel="stylesheet" type="text/css" href="../style/minty.css">
+    <link rel="stylesheet" type="text/css" href="../style/pagebackgroundcolour.css">
+
+    <script src="../js/script.js"></script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
-<body>
+<body onload="setstar()">
 <div>
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand " href="/viewhotels">HotelAdvisor</a>
+                <a class="navbar-brand " href="/welcome"><i class="glyphicon glyphicon-home"></i> HotelAdvisor</a>
             </div>
             <ul class="nav navbar-nav">
                 <li ><a href="/viewhotels">Hotels</a></li>
@@ -33,48 +36,53 @@
         </div>
     </nav>
 </div>
-<div class="container">
-    #if($successAlert)
-    <div class="alert alert-info alert-dismissable">
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-        <strong>$successMessage</strong>
-    </div>
-    #end
+<div class="navbar-padding">
 
-    #if($errorAlert)
-    <div class="alert alert-danger alert-dismissable">
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-        <strong>$errorMessage</strong>
-    </div>
-    #end
+    <div class="container">
+        #if($successAlert)
+        <div class="alert alert-info alert-dismissable">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>$successMessage</strong>
+        </div>
+        #end
 
+        #if($errorAlert)
+        <div class="alert alert-danger alert-dismissable">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>$errorMessage</strong>
+        </div>
+        #end
 
-    #if($userReviews)
-    #foreach($review in $reviews)
-    <div class="well well-sm">
+        #if($userReviews)
+        <h2>Your hotel reviews</h2>
 
-        <div>
-            <h3>$!review.title</h3>
-            <p><small>posted by $!review.username on $!review.date</small></p>
+        #foreach($review in $reviews)
+
+        <div class="panel panel-primary">
+            <!-- Default panel contents -->
+            <div class="panel-heading">Review for hotel $!review.hotelName$!review.title <br>- <small>Posted on $!review.date</small></div>
+            <div class="panel-body">
+                <div class="border-bottom">
+                <h3>$!review.title</h3> <p class="">Rating: $!review.rating</p>
+                </div>
+                <div class="reviewtext">
+                    <p>$!review.review</p>
+                </div>
+            <form action ="/myreviews" method = "post">
+                <input type="hidden" value="$!review.hotelid" name="hotelid" />
+                <input type="hidden" value="$!review.username" name="username" />
+                <input class="btn btn-info" type="submit" name="edit" value="Edit" />
+                <input class="btn btn-danger" type="submit" name="delete" value="Delete" />
+            </form>
+            </div>
+
         </div>
 
-        <div class="reviewtext">
-            <p>$!review.review</p>
-        </div>
-        <p>Rating: $!review.rating</p>
-        <p><small>Review for hotel $!review.hotelName</small></p>
-        <form action ="/myreviews" method = "post">
-            <input type="hidden" value="$!review.hotelid" name="hotelid" />
-            <input type="hidden" value="$!review.username" name="username" />
-            <input class="btn btn-info" type="submit" name="edit" value="Edit" />
-            <input class="btn btn-danger" type="submit" name="delete" value="Delete" />
-        </form>
-    </div>
-#end
-#else
-<p>You don't have any reviews yet</p>
-#end
+    #end
+    #else
+    <p>You don't have any reviews yet</p>
+    #end
 </div>
-
+</div>
 </body>
 </html>
