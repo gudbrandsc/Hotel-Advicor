@@ -101,7 +101,7 @@ public class DatabaseHandler {
      * Used to get all ratings for a hotel
      */
     private static final String GET_ALL_RATINGS_HOTELID_SQL =
-            "SELECT intRating FROM hotel_reviews WHERE hotelId=?";
+            "SELECT AVG(intRating) FROM hotel_reviews WHERE hotelId=?";
 
     /**
      * Used to update average rating for a hotel
@@ -1180,19 +1180,13 @@ public class DatabaseHandler {
         ) {
             statement.setString(1,hotelId);
             ResultSet set = statement.executeQuery();
-
+            double avgRating = 0;
             if (set.next()) {
                 do {
-                    count++;
-                    total=total+set.getDouble(1);
+                    avgRating = set.getDouble(1);
                 } while (set.next());
             }
-            Double avgRating = total/count;
-            if(avgRating.isNaN()){
-                setAvgRatingForHotel(hotelId,0.0,connection);
-            }else{
                 setAvgRatingForHotel(hotelId,avgRating,connection);
-            }
             status = Status.OK;
         }
         catch (SQLException e) {
@@ -1545,7 +1539,6 @@ public class DatabaseHandler {
                 Connection connection = db.getConnection();
                 PreparedStatement statement = connection.prepareStatement(UPDATE_USERS_LAST_LOGIN_TIME_SQL)
         ) {
-            System.out.println("try set");
             String date = getNewestLogintime(username);
 
             statement.setString(1,date);

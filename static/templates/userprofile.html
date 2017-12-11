@@ -44,7 +44,7 @@
 <div class="container navbar-padding">
     <div class="panel panel-primary">
         <!-- Default panel contents -->
-        <div class="panel-heading">Saved hotels</div>
+        <div class="panel-heading">My profile</div>
         <div class="panel-body">
             <div class="row">
                 <div class="col-xs-6">
@@ -55,7 +55,8 @@
 
                             <form action ="/savedhotels" method = "post">
                                 <input type="hidden" value="$username" name="username" />
-                                <input class="btn btn-warning" type="submit"  value="Remove all saved hotels" />
+                                <label for="DeleteSaved" class="btn btn-warning"><i class="glyphicon glyphicon-trash"></i> Remove all saved hotels</label>
+                                <input id="DeleteSaved" class="hidden" type="submit" name="delete" value="Delete">
                             </form>
                             #if($invalidSearch)
                             <div class="alert alert-danger alert-dismissable">
@@ -106,7 +107,10 @@
                         <div class="panel-body">
                             <form action ="/expedialinks" method = "post">
                                 <input type="hidden" value="$username" name="username" />
-                                <input class="btn btn-warning" type="submit" name="clearhistory" value="Remove all history" />
+                                <label for="DeleteExpedia" class="btn btn-warning"><i class="glyphicon glyphicon-trash"></i> Remove all history</label>
+                                <input id="DeleteExpedia" class="hidden" type="submit" name="clearhistory" value="Delete">
+
+
                             </form>
                         </div>
 

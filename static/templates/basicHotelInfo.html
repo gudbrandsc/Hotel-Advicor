@@ -12,7 +12,13 @@
     <link rel="stylesheet" type="text/css" href="../style/pagebackgroundcolour.css">
 
     <script src="../js/script.js"></script>
+    <script src="../js/googlemaps.js"></script>
 
+    <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
+    </script>
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyASKMle-CcxVLoNlKEqC4APddRv8PfqMzc&callback=initMap">
+    </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script></head>
 <body>
@@ -57,59 +63,60 @@
             <strong>$successMessage</strong>
         </div>
         #end
-        <div class="panel  panel-primary">
+        <div class="panel panel-primary">
             <div class="panel-heading">View hotels</div>
             <div class="panel-body">
-                <div class="form-group">
-                    <label>Search for hotels:</label>
-
-                    <select name="city" class="form-control"  id="citySelect" >
-                        #foreach($city in $cities)
-                        <option>$!city</option>
-                        #end
-                    </select>
+                <div class="col-md-12 " style="height: 350px;">
+                    <div id="map"></div>
                 </div>
-                <div class="form-group has-feedback has-feedback-left">
-                    <input type="text" id="myInput" name="key" placeholder="Search for hotel names.." class=" form-control">
-                    <i class="glyphicon glyphicon-search form-control-feedback"></i>
-                </div>
+                <div class="col-md-12 top-padding-5px">
+                    <div class="form-group ">
+                        <label>Search for hotels:</label>
 
-                <input class="btn btn-info" type="submit" onclick="updateTable()" value="Search" />
-
-                <div class="border-bottom"></div>
-
-
-<script></script>
-
-
-                <div id="hotelinfotable">
-                    #if($invalidSearch)
-                    <div class="alert alert-danger alert-dismissable">
-                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                        <strong>There is no hotel matching your search</strong>
+                        <select name="city" class="form-control"  id="citySelect" >
+                            #foreach($city in $cities)
+                            <option>$!city</option>
+                            #end
+                        </select>
                     </div>
-                    #end
+                    <div class="form-group has-feedback has-feedback-left">
+                        <input type="text" id="myInput" name="key" placeholder="Search for hotel names.." class=" form-control">
+                        <i class="glyphicon glyphicon-search form-control-feedback"></i>
+                    </div>
+                    <button onclick="updateTable()" type="submit" class="btn  btn-info">
+                        <i class="glyphicon glyphicon-search"></i> Search
+                    </button>
 
-                    <table id="hotelsTable" class="table table-striped">
-                        <thead class="thead-dark">
-                        <tr>
-                            <th>Hotel name</th>
-                            <th>City</th>
-                            <th>Address</th>
-                            <th>Rating</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        #foreach($hotel in $hotels)
-                        <tr id="some">
-                            <td><a href="/hotel?hotelid=$!hotel.hotelId">$!hotel.name</a></td>
-                            <td>$!hotel.city</td>
-                            <td>$!hotel.address</td>
-                            <td>$!hotel.rating</td>
-                        </tr>
+                    <div class="border-bottom"></div>
+                    <div id="hotelinfotable">
+                        #if($invalidSearch)
+                        <div class="alert alert-danger alert-dismissable">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            <strong>There is no hotel matching your search</strong>
+                        </div>
                         #end
-                        </tbody>
-                    </table>
+
+                        <table id="hotelsTable" class="table table-striped">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th>Hotel name</th>
+                                <th>City</th>
+                                <th>Address</th>
+                                <th>Rating</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            #foreach($hotel in $hotels)
+                            <tr id="some">
+                                <td><a href="/hotel?hotelid=$!hotel.hotelId">$!hotel.name</a></td>
+                                <td>$!hotel.city</td>
+                                <td>$!hotel.address</td>
+                                <td>$!hotel.rating</td>
+                            </tr>
+                            #end
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

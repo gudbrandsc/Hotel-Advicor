@@ -56,11 +56,11 @@
 
             #if($existingReview)
             <a href="/editreview?username=$username&hotelid=$hotelid">
-                <button class="btn btn-info" >Edit review</button>
+                <button class="btn btn-info" ><i class="glyphicon glyphicon-pencil"></i> Edit review</button>
             </a>
             #else
             <a href="/addreview?hotelid=$hotelid">
-                <button class="btn btn-success" >Add review</button>
+                <button class="btn btn-success " ><i class="glyphicon glyphicon-pencil"></i> Add review</button>
             </a>
             #end
             #if($hotelReviews)

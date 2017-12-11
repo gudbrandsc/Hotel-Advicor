@@ -49,7 +49,6 @@ public class LoginBaseServlet extends HttpServlet {
 
 		String format = "yyyy-MM-dd HH:mm:ss";
 		DateFormat dateFormat = new SimpleDateFormat(format);
-		System.out.println(dateFormat.format(Calendar.getInstance().getTime()));
 
 		return dateFormat.format(Calendar.getInstance().getTime());
 	}

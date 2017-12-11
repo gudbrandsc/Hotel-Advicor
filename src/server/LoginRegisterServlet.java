@@ -27,27 +27,32 @@ public class LoginRegisterServlet extends LoginBaseServlet {
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 
-
-		PrintWriter out = response.getWriter();
-		String error = request.getParameter("error");
-		boolean erroralert = false;
-		String errorMessage =null;
-		int code = 0;
-
-		if (error != null) {
-			code = integerParser(error);
-			errorMessage = getStatusMessage(code);
-			erroralert = true;
+		if (getUsername(request) != null){
+			response.sendRedirect("/welcome");
 		}
-		VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
-		VelocityContext context = new VelocityContext();
-		Template template = ve.getTemplate("static/templates/register.html");
-		context.put("errorAlert",erroralert);
-		context.put("errorMessage",errorMessage);
-		StringWriter writer = new StringWriter();
-		template.merge(context, writer);
-		out.println(writer.toString());
+			PrintWriter out = response.getWriter();
+			String error = request.getParameter("error");
+			boolean erroralert = false;
+			String errorMessage = null;
+			int code = 0;
+
+			if (error != null) {
+				code = integerParser(error);
+				errorMessage = getStatusMessage(code);
+				erroralert = true;
+			}
+			VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
+			VelocityContext context = new VelocityContext();
+			Template template = ve.getTemplate("static/templates/register.html");
+			context.put("errorAlert", erroralert);
+			context.put("errorMessage", errorMessage);
+			StringWriter writer = new StringWriter();
+			template.merge(context, writer);
+			out.println(writer.toString());
+
 	}
+
+
 
 	/** The method that will process the form once it's submitted
 	 * @param request HttpServletRequest

@@ -36,4 +36,3 @@ function sortByRating(hotelid) {
     xhttp.send();
 
 }
-

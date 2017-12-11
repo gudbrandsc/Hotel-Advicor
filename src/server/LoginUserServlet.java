@@ -60,7 +60,7 @@ public class LoginUserServlet extends LoginBaseServlet {
             logout=true;
         }
         if (getUsername(request) != null){
-            response.sendRedirect("/viewhotels");
+            response.sendRedirect("/welcome");
         }
 
         VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
@@ -91,7 +91,7 @@ public class LoginUserServlet extends LoginBaseServlet {
                 response.addCookie(new Cookie("login", "true"));
                 response.addCookie(new Cookie("name", user));
                 databaseHandler.setLoginTime(getLoginDate(),user);
-                response.sendRedirect(response.encodeRedirectURL("/viewhotels"));
+                response.sendRedirect(response.encodeRedirectURL("/welcome"));
             }
             else {
                 response.addCookie(new Cookie("login", "false"));

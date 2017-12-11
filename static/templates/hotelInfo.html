@@ -10,7 +10,8 @@
     <link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet">
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
@@ -44,12 +45,18 @@
     <div class="panel panel-primary">
         <div class="panel-heading">$name </div>
         <div class="panel-body">
+
             <div class="col-md-6">
                 <div class="card-body text-primary border-bottom">
                     <h4 class="card-title">Address: $address</h4>
                     <p class="card-text">Rating: $rating</p>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
+                    <a href="/reviews?hotelid=$hotelid">
+                        <button class="btn btn-large btn-success"><i class="glyphicon glyphicon-comment"></i> See reviews</button>
+                    </a>
+                </div>
+                <div class="col-md-4">
                     <form target='_blank' action = "/expedialinks" method = "post">
                         <input type="hidden" value="$hotelid" name="hotelid" />
                         <input type="hidden" value="$name" name="hotelname" />
@@ -58,30 +65,30 @@
                         <input id="expedia" href="$expedia" class="hidden" type="submit" name="visit" value="Expedia">
                     </form>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
 
-                #if($saved)
-                <form action = "/hotel" method = "post">
-                    <input type="hidden" value="$hotelid" name="hotelid" />
-                    <label for="unsave" class="btn btn-large btn-danger"><i class="glyphicon glyphicon-heart-empty"></i> Unsave</label>
-                    <input class="hidden" id="unsave" type="submit" name="unsave" value="unsave">
-                </form>
-                #else
-                <form action = "/hotel" method = "post">
-                    <input type="hidden" value="$hotelid" name="hotelid" />
-                    <label for="save" class="btn btn-large btn-secondary"><i class="glyphicon glyphicon-heart"></i> Save</label>
-                    <input id="save" class="hidden" type="submit" name="save" value="save">
+                    #if($saved)
+                    <form action = "/hotel" method = "post">
+                        <input type="hidden" value="$hotelid" name="hotelid" />
+                        <label for="unsave" class="btn btn-large btn-danger"><i class="glyphicon glyphicon-heart-empty"></i> Unsave</label>
+                        <input class="hidden" id="unsave" type="submit" name="unsave" value="unsave">
+                    </form>
+                    #else
+                    <form action = "/hotel" method = "post">
+                        <input type="hidden" value="$hotelid" name="hotelid" />
+                        <label for="save" class="btn btn-large btn-secondary"><i class="glyphicon glyphicon-heart"></i> Save</label>
+                        <input id="save" class="hidden" type="submit" name="save" value="save">
 
-                </form>
-                #end
+                    </form>
+                    #end
                 </div>
-<div class=" col-md-12 top-padding-5px">
-                <form action = "/attractions" method = "post">
-                    <input type="hidden" value="$hotelid" name="hotelid" />
-                    <input class="form-control" required  name="radius" type="number" min="1" max="9999" placeholder="Enter radius..">
-                    <input class="btn btn-large btn-primary" type="submit" value="Show attractions">
-                </form>
-</div>
+                <div class=" col-md-12 top-padding-5px">
+                    <form action = "/attractions" method = "post">
+                        <input type="hidden" value="$hotelid" name="hotelid" />
+                        <input class="form-control" required  name="radius" type="number" min="1" max="9999" placeholder="Enter radius..">
+                        <input class="btn top-padding-5px btn-large btn-primary " type="submit" value="Show attractions">
+                    </form>
+                </div>
             </div>
 
 
@@ -93,10 +100,9 @@
                     src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAX2jfFKOyHFMvld1gugHnRYXCY1qxLvX4&q=$mapq" allowfullscreen>
             </iframe>
             </div>
-
-
         </div>
     </div>
 </div>
+
 </body>
 </html>
