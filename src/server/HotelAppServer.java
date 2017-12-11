@@ -42,6 +42,7 @@ public class HotelAppServer {
 
         sh.addServlet(LoginUserServlet.class,     "/login");
         sh.addServlet(LoginRegisterServlet.class, "/register");
+        sh.addServlet(UserProfileServlet.class,"/profile");
         sh.addServlet(WelcomeServlet.class,"/welcome");
         sh.addServlet(HotelsDisplayServlet.class,  "/viewhotels");
         sh.addServlet(HotelPageServlet.class,  "/hotel");
@@ -54,6 +55,8 @@ public class HotelAppServer {
         sh.addServlet(SavedHotelsServlet.class,"/savedhotels");
         sh.addServlet(ExpediaLinkHistory.class,"/expedialinks");
         sh.addServlet(TableSearchServlet.class,"/searchtable");
+        sh.addServlet(SortReviewsServlet.class,"/sortreviews");
+
 
 
 

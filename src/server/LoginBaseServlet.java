@@ -34,8 +34,23 @@ public class LoginBaseServlet extends HttpServlet {
 	 * @return date
 	 */
 	protected String getDate() {
-		String format = "hh:mm a 'on' EEE, MMM dd, yyyy";
+
+		String format = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 		DateFormat dateFormat = new SimpleDateFormat(format);
+		System.out.println(dateFormat.format(Calendar.getInstance().getTime()));
+
+		return dateFormat.format(Calendar.getInstance().getTime());
+	}
+	/**
+	 * Used to return a date.
+	 * @return date
+	 */
+	protected String getLoginDate() {
+
+		String format = "yyyy-MM-dd HH:mm:ss";
+		DateFormat dateFormat = new SimpleDateFormat(format);
+		System.out.println(dateFormat.format(Calendar.getInstance().getTime()));
+
 		return dateFormat.format(Calendar.getInstance().getTime());
 	}
 

@@ -197,6 +197,44 @@ public class DatabaseHandler {
             "SELECT * FROM expedia_links where username=?;";
 
 
+    /**
+     * Used to get all visited expedia links for a user
+     */
+    private static final String GET_ALL_REVIEWS_BY_DATE_SQL =
+            "SELECT * FROM hotel_reviews WHERE hotelid=? order by submissiondate DESC;";
+
+    /**
+     * Used to get all visited expedia links for a user
+     */
+    private static final String GET_ALL_REVIEWS_BY_RATING_SQL =
+            "SELECT * FROM hotel_reviews WHERE hotelid=? order by intRating DESC;";
+     /**
+     * Used to get all visited expedia links for a user
+     */
+    private static final String UPDATE_USER_LOGIN_TIME_SQL =
+            "UPDATE login_users SET newLogin = ? WHERE username=?;";
+
+    /**
+     * Used to get all visited expedia links for a user
+     */
+    private static final String UPDATE_USERS_LAST_LOGIN_TIME_SQL =
+            "UPDATE login_users SET lastLogin = ? WHERE username=?;";
+
+
+    /**
+     * Used to get all visited expedia links for a user
+     */
+    private static final String GET_USERS_LAST_LOGIN_TIME_SQL =
+            "SELECT lastLogin FROM login_users where username=?;";
+
+    /**
+     * Used to get all visited expedia links for a user
+     */
+    private static final String GET_USERS_CURRENT_LOGIN_TIME =
+            "SELECT newLogin FROM login_users where username=?;";
+
+
+
 
     /** Used to configure connection to database. */
 
@@ -583,7 +621,6 @@ public class DatabaseHandler {
         ) {
             if(!text.isEmpty()){
                 PreparedStatement statement = connection.prepareStatement(SEARCH_HOTEL_TABLE_SQL);
-                System.out.println(city);
                 statement.setString(1,city);
                 statement.setString(2,"%"+text+"%");
 
@@ -601,7 +638,6 @@ public class DatabaseHandler {
                 }
             }else{
             PreparedStatement statement = connection.prepareStatement(SEARCH_HOTEL_TABLE_CITY_SQL);
-            System.out.println(city);
             statement.setString(1,city);
 
             ResultSet hotelNames =statement.executeQuery();
@@ -807,6 +843,79 @@ public class DatabaseHandler {
         }
         return reviews;
     }
+
+    /**
+     * Method used to build a html string containing all reviews for a hotel
+     * using a hotel id
+     * @param hotelId hotel id
+     * @return A html table string with hotel name, address and rating
+     *
+     * */
+    public ArrayList<HotelReview> hotelReviewsByDate(String hotelId) {
+        ArrayList<HotelReview> reviews = new ArrayList<>();
+
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(GET_ALL_REVIEWS_BY_DATE_SQL)
+
+        ) {
+            statement.setString(1,hotelId);
+            ResultSet hotelReviews = statement.executeQuery();
+            while (hotelReviews.next()) {
+                String hotelid = hotelReviews.getString(1);
+                String reviewid = hotelReviews.getString(2);
+                int rating = hotelReviews.getInt(3);
+                String title = hotelReviews.getString(4);
+                String review = hotelReviews.getString(5);
+                String date = hotelReviews.getString(6);
+                String username = hotelReviews.getString(7) ;
+
+
+                HotelReview hr = new HotelReview(hotelid,reviewid,rating,title,review,date,username);
+                reviews.add(hr);
+            }
+        } catch (SQLException e) {
+            log.debug(e.getMessage(), e);
+        }
+        return reviews;
+    }
+    /**
+     * Method used to build a html string containing all reviews for a hotel
+     * using a hotel id
+     * @param hotelId hotel id
+     * @return A html table string with hotel name, address and rating
+     *
+     * */
+    public ArrayList<HotelReview> hotelReviewsByRating(String hotelId) {
+        ArrayList<HotelReview> reviews = new ArrayList<>();
+
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(GET_ALL_REVIEWS_BY_RATING_SQL)
+
+        ) {
+            statement.setString(1,hotelId);
+            ResultSet hotelReviews = statement.executeQuery();
+            while (hotelReviews.next()) {
+                String hotelid = hotelReviews.getString(1);
+                String reviewid = hotelReviews.getString(2);
+                int rating = hotelReviews.getInt(3);
+                String title = hotelReviews.getString(4);
+                String review = hotelReviews.getString(5);
+                String date = hotelReviews.getString(6);
+                String username = hotelReviews.getString(7) ;
+
+
+                HotelReview hr = new HotelReview(hotelid,reviewid,rating,title,review,date,username);
+                reviews.add(hr);
+            }
+        } catch (SQLException e) {
+            log.debug(e.getMessage(), e);
+        }
+        return reviews;
+    }
+
+
 //    public HotelReview(String hotelid, String reviewid,int rating,String title, String review,String date, String username){
 
     /**
@@ -1394,4 +1503,81 @@ public class DatabaseHandler {
         }
         return status;
     }
+
+
+
+    public void setLoginTime(String date, String username){
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(UPDATE_USER_LOGIN_TIME_SQL)
+        ) {
+            statement.setString(1,date);
+            statement.setString(2,username);
+            statement.executeUpdate();
+        }
+        catch (SQLException e) {
+            log.debug(e.getMessage(), e);
+        }
+    }
+
+
+    private String getNewestLogintime(String username){
+        StringBuilder sb = new StringBuilder();
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(GET_USERS_CURRENT_LOGIN_TIME)
+        ) {
+            statement.setString(1,username);
+            ResultSet rs = statement.executeQuery();
+            while(rs.next()){
+                sb.append(rs.getString(1));
+            }
+        }
+        catch (SQLException e) {
+            log.debug(e.getMessage(), e);
+        }
+        return sb.toString();
+    }
+
+
+    public void setLastLoginTime(String username){
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(UPDATE_USERS_LAST_LOGIN_TIME_SQL)
+        ) {
+            System.out.println("try set");
+            String date = getNewestLogintime(username);
+
+            statement.setString(1,date);
+            statement.setString(2,username);
+            statement.executeUpdate();
+        }
+        catch (SQLException e) {
+            log.debug(e.getMessage(), e);
+        }
+    }
+
+    public String getLastLogintime(String username){
+        StringBuilder sb = new StringBuilder();
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(GET_USERS_LAST_LOGIN_TIME_SQL)
+        ) {
+            statement.setString(1,username);
+            ResultSet rs = statement.executeQuery();
+            while(rs.next()){
+                sb.append(rs.getString(1));
+            }
+        }
+        catch (SQLException e) {
+            log.debug(e.getMessage(), e);
+        }
+        return sb.toString();
+    }
+
+
+
+
+
+
 }

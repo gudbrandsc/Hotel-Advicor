@@ -20,18 +20,25 @@
                 <a class="navbar-brand " href="/welcome"><i class="glyphicon glyphicon-home"></i> HotelAdvisor</a>
             </div>
             <ul class="nav navbar-nav">
-                <li><a href="/viewhotels">Hotels</a></li>
-                <li><a href="/myreviews?username=$username">My reviews</a></li>
-                <li class="active "><a href="/savedhotels">Saved hotels</a></li>
-                <li><a href="/expedialinks">Visited links</a></li>
-
+                <li class="active "><a href="/viewhotels">Hotels</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="/login?logout"><span class="glyphicon glyphicon-log-in"></span> Sign out</a></li>
+                <li class="dropdown menuWidth">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <span class="glyphicon glyphicon-user"></span> $username</span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/profile"><span class="glyphicon glyphicon-user"></span> My profile</a></li>
+                        <li><a href="/myreviews?username=$username"><span class="glyphicon glyphicon-comment"></span> My Reviews</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="/login?logout"><span class="glyphicon glyphicon-log-in"></span> Sign out</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a>Last logged in: $lastLogin</a></li>
+                    </ul>
+                </li>
             </ul>
         </div>
     </nav>
 </div>
+
 <div class="container">
 
     #if($erroralert)

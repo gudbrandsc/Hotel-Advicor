@@ -35,6 +35,9 @@ public class UserReviewsServlet extends LoginBaseServlet {
                 String successMessage =null;
                 boolean successalert = false;
                 boolean erroralert = false;
+
+
+
                 int code = 0;
                 log.debug("inside");
                 if (error != null) {
@@ -59,8 +62,15 @@ public class UserReviewsServlet extends LoginBaseServlet {
                 VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
                 VelocityContext context = new VelocityContext();
                 Template template = ve.getTemplate("static/templates/myReviews.html");
+                String lastLogin = databaseHandler.getLastLogintime(getUsername(request));
+                if(lastLogin == null ){
+                    context.put("lastLogin","First visit :D");
+                }else {
+                    context.put("lastLogin",lastLogin);
+                }
                 context.put("errorAlert", erroralert);
                 context.put("errorMessage", errorMessage);
+                context.put("username",username);
                 context.put("successAlert", successalert);
                 context.put("successMessage", successMessage);
                 context.put("reviews", reviews);

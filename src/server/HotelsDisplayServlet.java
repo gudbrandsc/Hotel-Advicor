@@ -69,6 +69,12 @@ public class HotelsDisplayServlet extends LoginBaseServlet {
             VelocityContext context = new VelocityContext();
             Template template = ve.getTemplate("static/templates/basicHotelInfo.html");
             ArrayList<String> cities = databaseHandler.getAllHotelCities();
+            String lastLogin = databaseHandler.getLastLogintime(getUsername(request));
+            if(lastLogin == null ){
+                context.put("lastLogin","First visit :D");
+            }else {
+                context.put("lastLogin",lastLogin);
+            }
             context.put("username",getUsername(request));
             context.put("errorMessage", errorMessage);
             context.put("erroralert", erroralert);

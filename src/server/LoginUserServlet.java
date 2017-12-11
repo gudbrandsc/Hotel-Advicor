@@ -54,6 +54,7 @@ public class LoginUserServlet extends LoginBaseServlet {
         }
 
         if (request.getParameter("logout") != null) {
+            databaseHandler.setLastLoginTime(getUsername(request));
             clearCookies(request, response);
 
             logout=true;
@@ -89,6 +90,7 @@ public class LoginUserServlet extends LoginBaseServlet {
                 // should eventually change this to something more secure
                 response.addCookie(new Cookie("login", "true"));
                 response.addCookie(new Cookie("name", user));
+                databaseHandler.setLoginTime(getLoginDate(),user);
                 response.sendRedirect(response.encodeRedirectURL("/viewhotels"));
             }
             else {

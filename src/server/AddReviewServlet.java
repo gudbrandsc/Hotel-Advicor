@@ -35,6 +35,12 @@ public class AddReviewServlet extends LoginBaseServlet {
                         VelocityContext context = new VelocityContext();
                         Template template = ve.getTemplate("static/templates/addReview.html");
                         String username = getUsername(request);
+                        String lastLogin = databaseHandler.getLastLogintime(getUsername(request));
+                        if(lastLogin == null ){
+                            context.put("lastLogin","First visit :D");
+                        }else {
+                            context.put("lastLogin",lastLogin);
+                        }
                         context.put("hotelname",databaseHandler.getHotelIdName(hotelid));
                         context.put("hotelid", hotelid);
                         context.put("username", username);

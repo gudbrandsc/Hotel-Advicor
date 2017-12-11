@@ -14,6 +14,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="../style/minty.css">
+    <link rel="stylesheet" type="text/css" href="../style/style.css">
+
+    <script src="../js/script.js"></script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -26,33 +29,52 @@
                 <a class="navbar-brand " href="/welcome"><i class="glyphicon glyphicon-home"></i> HotelAdvisor</a>
             </div>
             <ul class="nav navbar-nav">
-                <li class="active "><a href="#">Hotels</a></li>
-                <li><a href="/myreviews?username=$username">My reviews</a></li>
-                <li><a href="/savedhotels">Saved hotels</a></li>
-                <li><a href="/expedialinks">Visited links</a></li>
-
+                <li class="active "><a href="/viewhotels">Hotels</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="/login?logout"><span class="glyphicon glyphicon-log-in"></span> Sign out</a></li>
+                <li class="dropdown menuWidth">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <span class="glyphicon glyphicon-user"></span> $username</span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/profile"><span class="glyphicon glyphicon-user"></span> My profile</a></li>
+                        <li><a href="/myreviews?username=$username"><span class="glyphicon glyphicon-comment"></span> My Reviews</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="/login?logout"><span class="glyphicon glyphicon-log-in"></span> Sign out</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a>Last logged in: $lastLogin</a></li>
+                    </ul>
+                </li>
             </ul>
         </div>
     </nav>
 </div>
-#if($existingReview)
-<a href="/editreview?username=$username&hotelid=$hotelid">
-    <button class="btn btn-primary" >Edit review</button>
-</a>
-#else
-<a href="/addreview?hotelid=$hotelid">
-    <button class="btn btn-primary" >Add review</button>
-</a>
-#end
 
-#if($hotelReviews)
-#foreach($review in $reviews)
-<div class="container">
+<div class="navbar-padding container">
+    #if($existingReview)
+    <a href="/editreview?username=$username&hotelid=$hotelid">
+        <button class="btn btn-success" >Edit review</button>
+    </a>
+    #else
+    <a href="/addreview?hotelid=$hotelid">
+        <button class="btn btn-success" >Add review</button>
+    </a>
+    #end
+    #if($hotelReviews)
+
+
+    <div class="float-right btn-group">
+        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Sort by
+        </button>
+        <div class="dropdown-menu">
+            <a onclick="sortByDate('$hotelid')" class="dropdown-item">Date</a>
+            <a  onclick="sortByRating('$hotelid')" class="dropdown-item" >Rating</a>
+
+        </div>
+    </div>
+    <div id="reviews" class="top-padding-5px">
+    #foreach($review in $reviews)
+
     <div class="well well-sm">
-
         <div>
             <h3>$!review.title</h3>
             <p><small>posted by $!review.username on $!review.date</small></p>
@@ -63,10 +85,12 @@
         </div>
         <p>Rating: $!review.rating</p>
     </div>
+
+    #end
+    </div>
+    #else
+    <p>This hotel does not have any reviews yet. Be the first one to write a review</p>
+    #end
 </div>
-#end
-#else
-<p>This hotel does not have any reviews yet. Be the first one to write a review</p>
-#end
 </body>
 </html>

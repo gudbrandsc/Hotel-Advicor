@@ -36,7 +36,9 @@ public class UserHandler {
                     "userid INTEGER AUTO_INCREMENT PRIMARY KEY, " +
                     "username VARCHAR(32) NOT NULL UNIQUE, " +
                     "password CHAR(64) NOT NULL, " +
-                    "usersalt CHAR(32) NOT NULL);";
+                    "usersalt CHAR(32) NOT NULL, " +
+                    "lastLogin VARCHAR(32)  ," +
+                    "newLogin VARCHAR(32))  ;";
 
 
     /** Used to configure connection to database. */

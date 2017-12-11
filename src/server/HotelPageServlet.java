@@ -48,6 +48,12 @@ public class HotelPageServlet extends LoginBaseServlet {
 
             String expedia = "https://www.expedia.com/"+city+"-hotels-"+name+".h"+hotelId+".Hotel-Information";
             expedia = expedia.replaceAll(" ","-");
+            String lastLogin = databaseHandler.getLastLogintime(getUsername(request));
+            if(lastLogin == null ){
+                context.put("lastLogin","First visit :D");
+            }else {
+                context.put("lastLogin",lastLogin);
+            }
             context.put("errorMessage",errorMessage);
             context.put("erroralert",erroralert);
             context.put("saved",saved);

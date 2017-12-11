@@ -37,6 +37,12 @@ public class EditReviewServlet extends LoginBaseServlet{
                     VelocityContext context = new VelocityContext();
                     Template template = ve.getTemplate("static/templates/editReview.html");
                     HotelReview review = databaseHandler.getUserReviewForHotel(username,hotelid);
+                    String lastLogin = databaseHandler.getLastLogintime(getUsername(request));
+                    if(lastLogin == null ){
+                        context.put("lastLogin","First visit :D");
+                    }else {
+                        context.put("lastLogin",lastLogin);
+                    }
                     context.put("hotelname",databaseHandler.getHotelIdName(hotelid));
                     context.put("review", review);
                     context.put("date",getDate());

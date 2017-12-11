@@ -14,49 +14,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 
 public class ExpediaLinkHistory  extends LoginBaseServlet {
-    /**
-     * A method that gets executed when a get request is sent to the HotelsDisplayServlet.
-     * @param request HttpServletRequest
-     * @param response HttpServletResponse
-     * @throws IOException IOException
-     */
-    @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
 
-        if (getUsername(request) != null) {
-            ArrayList<ExpediaLinkInfo> links = null;
-            String errorMessage =null;
-            int code = 0;
-            boolean erroralert = false;
-
-
-            if(databaseHandler.checkIfUserHasLinkHistory(getUsername(request))==Status.OK){
-                links = databaseHandler.getAllVisitedLinks(getUsername(request));
-            }else{
-                code = Status.NO_LINK_HISTORY.ordinal();
-                errorMessage = getStatusMessage(code);
-                erroralert = true;
-
-            }
-
-
-            PrintWriter out = response.getWriter();
-            VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
-            VelocityContext context = new VelocityContext();
-            Template template = ve.getTemplate("static/templates/allLinks.html");
-            context.put("errorMessage", errorMessage);
-            context.put("erroralert", erroralert);
-            context.put("links", links);
-            StringWriter writer = new StringWriter();
-            template.merge(context, writer);
-            out.println(writer.toString());
-
-        }
-        else {
-            response.sendRedirect("/login");
-        }
-    }
     /** The method that will handle post request sent to UserReviewsServlet.
      * @param request HttpServletRequest
      * @param response HttpServletResponse

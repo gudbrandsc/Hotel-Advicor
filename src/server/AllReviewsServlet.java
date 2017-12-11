@@ -52,6 +52,12 @@ public class AllReviewsServlet extends LoginBaseServlet{
                     if (databaseHandler.checkForExistingUserReview(hotelid,getUsername(request))==Status.OK){
                         existingReview = true;
                     }
+                    String lastLogin = databaseHandler.getLastLogintime(getUsername(request));
+                    if(lastLogin == null ){
+                        context.put("lastLogin","First visit :D");
+                    }else {
+                        context.put("lastLogin",lastLogin);
+                    }
                     context.put("existingReview",existingReview);
                     context.put("hotelReviews",hotelReviews);
                     context.put("hotelid", hotelid);
