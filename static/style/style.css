@@ -256,3 +256,11 @@ margin-top: 5px;
     border-color: #55cc9d !important;
 
 }
+.btn.focus, .btn:focus, .btn:hover {
+    color: #fff !important;
+    text-decoration: none;
+}
+.align-bottoms{
+    text-align: center;
+
+}

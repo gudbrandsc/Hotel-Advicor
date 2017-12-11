@@ -34,7 +34,7 @@ public class TableSearchServlet extends LoginBaseServlet {
                 sb.append("<tr><th>Hotel name</th><th>City</th><th>Address</th><th>Rating</th></tr></thead><tbody>");
 
                 for(BasicHotelInfo bh:hotelInfo){
-                    sb.append("<tr><td><a href=\"/hotel?hotelid=\""+bh.getHotelId()+">"+bh.getName()+"</a></td>");
+                    sb.append("<tr><td><a href=\"/hotel?hotelid="+bh.getHotelId()+"\">"+bh.getName()+"</a></td>");
                     sb.append("<td>"+bh.getCity()+"</td>");
                     sb.append("<td>"+bh.getAddress()+"</td>");
                     sb.append("<td>"+bh.getRating()+"</td></tr>");

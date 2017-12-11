@@ -33,46 +33,58 @@ public class HotelPageServlet extends LoginBaseServlet {
                 errorMessage = getStatusMessage(code);
                 erroralert = true;
             }
+            if(request.getParameter("hotelid")!=null){
+                String hotelId = request.getParameter("hotelid");
+                if (databaseHandler.checkIfHotelExist(hotelId)==Status.OK){
+                    PrintWriter out = response.getWriter();
 
-            PrintWriter out = response.getWriter();
+                    VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
+                    VelocityContext context = new VelocityContext();
+                    Template template = ve.getTemplate("static/templates/hotelInfo.html");
 
-            VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
-            VelocityContext context = new VelocityContext();
-            Template template = ve.getTemplate("static/templates/hotelInfo.html");
-            String hotelId = request.getParameter("hotelid");
-            boolean saved = databaseHandler.checkIfHotelIsSaved(getUsername(request)+hotelId);
-            String name = databaseHandler.getHotelIdName(hotelId);
-            String address = databaseHandler.getHotelIdAddress(hotelId);
-            String city = databaseHandler.getHotelCity(hotelId);
-            Double rating = databaseHandler.getHotelIdRating(hotelId);
-            String mapq = name+"+"+address+"+"+city;
-            mapq = mapq.replaceAll(" ","+");
-            String expedia = "https://www.expedia.com/"+city+"-hotels-"+name+".h"+hotelId+".Hotel-Information";
-            expedia = expedia.replaceAll(" ","-");
-            String lastLogin = databaseHandler.getLastLogintime(getUsername(request));
-            if(lastLogin.equals("null") ){
-                context.put("lastLogin","First visit :D");
-            }else {
-                context.put("lastLogin",lastLogin);
+                    boolean saved = databaseHandler.checkIfHotelIsSaved(getUsername(request)+hotelId);
+                    String name = databaseHandler.getHotelIdName(hotelId);
+                    String address = databaseHandler.getHotelIdAddress(hotelId);
+                    String city = databaseHandler.getHotelCity(hotelId);
+                    Double rating = databaseHandler.getHotelIdRating(hotelId);
+                    String lat = databaseHandler.getHotelLat(hotelId);
+                    String lon = databaseHandler.getHotelLon(hotelId);
+                    String mapq = name+","+city+"/@"+ lat+","+lon;
+                    mapq=mapq.replaceAll(" ","+");
+                    mapq=mapq.replaceAll("&","%26");
+                    System.out.println(mapq);
+                    String expedia = "https://www.expedia.com/"+city+"-hotels-"+name+".h"+hotelId+".Hotel-Information";
+                    expedia = expedia.replaceAll(" ","-");
+                    String lastLogin = databaseHandler.getLastLogintime(getUsername(request));
+                    if(lastLogin.equals("null") ){
+                        context.put("lastLogin","First visit :D");
+                    }else {
+                        context.put("lastLogin",lastLogin);
+                    }
+                    context.put("username",getUsername(request));
+                    context.put("errorMessage",errorMessage);
+                    context.put("erroralert",erroralert);
+                    context.put("saved",saved);
+                    context.put("name",name);
+                    context.put("address", address);
+                    context.put("rating", rating);
+                    context.put("hotelid",hotelId);
+                    context.put("expedia",expedia);
+                    context.put("mapq",mapq);
+
+
+                    StringWriter writer = new StringWriter();
+                    template.merge(context, writer);
+
+                    out.println(writer.toString());
+
+                }else{
+                    response.sendRedirect("/viewhotels");
+                }
+            }else{
+                response.sendRedirect("/viewhotels");
             }
-            context.put("username",getUsername(request));
-            context.put("errorMessage",errorMessage);
-            context.put("erroralert",erroralert);
-            context.put("saved",saved);
-            context.put("name",name);
-            context.put("address", address);
-            context.put("rating", rating);
-            context.put("hotelid",hotelId);
-            context.put("expedia",expedia);
-            context.put("mapq",mapq);
-
-            StringWriter writer = new StringWriter();
-            template.merge(context, writer);
-
-            out.println(writer.toString());
-
-        }
-        else {
+        } else {
             response.sendRedirect("/login");
         }
     }

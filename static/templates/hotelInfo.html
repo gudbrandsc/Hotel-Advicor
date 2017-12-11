@@ -44,45 +44,56 @@
     <div class="panel panel-primary">
         <div class="panel-heading">$name </div>
         <div class="panel-body">
-            <div class="card-body text-primary">
-                <h4 class="card-title">Address: $address</h4>
-                <p class="card-text">Rating: $rating</p>
-            </div>
-            <form target='_blank' action = "/expedialinks" method = "post">
-                <input type="hidden" value="$hotelid" name="hotelid" />
-                <input type="hidden" value="$name" name="hotelname" />
-                <input type="hidden" value="$expedia" name="link" />
-                <label for="expedia" class="btn btn-info"><i class="glyphicon glyphicon-link"></i>Expedia</label>
-                <input id="expedia" href="$expedia" class="hidden" type="submit" name="visit" value="Expedia">
-            </form>
-            <div class="top-padding-5px">
-            #if($saved)
-            <form action = "/hotel" method = "post">
-                <input type="hidden" value="$hotelid" name="hotelid" />
-                <label for="unsave" class="btn btn-danger"><i class="glyphicon glyphicon-heart-empty"></i> Unsave</label>
-                <input class="hidden" id="unsave" type="submit" name="unsave" value="unsave">
-            </form>
-            #else
-            <form action = "/hotel" method = "post">
-                <input type="hidden" value="$hotelid" name="hotelid" />
-                <label for="save" class="btn btn-secondary"><i class="glyphicon glyphicon-heart"></i> Save</label>
-                <input id="save" class="hidden" type="submit" name="save" value="save">
+            <div class="col-md-6">
+                <div class="card-body text-primary border-bottom">
+                    <h4 class="card-title">Address: $address</h4>
+                    <p class="card-text">Rating: $rating</p>
+                </div>
+                <div class="col-md-6">
+                    <form target='_blank' action = "/expedialinks" method = "post">
+                        <input type="hidden" value="$hotelid" name="hotelid" />
+                        <input type="hidden" value="$name" name="hotelname" />
+                        <input type="hidden" value="$expedia" name="link" />
+                        <label for="expedia" class="btn btn-large btn-info"><i class="glyphicon glyphicon-link"></i>Expedia</label>
+                        <input id="expedia" href="$expedia" class="hidden" type="submit" name="visit" value="Expedia">
+                    </form>
+                </div>
+                <div class="col-md-6">
 
-            </form>
-            #end
-            </div>
-            <div class="float-right"><iframe
-                    width="600"
-                    height="450"
-                    frameborder="0" style="border:0"
-                    src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAX2jfFKOyHFMvld1gugHnRYXCY1qxLvX4&q=$mapq" allowfullscreen>
-            </iframe>
+                #if($saved)
+                <form action = "/hotel" method = "post">
+                    <input type="hidden" value="$hotelid" name="hotelid" />
+                    <label for="unsave" class="btn btn-large btn-danger"><i class="glyphicon glyphicon-heart-empty"></i> Unsave</label>
+                    <input class="hidden" id="unsave" type="submit" name="unsave" value="unsave">
+                </form>
+                #else
+                <form action = "/hotel" method = "post">
+                    <input type="hidden" value="$hotelid" name="hotelid" />
+                    <label for="save" class="btn btn-large btn-secondary"><i class="glyphicon glyphicon-heart"></i> Save</label>
+                    <input id="save" class="hidden" type="submit" name="save" value="save">
+
+                </form>
+                #end
+                </div>
+<div class=" col-md-12 top-padding-5px">
                 <form action = "/attractions" method = "post">
                     <input type="hidden" value="$hotelid" name="hotelid" />
                     <input class="form-control" required  name="radius" type="number" min="1" max="9999" placeholder="Enter radius..">
-                    <input class="btn btn-primary" type="submit" value="Show attractions">
+                    <input class="btn btn-large btn-primary" type="submit" value="Show attractions">
                 </form>
+</div>
             </div>
+
+
+
+            <div class="col-md-6 "><iframe
+                    width=100%
+                    height=400px
+                    frameborder="0" style="border:0"
+                    src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAX2jfFKOyHFMvld1gugHnRYXCY1qxLvX4&q=$mapq" allowfullscreen>
+            </iframe>
+            </div>
+
 
         </div>
     </div>
