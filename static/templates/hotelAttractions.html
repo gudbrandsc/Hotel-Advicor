@@ -38,28 +38,32 @@
     </nav>
 </div>
 
-<div class="container">
-    <h3>Attractions near hotel $hotelname</h3>
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>Attraction name</th>
-            <th>Address</th>
-            <th>Rating</th>
+<div class="container navbar-padding">
+    <div class="panel panel-primary">
+        <div class="panel-heading">Popular attractions within $radius mile(s) of hotel $hotelname</div>
+        <div class="panel-body">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Attraction name</th>
+                    <th>Address</th>
+                    <th>Rating</th>
 
-        </tr>
-        </thead>
-        <tbody>
-        #foreach($attraction in $attractions)
-        <tr>
-            <td>$!attraction.name</a></td>
-            <td>$!attraction.address</td>
-            <td>$!attraction.rating</td>
+                </tr>
+                </thead>
+                <tbody>
+                #foreach($attraction in $attractions)
+                <tr>
+                    <td>$!attraction.name</a></td>
+                    <td>$!attraction.address</td>
+                    <td>$!attraction.rating</td>
 
-        </tr>
-        #end
-        </tbody>
-    </table>
+                </tr>
+                #end
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 </body>
 </html>

@@ -36,7 +36,7 @@ public class AddReviewServlet extends LoginBaseServlet {
                         Template template = ve.getTemplate("static/templates/addReview.html");
                         String username = getUsername(request);
                         String lastLogin = databaseHandler.getLastLogintime(getUsername(request));
-                        if(lastLogin == null ){
+                        if(lastLogin.equals("null") ){
                             context.put("lastLogin","First visit :D");
                         }else {
                             context.put("lastLogin",lastLogin);

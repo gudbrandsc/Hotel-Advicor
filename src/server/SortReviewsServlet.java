@@ -32,16 +32,16 @@ public class SortReviewsServlet extends LoginBaseServlet {
             }else{
                     sb.append("<p>Reviews sorted by date");
                 for(HotelReview review:hotelReviews){
-                    sb.append("<div class=\"well well-sm\">");
-                    sb.append("<div>");
-                    sb.append("<h3>"+review.getTitle()+"</h3>");
-                    sb.append("<p><small>posted by "+ review.getUsername() +" on " + review.getDate() +"</small></p>");
-                    sb.append("</div>");
-                    sb.append("<div class=\"reviewtext\">");
-                    sb.append("<p>"+review.getReview()+"</p>");
-                    sb.append("</div>");
-                    sb.append("<p>Rating:"+review.getRating()+"</p>");
-                    sb.append("</div>");
+                    sb.append("<div class=\"panel panel-info\">");
+                    sb.append("<div class=\"panel-heading\">"+review.getTitle()+"</div>");
+                    sb.append("<div class=\"panel-body\">");
+                    sb.append("<div class=\"card-body text-primary\">");
+                    sb.append("<h4 class=\"card-title\">Summary:</h4>");
+                    sb.append("<p class=\"card-text\">"+review.getReview()+"</p>");
+                    sb.append("<div class=\"border-bottom\"></div>");
+                    sb.append("<p>Rating: "+review.getRating()+"</p>");
+                    sb.append("<p><small>posted by "+review.getUsername()+" on "+review.getDate()+"</small></p>");
+                    sb.append("</div></div></div>");
                 }
             }
 
@@ -56,16 +56,17 @@ public class SortReviewsServlet extends LoginBaseServlet {
             }else{
                 sb.append("<p>Reviews sorted by rating");
                 for(HotelReview review:hotelReviews){
-                    sb.append("<div class=\"well well-sm\">");
-                    sb.append("<div>");
-                    sb.append("<h3>"+review.getTitle()+"</h3>");
-                    sb.append("<p><small>posted by "+ review.getUsername() +" on " + review.getDate() +"</small></p>");
-                    sb.append("</div>");
-                    sb.append("<div class=\"reviewtext\">");
-                    sb.append("<p>"+review.getReview()+"</p>");
-                    sb.append("</div>");
-                    sb.append("<p>Rating:"+review.getRating()+"</p>");
-                    sb.append("</div>");
+                    sb.append("<div class=\"panel panel-info\">");
+                    sb.append("<div class=\"panel-heading\">"+review.getTitle()+"</div>");
+                    sb.append("<div class=\"panel-body\">");
+                    sb.append("<div class=\"card-body text-primary\">");
+                    sb.append("<h4 class=\"card-title\">Summary:</h4>");
+                    sb.append("<p class=\"card-text\">"+review.getReview()+"</p>");
+                    sb.append("<div class=\"border-bottom\"></div>");
+                    sb.append("<p>Rating: "+review.getRating()+"</p>");
+                    sb.append("<p><small>posted by "+review.getUsername()+" on "+review.getDate()+"</small></p>");
+                    sb.append("</div></div></div>");
+
                 }
             }
 

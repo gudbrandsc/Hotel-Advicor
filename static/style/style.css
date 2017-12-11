@@ -247,3 +247,12 @@ margin-top: 5px;
     width: 220px;
 
 }
+.panel-success>.panel-heading {
+    background-color: #55cc9d !important;
+    color: #fff;
+    border-color: #55cc9d !important;
+}
+.panel-success{
+    border-color: #55cc9d !important;
+
+}

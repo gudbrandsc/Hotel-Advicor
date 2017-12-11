@@ -46,95 +46,101 @@
         <!-- Default panel contents -->
         <div class="panel-heading">Saved hotels</div>
         <div class="panel-body">
-    <div class="row">
-        <div class="col-xs-6">
-            <div class="panel panel-primary">
-                <!-- Default panel contents -->
-                <div class="panel-heading">Saved hotels</div>
-                <div class="panel-body">
+            <div class="row">
+                <div class="col-xs-6">
+                    <div class="panel panel-success">
+                        <!-- Default panel contents -->
+                        <div class="panel-heading">Saved hotels</div>
+                        <div class="panel-body">
 
-                    <form action ="/savedhotels" method = "post">
-                        <input type="hidden" value="$username" name="username" />
-                        <input class="btn btn-warning" type="submit"  value="Remove all saved hotels" />
-                    </form>
-                    #if($invalidSearch)
-                    <div class="alert alert-danger alert-dismissable">
-                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                        <strong>There is no hotel matching your search</strong>
+                            <form action ="/savedhotels" method = "post">
+                                <input type="hidden" value="$username" name="username" />
+                                <input class="btn btn-warning" type="submit"  value="Remove all saved hotels" />
+                            </form>
+                            #if($invalidSearch)
+                            <div class="alert alert-danger alert-dismissable">
+                                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                <strong>There is no hotel matching your search</strong>
+                            </div>
+
+                            #end
+                        </div>
+
+                        <!-- Table -->
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Hotel name</th>
+                                <th>City</th>
+                                <th>Address</th>
+                                <th>Rating</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            #foreach($hotel in $hotels)
+                            <tr>
+                                <td><a href="/hotel?hotelid=$!hotel.hotelId">$!hotel.name</a></td>
+                                <td>$!hotel.city</td>
+                                <td>$!hotel.address</td>
+                                <td>$!hotel.rating</td>
+                            </tr>
+                            #end
+                            </tbody>
+
+                        </table>
+                        #if($savedHotels)
+                        <div class="alert alert-danger alert-dismissable top-padding-5px">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            <strong>$savedMessage</strong>
+                        </div>
+                        #end
+                    </div>
+                </div>
+
+                <div class="col-xs-6">
+
+
+                    <div class="panel panel-info">
+                        <!-- Default panel contents -->
+                        <div class="panel-heading">Visited links history</div>
+                        <div class="panel-body">
+                            <form action ="/expedialinks" method = "post">
+                                <input type="hidden" value="$username" name="username" />
+                                <input class="btn btn-warning" type="submit" name="clearhistory" value="Remove all history" />
+                            </form>
+                        </div>
+
+                        <!-- Table -->
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Hotel name</th>
+                                <th>Expedia link</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            #foreach($link in $links)
+                            <tr>
+                                <td>$!link.name</td>
+                                <td><a href="$!link.link">$!link.link</a></td>
+                            </tr>
+                            #end
+                            </tbody>
+
+                        </table>
+                        #if($visitedLinks)
+                        <div class="alert alert-danger alert-dismissable top-padding-5px">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            <strong>$linkMessage</strong>
+                        </div>
+                        #end
                     </div>
 
-                    #end
                 </div>
-
-                <!-- Table -->
-                <table class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th>Hotel name</th>
-                        <th>City</th>
-                        <th>Address</th>
-                        <th>Rating</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    #foreach($hotel in $hotels)
-                    <tr>
-                        <td><a href="/hotel?hotelid=$!hotel.hotelId">$!hotel.name</a></td>
-                        <td>$!hotel.city</td>
-                        <td>$!hotel.address</td>
-                        <td>$!hotel.rating</td>
-                    </tr>
-                    #end
-                    </tbody>
-
-                </table>
             </div>
         </div>
-
-        <div class="col-xs-6">
-
-
-            <div class="panel panel-info">
-                <!-- Default panel contents -->
-                <div class="panel-heading">Visited links history</div>
-                <div class="panel-body">
-                    <form action ="/expedialinks" method = "post">
-                        <input type="hidden" value="$username" name="username" />
-                        <input class="btn btn-warning" type="submit" name="clearhistory" value="Remove all history" />
-                    </form>
-                </div>
-
-                <!-- Table -->
-                <table class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th>Hotel name</th>
-                        <th>Expedia link</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    #foreach($link in $links)
-                    <tr>
-                        <td>$!link.name</td>
-                        <td><a href="$!link.link">$!link.link</a></td>
-                    </tr>
-                    #end
-                    </tbody>
-
-                </table>
-                #if($erroralert)
-                <div class="alert alert-danger alert-dismissable top-padding-5px">
-                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                    <strong>$errorMessage</strong>
-                </div>
-                #end
-            </div>
-
-        </div>
-    </div>
-        </div>
     </div>
 
-    </div>
+</div>
 </body>
 </html>

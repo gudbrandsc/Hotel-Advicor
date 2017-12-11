@@ -29,25 +29,28 @@ public class UserProfileServlet extends LoginBaseServlet{
             ArrayList<BasicHotelInfo> hotelInfo = null;
             ArrayList<ExpediaLinkInfo> links = null;
 
-            String errorMessage =null;
+            String savedMessage =null;
+            String linkMessage =null;
+
             int code = 0;
-            boolean erroralert = false;
+            boolean savedHotels = false;
+            boolean visitedLinks = false;
 
 
             if(databaseHandler.checkIfUserHasSavedHotels(getUsername(request))==Status.OK){
                 hotelInfo = databaseHandler.userLikedHotelsDisplayer(getUsername(request));
             }else{
                 code = Status.NO_SAVED_HOTELS.ordinal();
-                errorMessage = getStatusMessage(code);
-                erroralert = true;
+                savedMessage = getStatusMessage(code);
+                savedHotels = true;
 
             }
             if(databaseHandler.checkIfUserHasLinkHistory(getUsername(request))==Status.OK){
                 links = databaseHandler.getAllVisitedLinks(getUsername(request));
             }else{
                 code = Status.NO_LINK_HISTORY.ordinal();
-                errorMessage = getStatusMessage(code);
-                erroralert = true;
+                linkMessage = getStatusMessage(code);
+                visitedLinks = true;
 
             }
 
@@ -59,14 +62,16 @@ public class UserProfileServlet extends LoginBaseServlet{
             Template template = ve.getTemplate("static/templates/userprofile.html");
             ArrayList<String> cities = databaseHandler.getAllHotelCities();
             String lastLogin = databaseHandler.getLastLogintime(getUsername(request));
-            if(lastLogin == null ){
+            if(lastLogin.equals("null") ){
                 context.put("lastLogin","First visit :D");
             }else {
                 context.put("lastLogin",lastLogin);
             }
             context.put("username",getUsername(request));
-            context.put("errorMessage", errorMessage);
-            context.put("erroralert", erroralert);
+            context.put("linkMessage", linkMessage);
+            context.put("visitedLinks", visitedLinks);
+            context.put("savedMessage", savedMessage);
+            context.put("savedHotels", savedHotels);
             context.put("hotels", hotelInfo);
             context.put("links", links);
             context.put("cities", cities);

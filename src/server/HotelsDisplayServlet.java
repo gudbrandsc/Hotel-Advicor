@@ -70,7 +70,7 @@ public class HotelsDisplayServlet extends LoginBaseServlet {
             Template template = ve.getTemplate("static/templates/basicHotelInfo.html");
             ArrayList<String> cities = databaseHandler.getAllHotelCities();
             String lastLogin = databaseHandler.getLastLogintime(getUsername(request));
-            if(lastLogin == null ){
+            if(lastLogin.equals("null") ){
                 context.put("lastLogin","First visit :D");
             }else {
                 context.put("lastLogin",lastLogin);

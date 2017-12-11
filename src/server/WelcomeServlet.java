@@ -34,8 +34,9 @@ public class WelcomeServlet extends LoginBaseServlet{
             ArrayList<String> cities = databaseHandler.getAllHotelCities();
 
             String lastLogin = databaseHandler.getLastLogintime(getUsername(request));
-            if(lastLogin == null ){
-                context.put("lastLogin","First visit :D");
+            if(lastLogin.equals("null") ){
+                lastLogin= "First visit :D";
+                context.put("lastLogin",lastLogin);
             }else {
                 context.put("lastLogin",lastLogin);
             }

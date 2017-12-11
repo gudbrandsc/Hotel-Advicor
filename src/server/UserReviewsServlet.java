@@ -63,7 +63,7 @@ public class UserReviewsServlet extends LoginBaseServlet {
                 VelocityContext context = new VelocityContext();
                 Template template = ve.getTemplate("static/templates/myReviews.html");
                 String lastLogin = databaseHandler.getLastLogintime(getUsername(request));
-                if(lastLogin == null ){
+                if(lastLogin.equals("null") ){
                     context.put("lastLogin","First visit :D");
                 }else {
                     context.put("lastLogin",lastLogin);

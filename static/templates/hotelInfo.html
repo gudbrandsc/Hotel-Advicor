@@ -7,6 +7,7 @@
     <link rel="stylesheet" type="text/css" href="../style/style.css">
     <link rel="stylesheet" type="text/css" href="../style/minty.css">
     <link rel="stylesheet" type="text/css" href="../style/pagebackgroundcolour.css">
+    <link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet">
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -39,40 +40,51 @@
     </nav>
 </div>
 
-<div class="container">
-    <div class="jumbotron">
+<div class="container navbar-padding">
+    <div class="panel panel-primary">
+        <div class="panel-heading">$name </div>
+        <div class="panel-body">
+            <div class="card-body text-primary">
+                <h4 class="card-title">Address: $address</h4>
+                <p class="card-text">Rating: $rating</p>
+            </div>
+            <form target='_blank' action = "/expedialinks" method = "post">
+                <input type="hidden" value="$hotelid" name="hotelid" />
+                <input type="hidden" value="$name" name="hotelname" />
+                <input type="hidden" value="$expedia" name="link" />
+                <label for="expedia" class="btn btn-info"><i class="glyphicon glyphicon-link"></i>Expedia</label>
+                <input id="expedia" href="$expedia" class="hidden" type="submit" name="visit" value="Expedia">
+            </form>
+            <div class="top-padding-5px">
+            #if($saved)
+            <form action = "/hotel" method = "post">
+                <input type="hidden" value="$hotelid" name="hotelid" />
+                <label for="unsave" class="btn btn-danger"><i class="glyphicon glyphicon-heart-empty"></i> Unsave</label>
+                <input class="hidden" id="unsave" type="submit" name="unsave" value="unsave">
+            </form>
+            #else
+            <form action = "/hotel" method = "post">
+                <input type="hidden" value="$hotelid" name="hotelid" />
+                <label for="save" class="btn btn-secondary"><i class="glyphicon glyphicon-heart"></i> Save</label>
+                <input id="save" class="hidden" type="submit" name="save" value="save">
 
-        <h3>$name</h3>
-        <p>Address: $address</p>
-        <p>Rating: $rating</p>
-        <p><a href="/reviews?hotelid=$hotelid" class="btn btn-primary" role="Reviews">Reviews</a>
+            </form>
+            #end
+            </div>
+            <div class="float-right"><iframe
+                    width="600"
+                    height="450"
+                    frameborder="0" style="border:0"
+                    src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAX2jfFKOyHFMvld1gugHnRYXCY1qxLvX4&q=$mapq" allowfullscreen>
+            </iframe>
+                <form action = "/attractions" method = "post">
+                    <input type="hidden" value="$hotelid" name="hotelid" />
+                    <input class="form-control" required  name="radius" type="number" min="1" max="9999" placeholder="Enter radius..">
+                    <input class="btn btn-primary" type="submit" value="Show attractions">
+                </form>
+            </div>
 
-        <form target='_blank' action = "/expedialinks" method = "post">
-            <input type="hidden" value="$hotelid" name="hotelid" />
-            <input type="hidden" value="$name" name="hotelname" />
-            <input type="hidden" value="$expedia" name="link" />
-            <input href="$expedia" class="btn btn-info" type="submit" name="visit" value="Expedia">
-        </form>
-
-        <form action = "/attractions" method = "post">
-            <input type="hidden" value="$hotelid" name="hotelid" />
-            <input pattern="[0-9]{0,4}" required placeholder="Enter radius.." type="text" name="radius">
-            <input class="btn btn-primary" type="submit" value="Show attractions">
-        </form>
-        <!-- check if saved or not -->
-        #if($saved)
-        <form action = "/hotel" method = "post">
-            <input type="hidden" value="$hotelid" name="hotelid" />
-            <input class="btn btn-danger" type="submit" name="unsave" value="Unsave">
-        </form>
-        #else
-        <form action = "/hotel" method = "post">
-            <input type="hidden" value="$hotelid" name="hotelid" />
-            <input class="btn btn-primary" type="submit" name="save" value="Save">
-        </form>
-        #end
-
-        </p>
+        </div>
     </div>
 </div>
 </body>

@@ -53,11 +53,12 @@ public class AllReviewsServlet extends LoginBaseServlet{
                         existingReview = true;
                     }
                     String lastLogin = databaseHandler.getLastLogintime(getUsername(request));
-                    if(lastLogin == null ){
+                    if(lastLogin.equals("null") ){
                         context.put("lastLogin","First visit :D");
                     }else {
                         context.put("lastLogin",lastLogin);
                     }
+                    context.put("hotelname",databaseHandler.getHotelIdName(hotelid));
                     context.put("existingReview",existingReview);
                     context.put("hotelReviews",hotelReviews);
                     context.put("hotelid", hotelid);

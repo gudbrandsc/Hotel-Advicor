@@ -45,15 +45,17 @@ public class HotelPageServlet extends LoginBaseServlet {
             String address = databaseHandler.getHotelIdAddress(hotelId);
             String city = databaseHandler.getHotelCity(hotelId);
             Double rating = databaseHandler.getHotelIdRating(hotelId);
-
+            String mapq = name+"+"+address+"+"+city;
+            mapq = mapq.replaceAll(" ","+");
             String expedia = "https://www.expedia.com/"+city+"-hotels-"+name+".h"+hotelId+".Hotel-Information";
             expedia = expedia.replaceAll(" ","-");
             String lastLogin = databaseHandler.getLastLogintime(getUsername(request));
-            if(lastLogin == null ){
+            if(lastLogin.equals("null") ){
                 context.put("lastLogin","First visit :D");
             }else {
                 context.put("lastLogin",lastLogin);
             }
+            context.put("username",getUsername(request));
             context.put("errorMessage",errorMessage);
             context.put("erroralert",erroralert);
             context.put("saved",saved);
@@ -62,6 +64,7 @@ public class HotelPageServlet extends LoginBaseServlet {
             context.put("rating", rating);
             context.put("hotelid",hotelId);
             context.put("expedia",expedia);
+            context.put("mapq",mapq);
 
             StringWriter writer = new StringWriter();
             template.merge(context, writer);
