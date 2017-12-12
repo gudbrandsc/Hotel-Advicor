@@ -18,7 +18,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
  */
 public class HotelAppServer {
     protected static Logger log = LogManager.getLogger();
-    private static int PORT = 8080;
+    private static int PORT = 5050;
 
     public static void main(String[] args) {
 
@@ -31,19 +31,21 @@ public class HotelAppServer {
         sh.setResourceBase(dir); // map your path into servlet
 
 
-
-
-
         // a handler for serving static html pages from the static/ folder
         ResourceHandler resource_handler = new ResourceHandler();
         resource_handler.setDirectoriesListed(false);
         resource_handler.setResourceBase("static");
 
 
+        ServletHolder holderPwd = new ServletHolder("default", DefaultServlet.class);
+        holderPwd.setInitParameter("dirAllowed","false"); // make sure to mark it "false",
+
         sh.addServlet(LoginUserServlet.class,     "/login");
         sh.addServlet(LoginRegisterServlet.class, "/register");
         sh.addServlet(UserProfileServlet.class,"/profile");
         sh.addServlet(WelcomeServlet.class,"/welcome");
+        sh.addServlet(LoginRedirectServlet.class, "/*");
+
         sh.addServlet(HotelsDisplayServlet.class,  "/viewhotels");
         sh.addServlet(HotelPageServlet.class,  "/hotel");
         sh.addServlet(AllReviewsServlet.class,  "/reviews");
@@ -51,14 +53,10 @@ public class HotelAppServer {
         sh.addServlet(AddReviewServlet.class,  "/addreview");
         sh.addServlet(EditReviewServlet.class,  "/editreview");
         sh.addServlet(HotelAttractionsServlet.class,  "/attractions");
-        sh.addServlet(LoginRedirectServlet.class, "/*");
         sh.addServlet(SavedHotelsServlet.class,"/savedhotels");
         sh.addServlet(ExpediaLinkHistory.class,"/expedialinks");
         sh.addServlet(TableSearchServlet.class,"/searchtable");
         sh.addServlet(SortReviewsServlet.class,"/sortreviews");
-
-
-
 
 
 
@@ -93,4 +91,3 @@ public class HotelAppServer {
         }
     }
 }
-//TODO database table with hotelid and links to all photos fro expedia

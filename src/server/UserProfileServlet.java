@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class UserProfileServlet extends LoginBaseServlet{
 
     /**
-     * A method that gets executed when a get request is sent to the HotelsDisplayServlet.
+     * A method that gets executed when a get request is sent to the UserProfileServlet.
      * @param request HttpServletRequest
      * @param response HttpServletResponse
      * @throws IOException IOException
@@ -53,8 +53,6 @@ public class UserProfileServlet extends LoginBaseServlet{
                 visitedLinks = true;
 
             }
-
-            //TODO remove all liked hotels
 
             PrintWriter out = response.getWriter();
             VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");

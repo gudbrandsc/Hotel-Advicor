@@ -23,7 +23,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class DatabaseHandler {
 
-    //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy MM dd");
     /** A  logger for debugging. */
     private static Logger log = LogManager.getLogger();
 
@@ -60,7 +59,7 @@ public class DatabaseHandler {
     private static final String GET_HOTEL_REVIEWS_USERNAME_SQL =
             "SELECT * FROM hotel_reviews INNER JOIN hotel_info ON hotel_reviews.hotelId = hotel_info.hotelId AND username=?;";
 
-    /*** Used to get a hotel name using hotelid.*/
+    /*** Used to get all columns from hotel_info using hotelid */
     private static final String GET_HOTELID_INFO_SQL =
             "SELECT * FROM hotel_info WHERE hotelId=?";
 
@@ -77,7 +76,7 @@ public class DatabaseHandler {
     private static final String UPDATE_HOTEL_REVIEW_SQL =
             "UPDATE hotel_reviews SET title = ?, review = ?, intRating =?, submissiondate=? WHERE reviewId=?;";
 
-    /** Used to get all review info by primary key*/
+    /** Used to get all columns from review info by primary key.*/
     private static final String GET_HOTEL_REVIEW_INFO_BY_KEY_SQL =
             "SELECT * FROM hotel_reviews where reviewID=?;";
 
@@ -90,7 +89,7 @@ public class DatabaseHandler {
     private static final String GET_HOTEL_LONGITUDE_SQL =
             "SELECT longitude FROM hotel_info where hotelId=?;";
 
-    /** Used to get city for a hotelid*/
+    /** Used to get city for a hotel using hotelid*/
     private static final String GET_HOTEL_CITY_SQL =
             "SELECT city FROM hotel_info where hotelId=?;";
 
@@ -98,9 +97,9 @@ public class DatabaseHandler {
     private static final String CHECK_HOTEL_EXIST_SQL =
             "SELECT * FROM hotel_info where hotelId=?;";
     /**
-     * Used to get all ratings for a hotel
+     * Used to get average of all ratings
      */
-    private static final String GET_ALL_RATINGS_HOTELID_SQL =
+    private static final String GET_AVERAGE_RATING_HOTELID_SQL =
             "SELECT AVG(intRating) FROM hotel_reviews WHERE hotelId=?";
 
     /**
@@ -110,56 +109,56 @@ public class DatabaseHandler {
             "UPDATE hotel_info SET avgRating = ? WHERE hotelId=?;";
 
     /**
-     * Used to update average rating for a hotel
+     * Used to get all distinct cities
      */
     private static final String GET_ALL_HOTEL_CITIES_SQL =
             "SELECT distinct city FROM hotel_info ORDER BY city;";
 
 
     /**
-     * Used to update average rating for a hotel
+     * Used to check if search matches any hoteldata
      */
     private static final String SEARCH_HOTEL_TABLE_SQL =
             "SELECT * FROM hotel_info where city = ? AND hotelnames LIKE ?;";
 
     /**
-     * Used to update average rating for a hotel
+     * Used to search for all hotels in a city
      */
     private static final String SEARCH_HOTEL_TABLE_CITY_SQL =
             "SELECT * FROM hotel_info where city = ?;";
 
 
     /**
-     * Used to update average rating for a hotel
+     * Used to save a hotel for a user
      */
     private static final String SAVE_HOTEL_FOR_USER_SQL =
             "INSERT INTO saved_hotels VALUES(?,?,?); ";
     /**
-     * Used to update average rating for a hotel
+     * Used to remove a saved hotel
      */
     private static final String REMOVE_SAVED_HOTEL_FOR_USER_SQL =
             "DELETE FROM saved_hotels WHERE primkey=?;";
 
     /**
-     * Used to update average rating for a hotel
+     * Used to remove a visited link
      */
     private static final String REMOVE_SAVED_LINK_FOR_USER_SQL =
             "DELETE FROM expedia_links WHERE primkey=?;";
 
 
     /**
-     * Used to update average rating for a hotel
+     * Used to check if the user has already saved a hotel
      */
     private static final String CHECK_IF_HOTEL_IS_SAVED =
             "SELECT * FROM saved_hotels where primkey=?;";
     /**
-     * Used to update average rating for a hotel
+     * Used to check if a user has any saved hotels
      */
     private static final String CHECK_IF_USER_HAS_SAVED_HOTELS_SQL =
             "SELECT * FROM saved_hotels where username=?;";
 
     /**
-     * Used to update average rating for a hotel
+     * Used to get all saved hotels by a user
      */
     private static final String GET_ALL_SAVED_HOTELS_USER_SQL =
             "SELECT primkey FROM saved_hotels where username=?;";
@@ -167,25 +166,25 @@ public class DatabaseHandler {
 
 
     /**
-     * Used to update average rating for a hotel
+     * Used to get all visited linkes by a user
      */
     private static final String GET_ALL_LINK_PRIMKEYS_FOR_USER_SQL =
             "SELECT primkey FROM expedia_links where username=?;";
 
     /**
-     * Used to update average rating for a hotel
+     * Used to get a display information about links and hotelname
      */
     private static final String DISPLAY_USER_LIKED_HOTELS_SQL =
             "SELECT hotel_info.hotelId,hotelnames,city,address,avgRating ,username FROM saved_hotels INNER JOIN hotel_info ON hotel_info.hotelId=saved_hotels.hotelId where username=?;";
 
 
     /**
-     * Used to insert a new user into the database.
+     * Used to add a visted link
      */
     private static final String ADD_VISITED_EXPEDIA_LINK_SQL =
             " INSERT INTO expedia_links VALUES (?, ?, ?, ?,?);";
     /**
-     * Used to update average rating for a hotel
+     * Used to check if a user has visited a link before
      */
     private static final String CHECK_IF_USER_HAS_SAVED_LINK_SQL =
             "SELECT * FROM expedia_links where primkey=?;";
@@ -198,37 +197,36 @@ public class DatabaseHandler {
 
 
     /**
-     * Used to get all visited expedia links for a user
+     * Used to get all all reviews by submission date
      */
     private static final String GET_ALL_REVIEWS_BY_DATE_SQL =
             "SELECT * FROM hotel_reviews WHERE hotelid=? order by submissiondate DESC;";
 
     /**
-     * Used to get all visited expedia links for a user
+     * Used to get all reviews by rating
      */
     private static final String GET_ALL_REVIEWS_BY_RATING_SQL =
             "SELECT * FROM hotel_reviews WHERE hotelid=? order by intRating DESC;";
      /**
-     * Used to get all visited expedia links for a user
+     * Used to update login time for a user
      */
     private static final String UPDATE_USER_LOGIN_TIME_SQL =
             "UPDATE login_users SET newLogin = ? WHERE username=?;";
 
     /**
-     * Used to get all visited expedia links for a user
+     * Used to set last login time
      */
     private static final String UPDATE_USERS_LAST_LOGIN_TIME_SQL =
             "UPDATE login_users SET lastLogin = ? WHERE username=?;";
 
-
     /**
-     * Used to get all visited expedia links for a user
+     * Used to get last login time for a user
      */
     private static final String GET_USERS_LAST_LOGIN_TIME_SQL =
             "SELECT lastLogin FROM login_users where username=?;";
 
     /**
-     * Used to get all visited expedia links for a user
+     * Used to get the login time for the currant session
      */
     private static final String GET_USERS_CURRENT_LOGIN_TIME =
             "SELECT newLogin FROM login_users where username=?;";
@@ -582,7 +580,7 @@ public class DatabaseHandler {
     }
     /**
      * Method used to display general information about all hotels
-     * @return A html table string with hotel name, address and average rating
+     * @return arraylist with basic hotelinformation
      * */
     public ArrayList<BasicHotelInfo> hotelInfoDisplayer(){
         ArrayList<BasicHotelInfo> hotelInfoArrayList = new ArrayList<>();
@@ -611,7 +609,7 @@ public class DatabaseHandler {
     }
     /**
      * Method used to display general information about all hotels
-     * @return A html table string with hotel name, address and average rating
+     * @return arraylist with basic hotelinformation that matches search
      * */
     public ArrayList<BasicHotelInfo> hotelInfoSearchDisplayer(String city, String text){
         ArrayList<BasicHotelInfo> hotelInfoArrayList = new ArrayList<>();
@@ -659,8 +657,8 @@ public class DatabaseHandler {
         return hotelInfoArrayList;
     }
     /**
-     * Method used to display general information about all hotels
-     * @return A html table string with hotel name, address and average rating
+     * Method used to fetch all like hotels by a user
+     * @return arraylist with basic hotelinformation
      * */
     public ArrayList<BasicHotelInfo> userLikedHotelsDisplayer(String username){
         ArrayList<BasicHotelInfo> hotelInfoArrayList = new ArrayList<>();
@@ -696,7 +694,7 @@ public class DatabaseHandler {
     /**
      * Tests if a hotel has any reviews
      * @param hotelId id for the hotel
-     * @return true if set is not empty
+     * @return status.OK if hotel has any reviews
      */
     public Status checkHotelIdReviewSet(String hotelId) {
         Status status = Status.ERROR;
@@ -716,7 +714,7 @@ public class DatabaseHandler {
     /**
      * Tests if a user have any reviews
      * @param username username
-     * @return true if set is not empty
+     * @return status.OK if set is not empty
      */
     public Status checkUsernameReviewSet(String username) {
         Status status = Status.ERROR;
@@ -782,9 +780,9 @@ public class DatabaseHandler {
     }
 
     /**
-     * Used to get the address of a hotel using the hotel id
+     * Used to get the average rating for a hotel
      * @param hotelId id for hotel
-     * @return hotel name
+     * @return average rating for a hotelid
      */
     public Double getHotelIdRating(String hotelId) {
         Double hotelRating=0.0;
@@ -809,10 +807,9 @@ public class DatabaseHandler {
 
 
     /**
-     * Method used to build a html string containing all reviews for a hotel
-     * using a hotel id
+     * Method used to get hotelreviews
      * @param hotelId hotel id
-     * @return A html table string with hotel name, address and rating
+     * @return Arraylist with hotelreview objects
      *
      * */
     public ArrayList<HotelReview> hotelIdReviewDisplayer(String hotelId) {
@@ -845,10 +842,9 @@ public class DatabaseHandler {
     }
 
     /**
-     * Method used to build a html string containing all reviews for a hotel
-     * using a hotel id
+     * Method used to get all reviews by date
      * @param hotelId hotel id
-     * @return A html table string with hotel name, address and rating
+     * @return Arraylist with hotelReviews
      *
      * */
     public ArrayList<HotelReview> hotelReviewsByDate(String hotelId) {
@@ -880,10 +876,9 @@ public class DatabaseHandler {
         return reviews;
     }
     /**
-     * Method used to build a html string containing all reviews for a hotel
-     * using a hotel id
+     * Method used to get hotel reviews ordered by rating
      * @param hotelId hotel id
-     * @return A html table string with hotel name, address and rating
+     * @return Arraylist with hotelreview objects
      *
      * */
     public ArrayList<HotelReview> hotelReviewsByRating(String hotelId) {
@@ -916,12 +911,10 @@ public class DatabaseHandler {
     }
 
 
-//    public HotelReview(String hotelid, String reviewid,int rating,String title, String review,String date, String username){
-
     /**
-     * Method used to get all reviews for a user, and sends each review to review builder.
+     * Method used to get all reviews for a user.
      * @param username for currant user
-     * @return string of reviews in a html format
+     * @return Arraylist with hotelreview objects
      * */
     public ArrayList<HotelReview> usernameReviewDisplayer(String username) {
         ArrayList<HotelReview> reviews = new ArrayList<>();
@@ -953,7 +946,6 @@ public class DatabaseHandler {
     }
 
 
-    // TODO make most methods return status
     /**
      * Used to add a new hotel review
      * @param hotelId hotel id
@@ -1176,7 +1168,7 @@ public class DatabaseHandler {
         int count = 0;
         Double total = 0.0;
         try (
-                PreparedStatement statement = connection.prepareStatement(GET_ALL_RATINGS_HOTELID_SQL)
+                PreparedStatement statement = connection.prepareStatement(GET_AVERAGE_RATING_HOTELID_SQL)
         ) {
             statement.setString(1,hotelId);
             ResultSet set = statement.executeQuery();
@@ -1254,7 +1246,7 @@ public class DatabaseHandler {
     }
 
     /**
-     * Save a hotel for a user
+     * Unsave's a hotel for a user
      * @param key primary
      * @return status.OK if hotel is removed
      */
@@ -1277,7 +1269,7 @@ public class DatabaseHandler {
         return status;
     }
     /**
-     * Save a hotel for a user
+     * Method used to remove all saved hotels for a user
      * @param username primary
      * @return status.OK if hotel is removed
      */
@@ -1382,7 +1374,7 @@ public class DatabaseHandler {
     }
 
     /**
-     *Check if user has saved any hotels
+     *Check if user has any visted links
      * @param key username
      * @return status.ok if has any reviews
      */
@@ -1429,7 +1421,7 @@ public class DatabaseHandler {
         return links;
     }
     /**
-     * Save a hotel for a user
+     * Used to remove a visited link
      * @param key primary
      * @return status.OK if hotel is removed
      */
@@ -1451,7 +1443,7 @@ public class DatabaseHandler {
         return status;
     }
     /**
-     * Save a hotel for a user
+     * Used to remove all visited link history for a user
      * @param username primary
      * @return status.OK if hotel is removed
      */
@@ -1498,7 +1490,11 @@ public class DatabaseHandler {
         return status;
     }
 
-
+    /**
+     * Method used to set login time for currant session
+     * @param date
+     * @param username
+     * */
 
     public void setLoginTime(String date, String username){
         try (
@@ -1514,7 +1510,11 @@ public class DatabaseHandler {
         }
     }
 
-
+    /**
+     * Method used to get newest login time for a user
+     * @param username
+     * @return Newest login time
+     * */
     private String getNewestLogintime(String username){
         StringBuilder sb = new StringBuilder();
         try (
@@ -1533,7 +1533,10 @@ public class DatabaseHandler {
         return sb.toString();
     }
 
-
+    /**
+     * Method used to set last login time for currant session
+     * @param username
+     * */
     public void setLastLoginTime(String username){
         try (
                 Connection connection = db.getConnection();
@@ -1549,7 +1552,10 @@ public class DatabaseHandler {
             log.debug(e.getMessage(), e);
         }
     }
-
+    /**
+     * Method used to get last login time
+     * @param username
+     * @return String date*/
     public String getLastLogintime(String username){
         StringBuilder sb = new StringBuilder();
         try (

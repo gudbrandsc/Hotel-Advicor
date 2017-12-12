@@ -11,6 +11,12 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 public class TableSearchServlet extends LoginBaseServlet {
+
+    /** The method that will handle post request sent to TableSearchServlet.
+     * @param request HttpServletRequest
+     * @param response HttpServletResponse
+     * @throws IOException IOException
+     * */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 

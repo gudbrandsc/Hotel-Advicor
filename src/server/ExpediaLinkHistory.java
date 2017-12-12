@@ -63,14 +63,5 @@ public class ExpediaLinkHistory  extends LoginBaseServlet {
             response.sendRedirect(url);
         }
 
-
-
-
-
-        //remove all links for a user
-        // Create username and hotelid
-        // Check if user has clicked this link before if true redirect
-        // else add username+hotelId primkey and store the url and username(to get all visited by user)
-        // then redirect
     }
 }

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 public class SavedHotelsServlet extends LoginBaseServlet {
-    /** The method that will handle post request sent to UserReviewsServlet.
+    /** The method that will handle post request sent to SavedHotelsServlet.
      * @param request HttpServletRequest
      * @param response HttpServletResponse
      * @throws IOException IOException
