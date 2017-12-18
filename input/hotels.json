@@ -2985,26 +2985,6 @@
     },
     {
       "@type": "hotelResult",
-      "i": "185",
-      "f": "Amazing Home in San Francisco Bay",
-      "d": "Amazing Home in <B>San</B> <B>Francisco</B> Bay",
-      "id": "12239317",
-      "t": "HOTEL",
-      "ll": {
-        "lat": "37.810640",
-        "lng": "-122.286906"
-      },
-      "a": "QSF",
-      "amc": "178305",
-      "ad": "1508 Magnolia Street",
-      "ci": "Oakland",
-      "pr": "CA",
-      "c": "USA",
-      "cc": "US",
-      "ccc": "USA"
-    },
-    {
-      "@type": "hotelResult",
       "i": "186",
       "f": "Holiday Inn Express San Francisco Union Square",
       "d": "Holiday Inn Express <B>San</B> <B>Francisco</B> Union Square",

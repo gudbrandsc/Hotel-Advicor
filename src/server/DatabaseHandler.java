@@ -9,11 +9,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,7 +31,7 @@ public class DatabaseHandler {
 
     /** Get a list of all hotel names in alphabetical order */
     private static final String GET_HOTEL_GENERAL_INFO_SQL =
-            "SELECT hotelnames,address,avgRating,hotelId FROM hotel_info order by hotelnames";
+            "SELECT * FROM hotel_info order by hotelnames";
 
     /** Used to register a new user in the database. */
     private static final String REGISTER_SQL =
@@ -59,7 +59,7 @@ public class DatabaseHandler {
     private static final String GET_HOTEL_REVIEWS_USERNAME_SQL =
             "SELECT * FROM hotel_reviews INNER JOIN hotel_info ON hotel_reviews.hotelId = hotel_info.hotelId AND username=?;";
 
-    /*** Used to get a hotel name using hotelid.*/
+    /*** Used to get all columns from hotel_info using hotelid */
     private static final String GET_HOTELID_INFO_SQL =
             "SELECT * FROM hotel_info WHERE hotelId=?";
 
@@ -76,7 +76,7 @@ public class DatabaseHandler {
     private static final String UPDATE_HOTEL_REVIEW_SQL =
             "UPDATE hotel_reviews SET title = ?, review = ?, intRating =?, submissiondate=? WHERE reviewId=?;";
 
-    /** Used to get all review info by primary key*/
+    /** Used to get all columns from review info by primary key.*/
     private static final String GET_HOTEL_REVIEW_INFO_BY_KEY_SQL =
             "SELECT * FROM hotel_reviews where reviewID=?;";
 
@@ -89,7 +89,7 @@ public class DatabaseHandler {
     private static final String GET_HOTEL_LONGITUDE_SQL =
             "SELECT longitude FROM hotel_info where hotelId=?;";
 
-    /** Used to get city for a hotelid*/
+    /** Used to get city for a hotel using hotelid*/
     private static final String GET_HOTEL_CITY_SQL =
             "SELECT city FROM hotel_info where hotelId=?;";
 
@@ -97,16 +97,141 @@ public class DatabaseHandler {
     private static final String CHECK_HOTEL_EXIST_SQL =
             "SELECT * FROM hotel_info where hotelId=?;";
     /**
-     * Used to get all ratings for a hotel
+     * Used to get average of all ratings
      */
-    private static final String GET_ALL_RATINGS_HOTELID_SQL =
-            "SELECT intRating FROM hotel_reviews WHERE hotelId=?";
+    private static final String GET_AVERAGE_RATING_HOTELID_SQL =
+            "SELECT AVG(intRating) FROM hotel_reviews WHERE hotelId=?";
 
     /**
      * Used to update average rating for a hotel
      */
     private static final String SET_AVERAGE_RATING_FOR_HOTEL_SQL =
             "UPDATE hotel_info SET avgRating = ? WHERE hotelId=?;";
+
+    /**
+     * Used to get all distinct cities
+     */
+    private static final String GET_ALL_HOTEL_CITIES_SQL =
+            "SELECT distinct city FROM hotel_info ORDER BY city;";
+
+
+    /**
+     * Used to check if search matches any hoteldata
+     */
+    private static final String SEARCH_HOTEL_TABLE_SQL =
+            "SELECT * FROM hotel_info where city = ? AND hotelnames LIKE ?;";
+
+    /**
+     * Used to search for all hotels in a city
+     */
+    private static final String SEARCH_HOTEL_TABLE_CITY_SQL =
+            "SELECT * FROM hotel_info where city = ?;";
+
+
+    /**
+     * Used to save a hotel for a user
+     */
+    private static final String SAVE_HOTEL_FOR_USER_SQL =
+            "INSERT INTO saved_hotels VALUES(?,?,?); ";
+    /**
+     * Used to remove a saved hotel
+     */
+    private static final String REMOVE_SAVED_HOTEL_FOR_USER_SQL =
+            "DELETE FROM saved_hotels WHERE primkey=?;";
+
+    /**
+     * Used to remove a visited link
+     */
+    private static final String REMOVE_SAVED_LINK_FOR_USER_SQL =
+            "DELETE FROM expedia_links WHERE primkey=?;";
+
+
+    /**
+     * Used to check if the user has already saved a hotel
+     */
+    private static final String CHECK_IF_HOTEL_IS_SAVED =
+            "SELECT * FROM saved_hotels where primkey=?;";
+    /**
+     * Used to check if a user has any saved hotels
+     */
+    private static final String CHECK_IF_USER_HAS_SAVED_HOTELS_SQL =
+            "SELECT * FROM saved_hotels where username=?;";
+
+    /**
+     * Used to get all saved hotels by a user
+     */
+    private static final String GET_ALL_SAVED_HOTELS_USER_SQL =
+            "SELECT primkey FROM saved_hotels where username=?;";
+
+
+
+    /**
+     * Used to get all visited linkes by a user
+     */
+    private static final String GET_ALL_LINK_PRIMKEYS_FOR_USER_SQL =
+            "SELECT primkey FROM expedia_links where username=?;";
+
+    /**
+     * Used to get a display information about links and hotelname
+     */
+    private static final String DISPLAY_USER_LIKED_HOTELS_SQL =
+            "SELECT hotel_info.hotelId,hotelnames,city,address,avgRating ,username FROM saved_hotels INNER JOIN hotel_info ON hotel_info.hotelId=saved_hotels.hotelId where username=?;";
+
+
+    /**
+     * Used to add a visted link
+     */
+    private static final String ADD_VISITED_EXPEDIA_LINK_SQL =
+            " INSERT INTO expedia_links VALUES (?, ?, ?, ?,?);";
+    /**
+     * Used to check if a user has visited a link before
+     */
+    private static final String CHECK_IF_USER_HAS_SAVED_LINK_SQL =
+            "SELECT * FROM expedia_links where primkey=?;";
+
+    /**
+     * Used to get all visited expedia links for a user
+     */
+    private static final String GET_ALL_EXPEDIALINKS_FOR_USER_SQL =
+            "SELECT * FROM expedia_links where username=?;";
+
+
+    /**
+     * Used to get all all reviews by submission date
+     */
+    private static final String GET_ALL_REVIEWS_BY_DATE_SQL =
+            "SELECT * FROM hotel_reviews WHERE hotelid=? order by submissiondate DESC;";
+
+    /**
+     * Used to get all reviews by rating
+     */
+    private static final String GET_ALL_REVIEWS_BY_RATING_SQL =
+            "SELECT * FROM hotel_reviews WHERE hotelid=? order by intRating DESC;";
+     /**
+     * Used to update login time for a user
+     */
+    private static final String UPDATE_USER_LOGIN_TIME_SQL =
+            "UPDATE login_users SET newLogin = ? WHERE username=?;";
+
+    /**
+     * Used to set last login time
+     */
+    private static final String UPDATE_USERS_LAST_LOGIN_TIME_SQL =
+            "UPDATE login_users SET lastLogin = ? WHERE username=?;";
+
+    /**
+     * Used to get last login time for a user
+     */
+    private static final String GET_USERS_LAST_LOGIN_TIME_SQL =
+            "SELECT lastLogin FROM login_users where username=?;";
+
+    /**
+     * Used to get the login time for the currant session
+     */
+    private static final String GET_USERS_CURRENT_LOGIN_TIME =
+            "SELECT newLogin FROM login_users where username=?;";
+
+
 
 
     /** Used to configure connection to database. */
@@ -286,8 +411,7 @@ public class DatabaseHandler {
             return status;
         }
 
-        // try to connect to database and test for duplicate user
-        System.out.println(db);
+
 
         try (
                 Connection connection = db.getConnection()
@@ -456,7 +580,7 @@ public class DatabaseHandler {
     }
     /**
      * Method used to display general information about all hotels
-     * @return A html table string with hotel name, address and average rating
+     * @return arraylist with basic hotelinformation
      * */
     public ArrayList<BasicHotelInfo> hotelInfoDisplayer(){
         ArrayList<BasicHotelInfo> hotelInfoArrayList = new ArrayList<>();
@@ -467,10 +591,13 @@ public class DatabaseHandler {
         ) {
             ResultSet hotelNames =statement.executeQuery();
             while (hotelNames.next()){
-                BasicHotelInfo hInfo = new BasicHotelInfo(hotelNames.getString(1),
+                BasicHotelInfo hInfo = new BasicHotelInfo(
+                        hotelNames.getString(1),
                         hotelNames.getString(2),
-                        hotelNames.getDouble(3),
-                        hotelNames.getString(4));
+                        hotelNames.getString(3),
+                        hotelNames.getString(5),
+                        hotelNames.getDouble(8));
+
                 hotelInfoArrayList.add(hInfo);
 
             }
@@ -481,9 +608,93 @@ public class DatabaseHandler {
         return hotelInfoArrayList;
     }
     /**
+     * Method used to display general information about all hotels
+     * @return arraylist with basic hotelinformation that matches search
+     * */
+    public ArrayList<BasicHotelInfo> hotelInfoSearchDisplayer(String city, String text){
+        ArrayList<BasicHotelInfo> hotelInfoArrayList = new ArrayList<>();
+
+        try (
+                Connection connection = db.getConnection();
+        ) {
+            if(!text.isEmpty()){
+                PreparedStatement statement = connection.prepareStatement(SEARCH_HOTEL_TABLE_SQL);
+                statement.setString(1,city);
+                statement.setString(2,"%"+text+"%");
+
+                ResultSet hotelNames =statement.executeQuery();
+                while (hotelNames.next()){
+                    BasicHotelInfo hInfo = new BasicHotelInfo(
+                            hotelNames.getString(1),
+                            hotelNames.getString(2),
+                            hotelNames.getString(3),
+                            hotelNames.getString(5),
+                            hotelNames.getDouble(8));
+
+                    hotelInfoArrayList.add(hInfo);
+
+                }
+            }else{
+            PreparedStatement statement = connection.prepareStatement(SEARCH_HOTEL_TABLE_CITY_SQL);
+            statement.setString(1,city);
+
+            ResultSet hotelNames =statement.executeQuery();
+            while (hotelNames.next()){
+                BasicHotelInfo hInfo = new BasicHotelInfo(
+                        hotelNames.getString(1),
+                        hotelNames.getString(2),
+                        hotelNames.getString(3),
+                        hotelNames.getString(5),
+                        hotelNames.getDouble(8));
+
+                hotelInfoArrayList.add(hInfo);
+
+            }
+        }
+        } catch (SQLException e) {
+            log.debug(e.getMessage(), e);
+        }
+        return hotelInfoArrayList;
+    }
+    /**
+     * Method used to fetch all like hotels by a user
+     * @return arraylist with basic hotelinformation
+     * */
+    public ArrayList<BasicHotelInfo> userLikedHotelsDisplayer(String username){
+        ArrayList<BasicHotelInfo> hotelInfoArrayList = new ArrayList<>();
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(DISPLAY_USER_LIKED_HOTELS_SQL)
+
+        ) {
+            statement.setString(1,username);
+
+            ResultSet hotelNames =statement.executeQuery();
+            while (hotelNames.next()){
+                BasicHotelInfo hInfo = new BasicHotelInfo(
+                        hotelNames.getString(1),
+                        hotelNames.getString(2),
+                        hotelNames.getString(3),
+                        hotelNames.getString(4),
+                        hotelNames.getDouble(5),
+                        hotelNames.getString(6));
+
+                hotelInfoArrayList.add(hInfo);
+
+            }
+        }
+        catch (SQLException e) {
+            log.debug(e.getMessage(), e);
+        }
+        return hotelInfoArrayList;
+    }
+
+
+
+    /**
      * Tests if a hotel has any reviews
      * @param hotelId id for the hotel
-     * @return true if set is not empty
+     * @return status.OK if hotel has any reviews
      */
     public Status checkHotelIdReviewSet(String hotelId) {
         Status status = Status.ERROR;
@@ -503,7 +714,7 @@ public class DatabaseHandler {
     /**
      * Tests if a user have any reviews
      * @param username username
-     * @return true if set is not empty
+     * @return status.OK if set is not empty
      */
     public Status checkUsernameReviewSet(String username) {
         Status status = Status.ERROR;
@@ -569,9 +780,9 @@ public class DatabaseHandler {
     }
 
     /**
-     * Used to get the address of a hotel using the hotel id
+     * Used to get the average rating for a hotel
      * @param hotelId id for hotel
-     * @return hotel name
+     * @return average rating for a hotelid
      */
     public Double getHotelIdRating(String hotelId) {
         Double hotelRating=0.0;
@@ -596,10 +807,9 @@ public class DatabaseHandler {
 
 
     /**
-     * Method used to build a html string containing all reviews for a hotel
-     * using a hotel id
+     * Method used to get hotelreviews
      * @param hotelId hotel id
-     * @return A html table string with hotel name, address and rating
+     * @return Arraylist with hotelreview objects
      *
      * */
     public ArrayList<HotelReview> hotelIdReviewDisplayer(String hotelId) {
@@ -630,12 +840,81 @@ public class DatabaseHandler {
         }
         return reviews;
     }
-//    public HotelReview(String hotelid, String reviewid,int rating,String title, String review,String date, String username){
 
     /**
-     * Method used to get all reviews for a user, and sends each review to review builder.
+     * Method used to get all reviews by date
+     * @param hotelId hotel id
+     * @return Arraylist with hotelReviews
+     *
+     * */
+    public ArrayList<HotelReview> hotelReviewsByDate(String hotelId) {
+        ArrayList<HotelReview> reviews = new ArrayList<>();
+
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(GET_ALL_REVIEWS_BY_DATE_SQL)
+
+        ) {
+            statement.setString(1,hotelId);
+            ResultSet hotelReviews = statement.executeQuery();
+            while (hotelReviews.next()) {
+                String hotelid = hotelReviews.getString(1);
+                String reviewid = hotelReviews.getString(2);
+                int rating = hotelReviews.getInt(3);
+                String title = hotelReviews.getString(4);
+                String review = hotelReviews.getString(5);
+                String date = hotelReviews.getString(6);
+                String username = hotelReviews.getString(7) ;
+
+
+                HotelReview hr = new HotelReview(hotelid,reviewid,rating,title,review,date,username);
+                reviews.add(hr);
+            }
+        } catch (SQLException e) {
+            log.debug(e.getMessage(), e);
+        }
+        return reviews;
+    }
+    /**
+     * Method used to get hotel reviews ordered by rating
+     * @param hotelId hotel id
+     * @return Arraylist with hotelreview objects
+     *
+     * */
+    public ArrayList<HotelReview> hotelReviewsByRating(String hotelId) {
+        ArrayList<HotelReview> reviews = new ArrayList<>();
+
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(GET_ALL_REVIEWS_BY_RATING_SQL)
+
+        ) {
+            statement.setString(1,hotelId);
+            ResultSet hotelReviews = statement.executeQuery();
+            while (hotelReviews.next()) {
+                String hotelid = hotelReviews.getString(1);
+                String reviewid = hotelReviews.getString(2);
+                int rating = hotelReviews.getInt(3);
+                String title = hotelReviews.getString(4);
+                String review = hotelReviews.getString(5);
+                String date = hotelReviews.getString(6);
+                String username = hotelReviews.getString(7) ;
+
+
+                HotelReview hr = new HotelReview(hotelid,reviewid,rating,title,review,date,username);
+                reviews.add(hr);
+            }
+        } catch (SQLException e) {
+            log.debug(e.getMessage(), e);
+        }
+        return reviews;
+    }
+
+
+    /**
+     * Method used to get all reviews for a user.
      * @param username for currant user
-     * @return string of reviews in a html format
+     * @return Arraylist with hotelreview objects
      * */
     public ArrayList<HotelReview> usernameReviewDisplayer(String username) {
         ArrayList<HotelReview> reviews = new ArrayList<>();
@@ -667,7 +946,6 @@ public class DatabaseHandler {
     }
 
 
-    // TODO make most methods return status
     /**
      * Used to add a new hotel review
      * @param hotelId hotel id
@@ -831,6 +1109,27 @@ public class DatabaseHandler {
         return city;
     }
 
+    /**
+     * Get all hotel cities
+     * @return List of all cities
+     * */
+    public ArrayList<String> getAllHotelCities(){
+        ArrayList<String> cities = new ArrayList<>();
+            try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(GET_ALL_HOTEL_CITIES_SQL)
+        ) {
+            ResultSet set = statement.executeQuery();
+            while(set.next()){
+                cities.add(set.getString(1));
+            }
+        }
+        catch (SQLException e) {
+            log.debug(e.getMessage(), e);
+        }
+        return cities;
+    }
+
 
     /**
      *Check if hotel with hotel id exist
@@ -869,23 +1168,17 @@ public class DatabaseHandler {
         int count = 0;
         Double total = 0.0;
         try (
-                PreparedStatement statement = connection.prepareStatement(GET_ALL_RATINGS_HOTELID_SQL)
+                PreparedStatement statement = connection.prepareStatement(GET_AVERAGE_RATING_HOTELID_SQL)
         ) {
             statement.setString(1,hotelId);
             ResultSet set = statement.executeQuery();
-
+            double avgRating = 0;
             if (set.next()) {
                 do {
-                    count++;
-                    total=total+set.getDouble(1);
+                    avgRating = set.getDouble(1);
                 } while (set.next());
             }
-            Double avgRating = total/count;
-            if(avgRating.isNaN()){
-                setAvgRatingForHotel(hotelId,0.0,connection);
-            }else{
                 setAvgRatingForHotel(hotelId,avgRating,connection);
-            }
             status = Status.OK;
         }
         catch (SQLException e) {
@@ -921,4 +1214,369 @@ public class DatabaseHandler {
         log.debug("AvgRating for " +hotelId+" was changed " + status);
         return status;
     }
+    /**
+     * Save a hotel for a user
+     * @param hotelId hotel id
+     * @param username username
+     * @return status.OK if review was added
+     */
+
+    public Status saveHotel(String hotelId,String username){
+        Status status = Status.ERROR;
+
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(SAVE_HOTEL_FOR_USER_SQL)
+        ) {
+            String key = username+hotelId;
+            statement.setString(1,key);
+            statement.setString(2,username);
+            statement.setString(3,hotelId);
+            statement.executeUpdate();
+            status = Status.OK;
+
+
+        }
+        catch (SQLException e) {
+            status = Status.SQL_EXCEPTION;
+            log.debug(e.getMessage(), e);
+        }
+        log.debug("Hotel was liked" + status);
+        return status;
+    }
+
+    /**
+     * Unsave's a hotel for a user
+     * @param key primary
+     * @return status.OK if hotel is removed
+     */
+
+    public Status unsaveHotel(String key){
+        Status status = Status.ERROR;
+
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(REMOVE_SAVED_HOTEL_FOR_USER_SQL)
+        ) {
+            statement.setString(1,key);
+            statement.executeUpdate();
+            status = Status.OK;
+        }
+        catch (SQLException e) {
+            status = Status.SQL_EXCEPTION;
+            log.debug(e.getMessage(), e);
+        }
+        return status;
+    }
+    /**
+     * Method used to remove all saved hotels for a user
+     * @param username primary
+     * @return status.OK if hotel is removed
+     */
+
+    public Status removeAllSavedHotels(String username){
+        Status status = Status.ERROR;
+
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(GET_ALL_SAVED_HOTELS_USER_SQL)
+        ) {
+            statement.setString(1,username);
+            ResultSet set = statement.executeQuery();
+            while(set.next()){
+                unsaveHotel(set.getString(1));
+            }
+            status=Status.OK;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return status;
+    }
+
+    /**
+     *Check if user has saved hotel
+     * @param key primary key
+     * @return status.OK if hotel exist
+     *
+     */
+
+    public boolean checkIfHotelIsSaved(String key){
+        Boolean exist=null;
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(CHECK_IF_HOTEL_IS_SAVED)
+        ) {
+            statement.setString(1,key);
+            ResultSet results= statement.executeQuery();
+            exist = results.next();
+
+
+        }
+        catch (SQLException e) {
+            log.debug(e.getMessage());
+        }
+        return exist;
+    }
+    /**
+     *Check if user has saved any hotels
+     * @param username username
+     * @return status.ok if has any reviews
+     */
+
+    public Status checkIfUserHasSavedHotels(String username){
+        Status status = Status.ERROR;
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(CHECK_IF_USER_HAS_SAVED_HOTELS_SQL)
+        ) {
+            statement.setString(1,username);
+            ResultSet results= statement.executeQuery();
+            status = results.next() ? status = Status.OK : Status.INVALID_REVIEWID;
+        }
+        catch (SQLException e) {
+            status=Status.SQL_EXCEPTION;
+            log.debug(e.getMessage(), e);
+        }
+        return status;
+    }
+    /**
+     * Adds a expedia link id a user visit the hotel link
+     * @param hotelId hotel id
+     * @param username username
+     * @return status.OK if review was added
+     */
+
+    public Status addVisitedExpedialink(String hotelId,String username,String link,String hotelname){
+        Status status = Status.ERROR;
+
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(ADD_VISITED_EXPEDIA_LINK_SQL)
+        ) {
+            String key = username+hotelId;
+            statement.setString(1,key);
+            statement.setString(2,hotelId);
+            statement.setString(3,hotelname);
+            statement.setString(4,username);
+            statement.setString(5,link);
+            statement.executeUpdate();
+            status = Status.OK;
+
+
+        }
+        catch (SQLException e) {
+            status = Status.SQL_EXCEPTION;
+            log.debug(e.getMessage(), e);
+        }
+        log.debug("Visited link was added to user" + status);
+        return status;
+    }
+
+    /**
+     *Check if user has any visted links
+     * @param key username
+     * @return status.ok if has any reviews
+     */
+
+    public Status checkIfUserHasSavedLink(String key){
+        Status status = Status.ERROR;
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(CHECK_IF_USER_HAS_SAVED_LINK_SQL)
+        ) {
+            statement.setString(1,key);
+            ResultSet results= statement.executeQuery();
+            status = results.next() ? status = Status.OK : Status.INVALID_REVIEWID;
+        }
+        catch (SQLException e) {
+            status=Status.SQL_EXCEPTION;
+            log.debug(e.getMessage(), e);
+        }
+        return status;
+    }
+    /**
+     * Get all visited links for a user
+     * @return List of all cities
+     * */
+    public ArrayList<ExpediaLinkInfo> getAllVisitedLinks(String username){
+        ArrayList<ExpediaLinkInfo> links = new ArrayList<>();
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(GET_ALL_EXPEDIALINKS_FOR_USER_SQL)
+        ) {
+            statement.setString(1,username);
+            ResultSet set = statement.executeQuery();
+            while(set.next()){
+                String hotelid= set.getString(2);
+                String name = set.getString(3);
+                String link = set.getString(5);
+                ExpediaLinkInfo info = new ExpediaLinkInfo(hotelid,name,username,link);
+                links.add(info);
+            }
+        }
+        catch (SQLException e) {
+            log.debug(e.getMessage(), e);
+        }
+        return links;
+    }
+    /**
+     * Used to remove a visited link
+     * @param key primary
+     * @return status.OK if hotel is removed
+     */
+
+    private Status clearSavedLink(Connection connection,String key){
+        Status status = Status.ERROR;
+
+        try (
+                PreparedStatement statement = connection.prepareStatement(REMOVE_SAVED_LINK_FOR_USER_SQL)
+        ) {
+            statement.setString(1,key);
+            statement.executeUpdate();
+            status = Status.OK;
+        }
+        catch (SQLException e) {
+            status = Status.SQL_EXCEPTION;
+            log.debug(e.getMessage(), e);
+        }
+        return status;
+    }
+    /**
+     * Used to remove all visited link history for a user
+     * @param username primary
+     * @return status.OK if hotel is removed
+     */
+
+    public Status clearUserLinkHistory(String username){
+        Status status = Status.ERROR;
+
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(GET_ALL_LINK_PRIMKEYS_FOR_USER_SQL)
+        ) {
+            statement.setString(1,username);
+            ResultSet set = statement.executeQuery();
+            while(set.next()){
+                clearSavedLink(connection,set.getString(1));
+            }
+            status=Status.OK;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return status;
+    }
+    /**
+     *Check if user has saved any hotels
+     * @param username username
+     * @return status.ok if has any reviews
+     */
+
+    public Status checkIfUserHasLinkHistory(String username){
+        Status status = Status.ERROR;
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(GET_ALL_EXPEDIALINKS_FOR_USER_SQL)
+        ) {
+            statement.setString(1,username);
+            ResultSet results= statement.executeQuery();
+            status = results.next() ? status = Status.OK : Status.INVALID_REVIEWID;
+        }
+        catch (SQLException e) {
+            status=Status.SQL_EXCEPTION;
+            log.debug(e.getMessage(), e);
+        }
+        return status;
+    }
+
+    /**
+     * Method used to set login time for currant session
+     * @param date
+     * @param username
+     * */
+
+    public void setLoginTime(String date, String username){
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(UPDATE_USER_LOGIN_TIME_SQL)
+        ) {
+            statement.setString(1,date);
+            statement.setString(2,username);
+            statement.executeUpdate();
+        }
+        catch (SQLException e) {
+            log.debug(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Method used to get newest login time for a user
+     * @param username
+     * @return Newest login time
+     * */
+    private String getNewestLogintime(String username){
+        StringBuilder sb = new StringBuilder();
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(GET_USERS_CURRENT_LOGIN_TIME)
+        ) {
+            statement.setString(1,username);
+            ResultSet rs = statement.executeQuery();
+            while(rs.next()){
+                sb.append(rs.getString(1));
+            }
+        }
+        catch (SQLException e) {
+            log.debug(e.getMessage(), e);
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Method used to set last login time for currant session
+     * @param username
+     * */
+    public void setLastLoginTime(String username){
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(UPDATE_USERS_LAST_LOGIN_TIME_SQL)
+        ) {
+            String date = getNewestLogintime(username);
+
+            statement.setString(1,date);
+            statement.setString(2,username);
+            statement.executeUpdate();
+        }
+        catch (SQLException e) {
+            log.debug(e.getMessage(), e);
+        }
+    }
+    /**
+     * Method used to get last login time
+     * @param username
+     * @return String date*/
+    public String getLastLogintime(String username){
+        StringBuilder sb = new StringBuilder();
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement statement = connection.prepareStatement(GET_USERS_LAST_LOGIN_TIME_SQL)
+        ) {
+            statement.setString(1,username);
+            ResultSet rs = statement.executeQuery();
+            while(rs.next()){
+                sb.append(rs.getString(1));
+            }
+        }
+        catch (SQLException e) {
+            log.debug(e.getMessage(), e);
+        }
+        return sb.toString();
+    }
+
+
+
+
+
+
 }

@@ -25,33 +25,41 @@ public class AddReviewServlet extends LoginBaseServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-
         if (getUsername(request) != null) {
             if (request.getParameterMap().containsKey("hotelid")) {
                 String hotelid = request.getParameter("hotelid");
-                if (databaseHandler.checkHotelIdReviewSet(hotelid) == Status.OK) {
-                    PrintWriter out = response.getWriter();
-                    VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
-                    VelocityContext context = new VelocityContext();
-                    Template template = ve.getTemplate("templates/addReview.html");
-                    String username = getUsername(request);
-                    context.put("hotelname",databaseHandler.getHotelIdName(hotelid));
-                    context.put("hotelid", hotelid);
-                    context.put("username", username);
-                    context.put("date",getDate());
-                    StringWriter writer = new StringWriter();
-                    template.merge(context, writer);
-                    out.println(writer.toString());
+                if(databaseHandler.checkIfHotelExist(hotelid)==Status.OK){
+                    if(databaseHandler.checkForExistingUserReview(hotelid,getUsername(request))!=Status.OK){
+                        PrintWriter out = response.getWriter();
+                        VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
+                        VelocityContext context = new VelocityContext();
+                        Template template = ve.getTemplate("static/templates/addReview.html");
+                        String username = getUsername(request);
+                        String lastLogin = databaseHandler.getLastLogintime(getUsername(request));
+                        if(lastLogin.equals("null") ){
+                            context.put("lastLogin","First visit :D");
+                        }else {
+                            context.put("lastLogin",lastLogin);
+                        }
+                        context.put("hotelname",databaseHandler.getHotelIdName(hotelid));
+                        context.put("hotelid", hotelid);
+                        context.put("username", username);
+                        context.put("date",getDate());
+                        StringWriter writer = new StringWriter();
+                        template.merge(context, writer);
+                        out.println(writer.toString());
+                    }else{
+                        response.sendRedirect("/editreview?username="+getUsername(request)+"&hotelid="+hotelid);
+                    }
                 }else {
-
+                    Status status=Status.INVALID_HOTELID;
+                    response.sendRedirect("/viewhotels?error="+status.ordinal());
                 }
-
             }else {
-
+                Status status=Status.MISSING_HOTELID;
+                response.sendRedirect("/viewhotels?error="+status.ordinal());
             }
-
-        }
-        else {
+        } else {
             response.sendRedirect("/login");
         }
     }
@@ -65,8 +73,6 @@ public class AddReviewServlet extends LoginBaseServlet {
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-        prepareResponse("Add hotel review", response);
-
         String hotelid = request.getParameter("hotelid");
         int rating = Integer.parseInt(request.getParameter("rating"));
         String title = request.getParameter("title");
@@ -77,17 +83,19 @@ public class AddReviewServlet extends LoginBaseServlet {
         Status status = databaseHandler.addReview(hotelid,rating,title,review,date,username);
 
         if(status == Status.OK) {
+            status = Status.SUBMIT_REVIEW_SUCCESS;
             log.debug("Review successfully added");
-            String url = "/myreviews?username="+username+"&success=true";
+            String url = "/myreviews?username="+username+"&success="+status.ordinal();
             response.sendRedirect(response.encodeRedirectURL(url));
         }
         else {
             log.debug("Not able to add review:" + status);
-            String url = "/myreviews?username="+username+"&error=true";
+            status = Status.SUBMIT_REVIEW_ERROR;
+            String url = "/myreviews?username="+username+"&error="+status.ordinal();
             url = response.encodeRedirectURL(url);
             response.sendRedirect(url);
         }
 
-    }
+    }//TODO make sure message works for add and edit
 
 }

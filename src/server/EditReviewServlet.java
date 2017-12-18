@@ -35,8 +35,14 @@ public class EditReviewServlet extends LoginBaseServlet{
                     PrintWriter out = response.getWriter();
                     VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
                     VelocityContext context = new VelocityContext();
-                    Template template = ve.getTemplate("templates/editReview.html");
+                    Template template = ve.getTemplate("static/templates/editReview.html");
                     HotelReview review = databaseHandler.getUserReviewForHotel(username,hotelid);
+                    String lastLogin = databaseHandler.getLastLogintime(getUsername(request));
+                    if(lastLogin.equals("null") ){
+                        context.put("lastLogin","First visit :D");
+                    }else {
+                        context.put("lastLogin",lastLogin);
+                    }
                     context.put("hotelname",databaseHandler.getHotelIdName(hotelid));
                     context.put("review", review);
                     context.put("date",getDate());
@@ -44,10 +50,11 @@ public class EditReviewServlet extends LoginBaseServlet{
                     template.merge(context, writer);
                     out.println(writer.toString());
                 } else {
-                    log.debug("user does not have a review for this hotel");
+                    response.sendRedirect("/addreview?hotelid="+hotelid);
                 }
             }else {
-            log.debug("Param error");
+                Status status = Status.MISSING_PARAM;
+                response.sendRedirect("/viewhotels?error="+status.ordinal());
             }
         } else {
             response.sendRedirect("/login");
@@ -62,7 +69,6 @@ public class EditReviewServlet extends LoginBaseServlet{
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-        prepareResponse("Edit hotel review", response);
 
         String hotelid = request.getParameter("hotelid");
         int rating = Integer.parseInt(request.getParameter("rating"));
@@ -76,12 +82,14 @@ public class EditReviewServlet extends LoginBaseServlet{
 
         if(status == Status.OK) {
             log.debug("Review successfully edited");
-            String url = "/myreviews?username="+username+"&edit=true";
+            status=Status.UPDATE_REVIEW_SUCCESS;
+            String url = "/myreviews?username="+username+"&success="+status.ordinal();
             response.sendRedirect(response.encodeRedirectURL(url));
         }
         else {
             log.debug("Not able to edit review:" + status);
-            String url = "/myreviews?username="+username+"&edit=true";
+            status=Status.UPDATE_REVIEW_ERROR;
+            String url = "/myreviews?username="+username+"&error="+status.ordinal();
             url = response.encodeRedirectURL(url);
             response.sendRedirect(url);
         }

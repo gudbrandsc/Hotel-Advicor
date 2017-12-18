@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hotel reviews</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../style/minty.css">
+    <link rel="stylesheet" type="text/css" href="../style/style.css">
+
+    <script src="../js/script.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand " href="/welcome"><i class="glyphicon glyphicon-home"></i> HotelAdvisor</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li class="active "><a href="/viewhotels">Hotels</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown menuWidth">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <span class="glyphicon glyphicon-user"></span> $username</span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/profile"><span class="glyphicon glyphicon-user"></span> My profile</a></li>
+                        <li><a href="/myreviews?username=$username"><span class="glyphicon glyphicon-comment"></span> My Reviews</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="/login?logout"><span class="glyphicon glyphicon-log-in"></span> Sign out</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a>Last logged in: $lastLogin</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+
+<div class="navbar-padding container">
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">Reviews for hotel $hotelname </div>
+        <div class="panel-body">
+
+            #if($existingReview)
+            <a href="/editreview?username=$username&hotelid=$hotelid">
+                <button class="btn btn-info" ><i class="glyphicon glyphicon-pencil"></i> Edit review</button>
+            </a>
+            #else
+            <a href="/addreview?hotelid=$hotelid">
+                <button class="btn btn-success " ><i class="glyphicon glyphicon-pencil"></i> Add review</button>
+            </a>
+            #end
+            #if($hotelReviews)
+
+            <div class="float-right btn-group">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Sort by
+                </button>
+                <div class="dropdown-menu">
+                    <a onclick="sortByDate('$hotelid')" class="dropdown-item">Date</a>
+                    <a  onclick="sortByRating('$hotelid')" class="dropdown-item" >Rating</a>
+
+                </div>
+            </div>
+            <div id="reviews" class="top-padding-5px">
+                #foreach($review in $reviews)
+
+                <div class="panel panel-info">
+                    <div class="panel-heading">$!review.title</div>
+                    <div class="panel-body">
+                        <div class="card-body text-primary">
+                            <h4 class="card-title">Summary:</h4>
+                            <p class="card-text">$!review.review</p>
+                            <div class="border-bottom"></div>
+                            <p>Rating: $!review.rating</p>
+                            <p><small>posted by $!review.username on $!review.date</small></p>
+                        </div>
+                    </div>
+                </div>
+
+                #end
+            </div>
+            #else
+
+            <div class="alert alert-info top-padding-5px" role="alert">
+                This hotel does not have any reviews yet.
+            </div>
+
+
+            #end
+        </div>
+    </div>
+</div>
+</body>
+</html>

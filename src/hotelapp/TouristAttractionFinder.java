@@ -66,7 +66,6 @@ public class TouristAttractionFinder {
             String fixedQuery = query.replaceAll(" ", "%20");
 
             String header = getRequest(path + "?" + fixedQuery);
-            System.out.println(header);
             out.println(header); // send a request to the server
             out.flush();
 
@@ -116,8 +115,18 @@ public class TouristAttractionFinder {
             while (iterator.hasNext()) {
                 JSONObject res = iterator.next();
                 String name = (String) res.get("name");
+                Object value= res.get("rating");
+                double rating =0;
+
+                if(value instanceof Long) {
+                    rating = ((Long) value).doubleValue();
+                }else if(value == null) {
+                    rating=0.0;
+                }else{
+                    rating=(double)value;
+                }
                 String address= (String) res.get("formatted_address");
-                HotelAttractions h = new HotelAttractions(name,address);
+                HotelAttractions h = new HotelAttractions(name,address,rating);
                 attractions.add(h);
 
             }

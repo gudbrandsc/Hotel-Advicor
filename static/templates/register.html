@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Register</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../style/register.css">
+    <link rel="stylesheet" href="../style/style.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../style/style.css">
+</head>
+<body>
+
+<div>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand " href="/login"><i class="glyphicon glyphicon-home"></i> HotelAdvisor</a>
+            </div>
+        </div>
+    </nav>
+</div>
+<div class="container">
+    <div class="login-form">
+        <h1>Sign in</h1>
+        <form action="/register" method="POST">
+            #if($errorAlert)
+            <div class="alert alert-danger alert-dismissable">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>Error!</strong> $errorMessage
+            </div>
+            #end
+            <div class="form-group ">
+                <input type="text" class="form-control" name="user" id="login" placeholder="Username" aria-describedby="login" required>
+            </div>
+            <div class="form-group log-status">
+                <input required placeholder="Password" class="form-control" type="password" id="password" name="pass" size="30" pattern= "(?=.*[a-z])(?=.*[A-Z])(?=.*[\d])(?=.*[#?!@$%^&*-]).{8,}"
+                       title="Password must contain: length of 8 characters, One upper- and one lowercase letter, a number from 0-9 and one special character  #?!@$%^&*-">
+            </div>
+            <input type="submit" class="btn-large green-btn" value="Register" />
+            <div style="clear:both;"></div>
+
+        </form>
+    </div>
+</div>
+</div>
+</body>
+</html>
+

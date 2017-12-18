@@ -4,9 +4,14 @@ package server;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.velocity.app.VelocityEngine;
+import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 
 /**
  * Server that handles all servlets.
@@ -18,18 +23,48 @@ public class HotelAppServer {
     public static void main(String[] args) {
 
         Server server = new Server(PORT);
-        ServletContextHandler context = new ServletContextHandler();
 
-        context.addServlet(LoginUserServlet.class,     "/login");
-        context.addServlet(LoginRegisterServlet.class, "/register");
-        context.addServlet(HotelsDisplayServlet.class,  "/viewhotels");
-        context.addServlet(HotelPageServlet.class,  "/hotel");
-        context.addServlet(AllReviewsServlet.class,  "/reviews");
-        context.addServlet(UserReviewsServlet.class,  "/myreviews");
-        context.addServlet(AddReviewServlet.class,  "/addreview");
-        context.addServlet(EditReviewServlet.class,  "/editreview");
-        context.addServlet(HotelAttractionsServlet.class,  "/attractions");
-        context.addServlet(LoginRedirectServlet.class, "/*");
+
+
+        String dir = System.getProperty("user.dir"); //path
+        ServletContextHandler sh = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        sh.setResourceBase(dir); // map your path into servlet
+
+
+        // a handler for serving static html pages from the static/ folder
+        ResourceHandler resource_handler = new ResourceHandler();
+        resource_handler.setDirectoriesListed(false);
+        resource_handler.setResourceBase("static");
+
+
+        ServletHolder holderPwd = new ServletHolder("default", DefaultServlet.class);
+        holderPwd.setInitParameter("dirAllowed","false"); // make sure to mark it "false",
+
+        sh.addServlet(LoginUserServlet.class,     "/login");
+        sh.addServlet(LoginRegisterServlet.class, "/register");
+        sh.addServlet(UserProfileServlet.class,"/profile");
+        sh.addServlet(WelcomeServlet.class,"/welcome");
+        sh.addServlet(LoginRedirectServlet.class, "/*");
+
+        sh.addServlet(HotelsDisplayServlet.class,  "/viewhotels");
+        sh.addServlet(HotelPageServlet.class,  "/hotel");
+        sh.addServlet(AllReviewsServlet.class,  "/reviews");
+        sh.addServlet(UserReviewsServlet.class,  "/myreviews");
+        sh.addServlet(AddReviewServlet.class,  "/addreview");
+        sh.addServlet(EditReviewServlet.class,  "/editreview");
+        sh.addServlet(HotelAttractionsServlet.class,  "/attractions");
+        sh.addServlet(SavedHotelsServlet.class,"/savedhotels");
+        sh.addServlet(ExpediaLinkHistory.class,"/expedialinks");
+        sh.addServlet(TableSearchServlet.class,"/searchtable");
+        sh.addServlet(SortReviewsServlet.class,"/sortreviews");
+
+
+
+        HandlerList handlers = new HandlerList();
+        handlers.setHandlers(new Handler[] { resource_handler, sh });
+
+
+
 
         // initialize Velocity
         VelocityEngine velocity = new VelocityEngine();
@@ -37,9 +72,10 @@ public class HotelAppServer {
 
         // set velocity as an attribute of the context so that we can access it
         // from servlets
-        context.setContextPath("/");
-        context.setAttribute("templateEngine", velocity);
-        server.setHandler(context);
+        sh.setContextPath("/");
+        sh.setAttribute("templateEngine", velocity);
+
+        server.setHandler(handlers);
 
         log.info("Starting server on port " + PORT + "...");
 
@@ -55,4 +91,3 @@ public class HotelAppServer {
         }
     }
 }
-//TODO database table with hotelid and links to all photos fro expedia

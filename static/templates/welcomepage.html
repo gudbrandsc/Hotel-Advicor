@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../style/style.css">
+    <link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../style/minty.css">
+    <link rel="stylesheet" type="text/css" href="../style/welcome.css">
+
+    <script src="../js/script.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script></head>
+<body>
+<div>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand " href="/welcome"><i class="glyphicon glyphicon-home"></i> HotelAdvisor</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li class="active "><a href="/viewhotels">Hotels</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right ">
+                <li class="dropdown menuWidth">
+                    <a href="#" class="dropdown-toggle " data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <span class="glyphicon glyphicon-user"></span> $username</span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/profile"><span class="glyphicon glyphicon-user"></span> My profile</a></li>
+                        <li><a href="/myreviews?username=$username"><span class="glyphicon glyphicon-comment"></span> My Reviews</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="/login?logout"><span class="glyphicon glyphicon-log-in"></span> Sign out</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a>Last logged in: $lastLogin</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+
+
+<div class="imagescaler">
+    <h1 class="display-4 centeredtext">Welcome to HotelAdvisor <i class="em em-hotel"></i></h1>
+
+    <div class="centeredsearch">
+        <form action="/viewhotels" method="GET">
+            <div class="form-group">
+                <select name="city" class="form-control"  id="citySelect" >
+                    #foreach($city in $cities)
+                    <option>$!city</option>
+                    #end
+                </select>
+            </div>
+            <div class="form-group has-feedback has-feedback-left">
+                <input type="text" id="myInput" name="key" placeholder="Search for hotel names.." class=" form-control">
+                <i class="glyphicon glyphicon-search form-control-feedback"></i>
+            </div>
+
+            <button type="submit" class="btn btn-block btn-primary">
+                <i class="glyphicon glyphicon-search"></i> Search
+            </button>
+
+
+
+        </form>
+    </div>
+</div>
+</div>
+
+</body>
+</html>

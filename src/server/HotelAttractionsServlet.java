@@ -33,9 +33,17 @@ public class HotelAttractionsServlet extends LoginBaseServlet{
                     PrintWriter out = response.getWriter();
                     VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
                     VelocityContext context = new VelocityContext();
-                    Template template = ve.getTemplate("templates/hotelAttractions.html");
+                    Template template = ve.getTemplate("static/templates/hotelAttractions.html");
+                    String lastLogin = databaseHandler.getLastLogintime(getUsername(request));
+                    if(lastLogin.equals("null") ){
+                        context.put("lastLogin","First visit :D");
+                    }else {
+                        context.put("lastLogin",lastLogin);
+                    }
                     context.put("hotelname",databaseHandler.getHotelIdName(hotelid));
                     context.put("attractions", attractions);
+                    context.put("radius",radius);
+                    context.put("username",getUsername(request));
                     StringWriter writer = new StringWriter();
                     template.merge(context, writer);
                     out.println(writer.toString());

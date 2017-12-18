@@ -35,7 +35,7 @@ public class SetHotelRating {
      * Used to get all ratings for a hotel
      */
     private static final String GET_ALL_RATINGS_HOTELID_SQL =
-            "SELECT intRating FROM hotel_reviews WHERE hotelId=?";
+            "SELECT avg(intRating) FROM hotel_reviews WHERE hotelId=?";
 
     /**
      * Used to get all ratings for a hotel
@@ -112,8 +112,7 @@ public class SetHotelRating {
      * @return status.OK if rating was added
      */
 
-    private Status calculateAvgRating(String hotelId,Connection connection) {
-        Status status = Status.ERROR;
+    private void calculateAvgRating(String hotelId,Connection connection) {
         int count = 0;
         Double total = 0.0;
         try (
@@ -121,24 +120,18 @@ public class SetHotelRating {
         ) {
             statement.setString(1,hotelId);
             ResultSet set = statement.executeQuery();
-            if(set.next()){
-                while(set.next()){
-                    log.debug("Adding values "+ set.getFloat(1));
-                    count++;
-                    total=total+set.getFloat(1);
-                }
-                Double avgRating = total/count;
-                log.debug("Rating is now : "+avgRating);
-                setAvgRatingForHotel(hotelId,avgRating,connection);
+            double avgRating=0;
+            if (set.next()) {
+                do {
+                    avgRating = set.getDouble(1);
+                } while (set.next());
             }
-            status = Status.OK;
+            log.debug(avgRating);
+            setAvgRatingForHotel(hotelId,avgRating,connection);
         }
         catch (SQLException e) {
-            status = Status.SQL_EXCEPTION;
             log.debug(e.getMessage(), e);
         }
-        log.debug("Average rating was updated: " + status);
-        return status;
     }
 
     /**

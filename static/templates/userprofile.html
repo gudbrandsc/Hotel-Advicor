@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My profile</title>
+    <link rel="icon" href="/pictures/hotel.png" type="image/png">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../style/style.css">
+    <link rel="stylesheet" type="text/css" href="../style/minty.css">
+    <link rel="stylesheet" type="text/css" href="pagebackgroundcolour.css">
+
+
+    <script src="../js/script.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script></head>
+<body>
+<div>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand " href="/welcome"><i class="glyphicon glyphicon-home"></i> HotelAdvisor</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li class="active "><a href="/viewhotels">Hotels</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown menuWidth">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <span class="glyphicon glyphicon-user"></span> $username</span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/profile"><span class="glyphicon glyphicon-user"></span> My profile</a></li>
+                        <li><a href="/myreviews?username=$username"><span class="glyphicon glyphicon-comment"></span> My Reviews</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="/login?logout"><span class="glyphicon glyphicon-log-in"></span> Sign out</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a>Last logged in: $lastLogin</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+
+<div class="container navbar-padding">
+    <div class="panel panel-primary">
+        <!-- Default panel contents -->
+        <div class="panel-heading">My profile</div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-xs-6">
+                    <div class="panel panel-success">
+                        <!-- Default panel contents -->
+                        <div class="panel-heading">Saved hotels</div>
+                        <div class="panel-body">
+
+                            <form action ="/savedhotels" method = "post">
+                                <input type="hidden" value="$username" name="username" />
+                                <label for="DeleteSaved" class="btn btn-warning"><i class="glyphicon glyphicon-trash"></i> Remove all saved hotels</label>
+                                <input id="DeleteSaved" class="hidden" type="submit" name="delete" value="Delete">
+                            </form>
+                            #if($invalidSearch)
+                            <div class="alert alert-danger alert-dismissable">
+                                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                <strong>There is no hotel matching your search</strong>
+                            </div>
+
+                            #end
+                        </div>
+
+                        <!-- Table -->
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Hotel name</th>
+                                <th>City</th>
+                                <th>Address</th>
+                                <th>Rating</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            #foreach($hotel in $hotels)
+                            <tr>
+                                <td><a href="/hotel?hotelid=$!hotel.hotelId">$!hotel.name</a></td>
+                                <td>$!hotel.city</td>
+                                <td>$!hotel.address</td>
+                                <td>$!hotel.rating</td>
+                            </tr>
+                            #end
+                            </tbody>
+
+                        </table>
+                        #if($savedHotels)
+                        <div class="alert alert-danger alert-dismissable top-padding-5px">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            <strong>$savedMessage</strong>
+                        </div>
+                        #end
+                    </div>
+                </div>
+
+                <div class="col-xs-6">
+
+
+                    <div class="panel panel-info">
+                        <!-- Default panel contents -->
+                        <div class="panel-heading">Visited links history</div>
+                        <div class="panel-body">
+                            <form action ="/expedialinks" method = "post">
+                                <input type="hidden" value="$username" name="username" />
+                                <label for="DeleteExpedia" class="btn btn-warning"><i class="glyphicon glyphicon-trash"></i> Remove all history</label>
+                                <input id="DeleteExpedia" class="hidden" type="submit" name="clearhistory" value="Delete">
+
+
+                            </form>
+                        </div>
+
+                        <!-- Table -->
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Hotel name</th>
+                                <th>Expedia link</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            #foreach($link in $links)
+                            <tr>
+                                <td>$!link.name</td>
+                                <td><a href="$!link.link">$!link.link</a></td>
+                            </tr>
+                            #end
+                            </tbody>
+
+                        </table>
+                        #if($visitedLinks)
+                        <div class="alert alert-danger alert-dismissable top-padding-5px">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            <strong>$linkMessage</strong>
+                        </div>
+                        #end
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

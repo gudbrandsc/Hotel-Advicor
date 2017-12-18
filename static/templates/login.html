@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Hotel info</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../style/style.css">
+    <link rel="stylesheet" type="text/css" href="../style/login.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand " href="/login">HotelAdvisor</a>
+            </div>
+        </div>
+    </nav>
+</div>
+<div class="container">
+    <div class="login-form">
+        <h1>Sign in</h1>
+
+        #if($error)
+        <div class="alert alert-danger alert-dismissable">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Error! </strong>$errormessage
+        </div>
+        #end
+        #if($logout)
+        <div class="alert alert-info alert-dismissable">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <p>Successfully logged out!</p>
+        </div>
+        #end
+
+        <form action="/login" method="POST">
+
+            <div class="form-group ">
+                <input placeholder="Username" type="text" class="form-control" name="user" id="login" aria-describedby="login" required>
+            </div>
+            <div class="form-group log-status">
+                <input type="password" class="form-control" name="pass" placeholder="Password" aria-describedby="password" required>
+            </div>
+            <input type="submit" class="btn-medium green-btn float-left" value="Sign in" />
+        </form>
+        <div class="top-padding-5px">
+            <form action="register">
+                <input class="btn-medium blue-btn float-right" type="submit" value="Register" />
+            </form>
+        </div>
+        <div style="clear:both;"></div>
+
+    </div>
+</div>
+</body>
+</html>

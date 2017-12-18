@@ -33,35 +33,54 @@ public class AllReviewsServlet extends LoginBaseServlet{
             //Check that request contains hotel id
             if (request.getParameterMap().containsKey("hotelid")) {
                 String hotelid = request.getParameter("hotelid");
-                //Chack that hotel exist in database
-                if (databaseHandler.checkHotelIdReviewSet(hotelid) == Status.OK) {
+                //Check that hotel id exist in db
+                if(databaseHandler.checkIfHotelExist(hotelid)==Status.OK){
+                    boolean hotelReviews=false;
+                    ArrayList<HotelReview> reviews=null;
+                    //Check if hotel has any reviews.
+                    if(databaseHandler.checkHotelIdReviewSet(hotelid)==Status.OK){
+                        hotelReviews=true;
+                        reviews = databaseHandler.hotelIdReviewDisplayer(hotelid);
+                    }
+
                     PrintWriter out = response.getWriter();
                     VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
                     VelocityContext context = new VelocityContext();
-                    Template template = ve.getTemplate("templates/allreviews.html");
-                    ArrayList<HotelReview> reviews = databaseHandler.hotelIdReviewDisplayer(hotelid);
+                    Template template = ve.getTemplate("static/templates/allreviews.html");
                     Boolean existingReview  = false;
+                    //Check if the user already have an review.
                     if (databaseHandler.checkForExistingUserReview(hotelid,getUsername(request))==Status.OK){
                         existingReview = true;
                     }
-                    context.put("exist",existingReview);
+                    String lastLogin = databaseHandler.getLastLogintime(getUsername(request));
+                    if(lastLogin.equals("null") ){
+                        context.put("lastLogin","First visit :D");
+                    }else {
+                        context.put("lastLogin",lastLogin);
+                    }
+                    context.put("hotelname",databaseHandler.getHotelIdName(hotelid));
+                    context.put("existingReview",existingReview);
+                    context.put("hotelReviews",hotelReviews);
                     context.put("hotelid", hotelid);
                     context.put("username", getUsername(request));
                     context.put("reviews", reviews);
                     StringWriter writer = new StringWriter();
                     template.merge(context, writer);
                     out.println(writer.toString());
-                } else {
-                    //send some alert
+                }else {
+                    Status status = Status.INVALID_HOTELID;
+                    response.sendRedirect("/viewhotels?error="+status.ordinal());
+                    log.debug("There is no hotel with matching hotel id");
                 }
             }else{
-                //Send some alert
-                log.debug("Did not find it");
+                Status status = Status.MISSING_HOTELID;
+                response.sendRedirect("/viewhotels?error="+status.ordinal());
+                log.debug("The request was missing hotel id");
+
             }
         } else {
             response.sendRedirect("/login");
         }
     }
 }
-//TODO: Add review button
 

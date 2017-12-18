@@ -27,9 +27,27 @@ public enum Status {
 	DUPLICATE_USER("User with that username already exists."),
 	SQL_EXCEPTION("Unable to execute SQL statement."),
 	INVALID_REVIEWID("There is no review with that reviewId."),
-	NO_USERREVIEWS("The user does not have any reviews yet"),
-	NO_HOTELREVIEWS("Hotel does not have any reviews yet"),
-	INVALID_HOTELID("No hotel related to hotelid.");
+	NO_USERREVIEWS("The user does not have any reviews yet."),
+	NO_HOTELREVIEWS("Hotel does not have any reviews yet."),
+	MISSING_PARAM("One of the required parameters for your request was missing."),
+	INVALID_HOTELID("No hotel related to hotelid."),
+	REMOVE_REVIEW_ERROR("Not able to remove your review, please try again."),
+	REMOVE_REVIEW_SUCCESS("Your review was removed."),
+	SUBMIT_REVIEW_SUCCESS("Your review was submitted."),
+	UPDATE_REVIEW_SUCCESS("Your review was updated."),
+	SUBMIT_REVIEW_ERROR("Failed to submit your review, please try again."),
+	UPDATE_REVIEW_ERROR("Failed to update your review, please try again."),
+	FAILED_TO_POST("Failed to submit review, please try again."),
+	MISSING_HOTELID("There is no hotelid in your request."),
+	HOTEL_SAVED("Hotel was saved."),
+	REMOVED_ALL_SAVED_HOTELS_SUCCESS("All saved hotels has been removed."),
+	REMOVED_ALL_SAVED_HOTELS_ERROR("We where not able to remove your saved hotels."),
+	REMOVED_ALL_LINK_HISTORY_SUCCESS("Visited links history is cleared."),
+	REMOVED_ALL_LINK_HISTORY_ERROR("We where not able to clear link history."),
+	NO_LINK_HISTORY("You don't have any link history."),
+	NO_SAVED_HOTELS("You haven't saved any hotels.");
+
+
 
 	private final String message;
 
