@@ -18,7 +18,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
  */
 public class HotelAppServer {
     protected static Logger log = LogManager.getLogger();
-    private static int PORT = 5050;
+    private static int PORT = 8080;
 
     public static void main(String[] args) {
 

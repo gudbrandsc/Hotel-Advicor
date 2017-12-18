@@ -68,16 +68,16 @@
 
                 #foreach($review in $reviews)
 
-                <div class="panel panel-primary">
-                    <!-- Default panel contents -->
-                    <div class="panel-heading">Review for hotel $!review.hotelName$!review.title <br>- <small>Posted on $!review.date</small></div>
+
+                <div class="panel panel-info">
+                    <div class="panel-heading">$!review.title</div>
                     <div class="panel-body">
-                        <div class="border-bottom">
-                            <h3>$!review.title</h3> <p class="">Rating: $!review.rating</p>
-                        </div>
-                        <div class="reviewtext">
-                            <p>$!review.review</p>
-                        </div>
+                        <div class="card-body text-primary">
+                            <h4 class="card-title">Summary:</h4>
+                            <p class="card-text">$!review.review</p>
+                            <div class="border-bottom"></div>
+                            <p>Rating: $!review.rating</p>
+                            <p><small>Review for hotel $!review.hotelName </small></p>
                         <form action ="/myreviews" method = "post">
                             <input type="hidden" value="$!review.hotelid" name="hotelid" />
                             <input type="hidden" value="$!review.username" name="username" />
@@ -85,14 +85,9 @@
                             <input id="Edit" class="hidden" type="submit" name="edit" value="Edit">
                             <label for="Delete" class="btn btn-danger"><i class="glyphicon glyphicon-trash"></i> Delete</label>
                             <input id="Delete" class="hidden" type="submit" name="delete" value="Delete">
-
-
-
-
-
                         </form>
+                        </div>
                     </div>
-
                 </div>
 
                 #end
